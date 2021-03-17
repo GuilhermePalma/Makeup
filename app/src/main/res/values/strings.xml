@@ -1,4 +1,7 @@
 <resources>
-    <string name="app_name">Maquiagem</string>
+    <string name="app_name">API - Maquiagem</string>
     <string name="edit_type">Tipo</string>
+    <string name="edit_marca">Marca</string>
+    <string name="btn_search">Pesquisar</string>
+    <string name="img_makeup">Imagem de Maquiagem</string>
 </resources>

@@ -1,11 +1,11 @@
 package com.example.maquiagem;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -13,4 +13,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
+
+    public void Open(View v){
+        Intent it = new Intent(MainActivity.this, WindowResult.class);
+        startActivity(it);
+    }
+
 }
+
+
+
