@@ -4,4 +4,5 @@
     <string name="edit_marca">Marca</string>
     <string name="btn_search">Pesquisar</string>
     <string name="img_makeup">Imagem de Maquiagem</string>
+    <string name="title_result">Resultado da Busca</string>
 </resources>
