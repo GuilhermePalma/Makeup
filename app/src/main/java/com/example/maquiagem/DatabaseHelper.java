@@ -17,16 +17,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "create table tags" +
                         "(id integer primary key, brand text, name text, price decimal, currency text, " +
                         "image_link string, description text, category text, tag_list text, " +
-                        "api_featured_image string, product_colors text)"
+                        "api_featured_image string)"
         );
         db.execSQL(
                 "create table tipos" +
                         "(id integer primary key, brand text, name text, price decimal, currency text, " +
                         "image_link string, description text, category text, tag_list text, " +
-                        "api_featured_image string, product_colors text)"
+                        "api_featured_image string)"
         );
     }
-
 
     @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
 }
