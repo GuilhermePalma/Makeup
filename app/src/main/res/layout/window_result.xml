@@ -35,7 +35,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout1"
+                    android:id="@+id/constraintLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingLeft="5sp"
@@ -52,7 +52,7 @@
                         android:layout_marginRight="15dp"
                         android:layout_marginBottom="59dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/product_name"
+                        app:layout_constraintEnd_toStartOf="@+id/product_name1"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -122,7 +122,7 @@
                     android:paddingRight="5sp">
 
                     <ImageView
-                        android:id="@+id/img"
+                        android:id="@+id/img2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -132,7 +132,7 @@
                         android:layout_marginRight="15dp"
                         android:layout_marginBottom="59dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/product_name"
+                        app:layout_constraintEnd_toStartOf="@+id/product_name2"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -140,7 +140,7 @@
                         tools:srcCompat="@tools:sample/avatars" />
 
                     <TextView
-                        android:id="@+id/product_name"
+                        android:id="@+id/product_name2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
@@ -153,7 +153,7 @@
                         app:layout_constraintVertical_bias="0.144" />
 
                     <TextView
-                        android:id="@+id/type_brand"
+                        android:id="@+id/type_brand2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
@@ -166,7 +166,7 @@
                         app:layout_constraintVertical_bias="0.53" />
 
                     <TextView
-                        android:id="@+id/description"
+                        android:id="@+id/description2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
@@ -174,12 +174,12 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.055"
-                        app:layout_constraintStart_toEndOf="@+id/img"
+                        app:layout_constraintStart_toEndOf="@+id/img2"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.713" />
 
                     <TextView
-                        android:id="@+id/currency_price"
+                        android:id="@+id/currency_price2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
@@ -188,21 +188,21 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.062"
-                        app:layout_constraintStart_toEndOf="@+id/img"
+                        app:layout_constraintStart_toEndOf="@+id/img2"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.33999997" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout1"
+                    android:id="@+id/constraintLayout3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingLeft="5sp"
                     android:paddingRight="5sp">
 
                     <ImageView
-                        android:id="@+id/img"
+                        android:id="@+id/img3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -212,7 +212,7 @@
                         android:layout_marginRight="15dp"
                         android:layout_marginBottom="59dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/product_name"
+                        app:layout_constraintEnd_toStartOf="@+id/product_name3"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -220,7 +220,7 @@
                         tools:srcCompat="@tools:sample/avatars" />
 
                     <TextView
-                        android:id="@+id/product_name"
+                        android:id="@+id/product_name3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
@@ -233,7 +233,7 @@
                         app:layout_constraintVertical_bias="0.144" />
 
                     <TextView
-                        android:id="@+id/type_brand"
+                        android:id="@+id/type_brand3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
@@ -246,7 +246,7 @@
                         app:layout_constraintVertical_bias="0.53" />
 
                     <TextView
-                        android:id="@+id/description"
+                        android:id="@+id/description3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
@@ -254,12 +254,12 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.055"
-                        app:layout_constraintStart_toEndOf="@+id/img"
+                        app:layout_constraintStart_toEndOf="@+id/img3"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.713" />
 
                     <TextView
-                        android:id="@+id/currency_price"
+                        android:id="@+id/currency_price3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
@@ -268,21 +268,21 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.062"
-                        app:layout_constraintStart_toEndOf="@+id/img"
+                        app:layout_constraintStart_toEndOf="@+id/img3"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.33999997" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout1"
+                    android:id="@+id/constraintLayout4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingLeft="5sp"
                     android:paddingRight="5sp">
 
                     <ImageView
-                        android:id="@+id/img"
+                        android:id="@+id/img4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -292,7 +292,7 @@
                         android:layout_marginRight="15dp"
                         android:layout_marginBottom="59dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/product_name"
+                        app:layout_constraintEnd_toStartOf="@+id/product_name4"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -300,7 +300,7 @@
                         tools:srcCompat="@tools:sample/avatars" />
 
                     <TextView
-                        android:id="@+id/product_name"
+                        android:id="@+id/product_name4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
@@ -313,7 +313,7 @@
                         app:layout_constraintVertical_bias="0.144" />
 
                     <TextView
-                        android:id="@+id/type_brand"
+                        android:id="@+id/type_brand4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
@@ -326,7 +326,7 @@
                         app:layout_constraintVertical_bias="0.53" />
 
                     <TextView
-                        android:id="@+id/description"
+                        android:id="@+id/description4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
@@ -334,12 +334,12 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.055"
-                        app:layout_constraintStart_toEndOf="@+id/img"
+                        app:layout_constraintStart_toEndOf="@+id/img4"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.713" />
 
                     <TextView
-                        android:id="@+id/currency_price"
+                        android:id="@+id/currency_price4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
@@ -348,14 +348,14 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.062"
-                        app:layout_constraintStart_toEndOf="@+id/img"
+                        app:layout_constraintStart_toEndOf="@+id/img4"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.33999997" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout1"
+                    android:id="@+id/constraintLayout5"
                     android:layout_width="match_parent"
                     android:layout_height="193dp"
                     android:paddingLeft="5sp"
@@ -372,7 +372,7 @@
                         android:layout_marginRight="15dp"
                         android:layout_marginBottom="59dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/product_name"
+                        app:layout_constraintEnd_toStartOf="@+id/product_name5"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -380,7 +380,7 @@
                         tools:srcCompat="@tools:sample/avatars" />
 
                     <TextView
-                        android:id="@+id/product_name"
+                        android:id="@+id/product_name5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
@@ -393,7 +393,7 @@
                         app:layout_constraintVertical_bias="0.144" />
 
                     <TextView
-                        android:id="@+id/type_brand"
+                        android:id="@+id/type_brand5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
@@ -406,7 +406,7 @@
                         app:layout_constraintVertical_bias="0.53" />
 
                     <TextView
-                        android:id="@+id/description"
+                        android:id="@+id/description5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
@@ -419,7 +419,7 @@
                         app:layout_constraintVertical_bias="0.713" />
 
                     <TextView
-                        android:id="@+id/currency_price"
+                        android:id="@+id/currency_price5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
