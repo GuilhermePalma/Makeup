@@ -12,17 +12,16 @@ import java.net.URL;
 
 
 public class InternetTools {
-
     private static final String LOG_TAG = InternetTools.class.getSimpleName();
 
     // URL da API
     private static final String MAKEUP_URL = "http://makeup-api.herokuapp.com/api/v1/products.json?";
     // Parametros da string de Busca
-    private static final String TYPE_PARAM = "product_type";
-    private static final String BRAND_PARAM = "brand";
+    private static final String TYPE_PARAM = "t";
+    private static final String BRAND_PARAM = "b";
 
     //Metodo para Buscar Produtos de Maquigem - API
-    public static String searchMakeup(String type, String brand) {
+    static String searchMakeup(String type, String brand) {
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
