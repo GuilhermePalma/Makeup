@@ -11,6 +11,10 @@ public class Makeup {
     private String description;
     private String type;
 
+    public Makeup(String tipos, String tags) {
+
+    }
+
     public int getId () { return id; }
     public String getBrand  () { return brand; }
     public String getName  () { return name; }
@@ -20,14 +24,6 @@ public class Makeup {
     public String getDescription () { return description; }
     public String getType () { return type; }
 
-    public void setId (int id) { this.id = id; }
-    public void setBrand  (String brand) { this.brand = brand; }
-    public void setName  (String name) { this.name = name; }
-    public void setPrice (String price) { this.price = price; }
-    public void setCurrency (String currency) { this.currency = currency; }
-    public void setImage_link (String image_link) { this.image_link = image_link; }
-    public void setDescription (String description) { this.description = description; }
-    public void setType (String type) { this.type = type; }
 
     public Makeup(int id, String brand, String name, String type, String price ,String currency,
                   String image_link, String description) {
@@ -41,4 +37,7 @@ public class Makeup {
         this.description = description;
     }
 
+    public byte[] getDefinition() {
+        return new byte[0];
+    }
 }

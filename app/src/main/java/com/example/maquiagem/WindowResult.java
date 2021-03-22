@@ -7,6 +7,6 @@ public class WindowResult extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.window_result);
+        setContentView(R.layout.layout_result);
     }
 }

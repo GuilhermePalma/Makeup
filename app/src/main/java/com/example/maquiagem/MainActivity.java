@@ -45,10 +45,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             getSupportLoaderManager().initLoader(0, null, this);
         }
 
+
+
+
     }
 
 
-    public void LoadResult (View view) {
+    public void LoadResult(View view) {
 
         //Instancia de Valores
         String queryType = editType.getText().toString();
@@ -71,22 +74,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         //Validação da Conexão Ativa e dos Campos Preenchidos
-
-        //String queryString = null;
         if (networkInfo != null && networkInfo.isConnected()
                 && queryType.length() != 0 && queryBrand.length() != 0) {
             Bundle queryBundle = new Bundle();
             queryBundle.putString("product_type", queryType);
             queryBundle.putString("brand", queryBrand);
 
-            getSupportLoaderManager().restartLoader(0, queryBundle, this);
-
             //Limpando os campos
             editType.setText(R.string.string_empty);
             editBrand.setText(R.string.string_empty);
+
+            getSupportLoaderManager().restartLoader(0, queryBundle, this);
+            onCreateLoader(0, queryBundle);
+
         }
 
-        // atualiza a textview para informar que não há conexão ou termo de busca
+        //Mostra um aviso para informar que não há conexão/termo de busca
         else {
             if (queryType.length() == 0 || queryBrand.length() == 0) {
                 Snackbar errorInputs = Snackbar.make(view, R.string.error_input, 15);
@@ -96,10 +99,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             editType.setText(R.string.string_empty);
             editType.setText(R.string.string_empty);
         }
-
-
-        Intent it = new Intent(MainActivity.this, WindowResult.class);
-        startActivity(it);
 
     }
 
@@ -133,37 +132,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             String type = null;
             String brand = null;
             String price = null;
-            String  currency = null;
+            String currency = null;
             String description = null;
-            String image  = null;
+            String image = null;
             ArrayList<Makeup> endArrayMakeup = new ArrayList<Makeup>();
             //TODO https://pt.stackoverflow.com/questions/46570/criar-e-manipular-array-associativo-multidimensional
 
-            /*
-            * Carro carro = new Carro ("carro 1", 3, "preto", 120000);
-
-            ArrayList<Carro> listaDeCarros = new ArrayList<Carro>();
-            listaDeCarros.add(carro);
-
-            // Para percorrer o ArrayList:
-
-            for (Carro carro_temp : listaDeCarros)
-            {
-                Log.e("carros", "" + carro_temp.getNome());
-            }
-            * */
-
-
 
             //Procura pro resultados nos itens do array
-            if(i < itensArray.length() && type == null && brand == null){
-                for (i = 0 ; i <= 4; i++) {
-                /*  TODO Base
-                    https://pt.stackoverflow.com/questions/124861/android-ler-dados-json
-                    JSONObject obj = new JSONObject(resposta);
-                    String to = obj.getString("to");
-                    Double rate = obj.getDouble("rate");
-                    String from = obj.getString("from"); */
+            if (i < itensArray.length() && type == null && brand == null) {
+                for (i = 0; i <= 4; i++) {
+                //TODO Base https://pt.stackoverflow.com/questions/124861/android-ler-dados-json
 
                     //Obtem as informações do Array itensArray
                     JSONObject makeup = itensArray.getJSONObject(i); //Pega por Numero o JSON
@@ -180,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         type = infosMakeup.getString("product_type");
                         description = infosMakeup.getString("description");
 
-                        Makeup make = new Makeup(id,brand,name,type,price,currency,image,description);
+                        Makeup make = new Makeup(id, brand, name, type, price, currency, image, description);
 
                         endArrayMakeup.add(make);
                     } catch (Exception e) {
@@ -200,8 +179,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             teste.add("teste1");
             String t = teste.get(0);
 
-            for (Makeup makeupShow : endArrayMakeup)
-            {
+            for (Makeup makeupShow : endArrayMakeup) {
                /* name = findViewById(R.id.t);
                 currencyPrice = findViewById(R.id.currency_price);
                 brandType = findViewById(R.id.type_brand);
@@ -233,7 +211,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             e.printStackTrace();
         }
     }
-
 
     @Override
     public void onLoaderReset(@NonNull Loader<String> loader) {
