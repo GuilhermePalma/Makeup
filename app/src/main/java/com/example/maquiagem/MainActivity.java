@@ -45,9 +45,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             getSupportLoaderManager().initLoader(0, null, this);
         }
 
-
-
-
     }
 
 
