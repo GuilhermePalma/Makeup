@@ -1,4 +1,4 @@
-package com.example.maquiagem;
+package com.example.maquiagem.Model;
 
 public class Makeup {
     //TODO Arrumar os Erros
@@ -28,6 +28,17 @@ public class Makeup {
     public Makeup(int id, String brand, String name, String type, String price ,String currency,
                   String image_link, String description) {
         this.id = id;
+        this.brand = brand;
+        this.name = name;
+        this.type = type;
+        this.price = price;
+        this.currency = currency;
+        this.image_link = image_link;
+        this.description = description;
+    }
+
+    public Makeup(String brand, String name, String type, String price ,String currency,
+                  String image_link, String description) {
         this.brand = brand;
         this.name = name;
         this.type = type;

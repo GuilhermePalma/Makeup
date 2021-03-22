@@ -6,12 +6,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.maquiagem.Model.Makeup;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String BD = "maquigemDB";
-    private static int VERSAO = 1;
+    private static int VERSION = 1;
     private static final String TABLE_NAME = "products";
     private static final String ID = "id";
     private static final String BRAND = "brand";
@@ -25,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private Object Makeup;
 
     public DatabaseHelper(Context context){
-        super(context, BD, null, VERSAO);
+        super(context, BD, null, VERSION);
     }
 
     @Override
@@ -46,13 +48,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int newI) {
-        VERSAO = newI;
-        db.execSQL("DROP TABLE IF EXISTS products");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         this.onCreate(db);
     }
 
 
-    public void insertMakeup(Makeup makeup) {
+    public void insertMakeup(com.example.maquiagem.Model.Makeup makeup) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put((ID), Integer.toString(makeup.getId()));
@@ -67,6 +68,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insert(TABLE_NAME, null, values);
         db.close();
     }
+
+    public void clearTable() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME, null, null);
+        db.close();
+    }
+
 
     public List<Makeup> selectAll(){
         List<Makeup> returnAll = new ArrayList<Makeup>();
@@ -99,6 +107,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return returnAll;
+    }
+
+
+    public Cursor getData(String type, String brand) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor =  db.rawQuery( "SELECT * FROM " + TABLE_NAME +
+                " WHERE " +
+                TYPE + "=" + type + " AND " +
+                BRAND +  "=" + brand, null );
+        return cursor;
     }
 }
 

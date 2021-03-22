@@ -9,4 +9,5 @@
     <string name="error_connection">Erro na Conexão</string>
     <string name="string_empty"> </string>
     <string name="clear_bd">Limpar Dados Salvos</string>
+    <string name="error_json">Erro na Leitura do JSON</string>
 </resources>

@@ -3,8 +3,6 @@ package com.example.maquiagem;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,29 +12,25 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.maquiagem.Model.Makeup;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
 public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleViewHolder> {
 
     //Interface, context e list
-    public static ClickRecycleView clickRecycleView;
     Context context;
     private List<Makeup> makeupList;
 
     //Contrutor
-    public RecycleAdapter(Context context, List<Makeup> list, ClickRecycleView clickRecycleView) {
+    public RecycleAdapter(Context context, List<Makeup> list, MainActivity mainActivity) {
         this.context = context;
         this.makeupList = list;
-        this.clickRecycleView = clickRecycleView;
     }
 
     //Classe Protegida que retorna os campos usados e a Interface
@@ -55,13 +49,6 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
             type_brand = itemView.findViewById(R.id.type_brand);
             description = itemView.findViewById(R.id.description);
             image = itemView.findViewById(R.id.img);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clickRecycleView.onCustomClick(makeupList.get(getLayoutPosition()));
-                }
-            });
         }
     }
 
@@ -84,7 +71,7 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
 
         holder.name.setText(makeup.getName());
         holder.currency_price.setText(makeup.getCurrency() + " " + makeup.getPrice());
-        holder.type_brand.setText(makeup.getType() + " - " +makeup.getBrand());
+        holder.type_brand.setText(makeup.getType() + " - " + makeup.getBrand());
         holder.description.setText(makeup.getDescription());
 
 

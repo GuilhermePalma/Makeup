@@ -80,6 +80,7 @@
             android:id="@+id/btn_clear"
             android:layout_width="150dp"
             android:layout_height="60dp"
+            android:onClick="BtnClear"
             android:text="@string/clear_bd"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -1,12 +1,14 @@
 package com.example.maquiagem;
 
 import android.content.Context;
-import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -15,7 +17,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.maquiagem.Model.Makeup;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
@@ -29,10 +34,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private EditText editType;
     private EditText editBrand;
+    private String type, brand;
     private TextView name;
     private TextView currencyPrice;
     private TextView brandType;
     private TextView description;
+    private TextView result;
+
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager recLayoutManager;
+    RecycleAdapter adapter;
+    private List<Makeup> makesList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +52,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
         editType = findViewById(R.id.edit_type);
         editBrand = findViewById(R.id.edit_brand);
+        type = editType.toString();
+        brand = editBrand.toString();
+        setRecyclerView(); //Inicia o RecyclerView
 
+        //Inicia o Loader assim que a atividade Inicia
         if (getSupportLoaderManager().getLoader(0) != null) {
             getSupportLoaderManager().initLoader(0, null, this);
         }
 
     }
 
-
+    //Metodo do Botão Pesquisar
     public void LoadResult(View view) {
 
         //Instancia de Valores
@@ -62,10 +78,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     InputMethodManager.HIDE_NOT_ALWAYS);
         }
 
+
         //Valida a conexão com a Internet
         ConnectivityManager connectionManager = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = null;
+
         if (connectionManager != null) {
             networkInfo = connectionManager.getActiveNetworkInfo();
         }
@@ -90,14 +108,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         else {
             if (queryType.length() == 0 || queryBrand.length() == 0) {
                 Snackbar errorInputs = Snackbar.make(view, R.string.error_input, 15);
+                result.setText(R.string.error_input);
             } else {
                 Snackbar errorConnection = Snackbar.make(view, R.string.error_connection, 15);
+                result.setText(R.string.error_connection);
             }
+
             editType.setText(R.string.string_empty);
             editType.setText(R.string.string_empty);
+            result.setText("");
         }
 
     }
+
+
+    public void BtnClear(View view){
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        databaseHelper.clearTable();
+    }
+
 
     @NonNull
     @Override
@@ -105,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         String queryType = "";
         String queryBrand = "";
 
+        //Pega os Valores atraves da Keys(Chave do Bundle)
         if (args != null) {
             queryType = args.getString("product_type");
             queryBrand = args.getString("brand");
@@ -122,9 +152,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             //Utiliza JSONArray das Makeup
             JSONArray itensArray = new JSONArray("makeups");
 
-            // Cria um contador
-            int i = 0;
-            int id = 0;
+            int id = 0, i = 0;
             String name = null;
             String type = null;
             String brand = null;
@@ -132,82 +160,89 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             String currency = null;
             String description = null;
             String image = null;
-            ArrayList<Makeup> endArrayMakeup = new ArrayList<Makeup>();
-            //TODO https://pt.stackoverflow.com/questions/46570/criar-e-manipular-array-associativo-multidimensional
-
+            DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
             //Procura pro resultados nos itens do array
-            if (i < itensArray.length() && type == null && brand == null) {
-                for (i = 0; i <= 4; i++) {
+            //Limitando para 5 Resultados
+            for (i = 0; i <= 4; i++) {
                 //TODO Base https://pt.stackoverflow.com/questions/124861/android-ler-dados-json
 
-                    //Obtem as informações do Array itensArray
-                    JSONObject makeup = itensArray.getJSONObject(i); //Pega por Numero o JSON
-                    JSONObject infosMakeup = makeup.getJSONObject("resposta"); //TODO ALTERAR
+                //Obtem as informações do Array itensArray
+                JSONObject makeup = itensArray.getJSONObject(i); //Pega por Numero o JSON
+                JSONObject infosMakeup = makeup.getJSONObject("resposta"); //TODO ALTERAR
 
-                    //Tenta Obter as Informações
-                    try {
-                        id = Integer.parseInt(infosMakeup.getString("id"));
-                        brand = infosMakeup.getString("brand");
-                        name = infosMakeup.getString("name");
-                        price = infosMakeup.getString("price");
-                        currency = infosMakeup.getString("currency");
-                        image = infosMakeup.getString("image_link");
-                        type = infosMakeup.getString("product_type");
-                        description = infosMakeup.getString("description");
+                //Tenta Obter as Informações
+                try {
+                    id = Integer.parseInt(infosMakeup.getString("id"));
+                    brand = infosMakeup.getString("brand");
+                    name = infosMakeup.getString("name");
+                    price = infosMakeup.getString("price");
+                    currency = infosMakeup.getString("currency");
+                    image = infosMakeup.getString("image_link");
+                    type = infosMakeup.getString("product_type");
+                    description = infosMakeup.getString("description");
 
-                        Makeup make = new Makeup(id, brand, name, type, price, currency, image, description);
+                    Makeup make = new Makeup(id, brand, name, type, price, currency, image, description);
+                    databaseHelper.insertMakeup(make);
 
-                        endArrayMakeup.add(make);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 
-            int z = 0;
+            showWindow();
 
-            // Para percorrer o ArrayList:
-            //Mostra o Resultado
-
-            ArrayList<String> teste = new ArrayList<String>();
-            teste.add("teste1");
-            teste.add("teste1");
-            teste.add("teste1");
-            String t = teste.get(0);
-
-            for (Makeup makeupShow : endArrayMakeup) {
-               /* name = findViewById(R.id.t);
-                currencyPrice = findViewById(R.id.currency_price);
-                brandType = findViewById(R.id.type_brand);
-                description = findViewById(R.id.description);
-
-                text.setText(makeupShow.getName());
-                text.setText(makeupShow.getType());
-                text.setText(makeupShow.getName());
-                text.setText(makeupShow.getType() + " - " + makeupShow.getBrand());
-                text.setText(makeupShow.getCurrency() + " " + makeupShow.getPrice());
-                text.setText("Descrição: " + makeupShow.getDescription());
-                */
-            }
-
-
-            if (type != null && brand != null) {
-                editType.setText(type);
-                editBrand.setText(brand);
-                //nmLivro.setText(R.string.str_empty);
-            } else {
-                //Erro se o campo estiver vazio
-                editType.setText(R.string.string_empty);
-                editBrand.setText(R.string.string_empty);
-            }
         } catch (Exception e) {
-            // Se não receber um JSOn valido, informa ao usuário
+            // Se não receber um JSON valido, informa ao usuário
             editType.setText(R.string.string_empty);
             editBrand.setText(R.string.string_empty);
+            Snackbar errorInputs = Snackbar.make(findViewById(R.id.viewIndex), R.string.error_json,15);
             e.printStackTrace();
         }
     }
+
+
+    public void setRecyclerView(){
+        //Instancia o RecyclerView
+        recyclerView =  findViewById(R.id.recyclerView);
+        recLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(recLayoutManager);
+
+        adapter = new RecycleAdapter(this,makesList, this);
+        recyclerView.setAdapter(adapter);
+    }
+
+
+    public void showWindow(){
+        DatabaseHelper dataBaseHelper = new DatabaseHelper(MainActivity.this);
+        Cursor cursor = dataBaseHelper.getData(type,brand);
+
+        if(cursor.moveToFirst()){
+            String brand, name, price, currency, image, type, description;
+            do{
+                brand = cursor.getString(1);
+                name = cursor.getString(2);
+                price = cursor.getString(3);
+                currency = cursor.getString(4);
+                image = cursor.getString(5);
+                type = cursor.getString(6);
+                description = cursor.getString(7);
+
+                Makeup makeup = new Makeup(brand, name, type, price, currency, image, description);
+                makesList.add(makeup);
+
+                adapter.notifyDataSetChanged();
+
+            } while (cursor.moveToNext());
+        }
+        else{
+            System.out.println("Tabela Vazia");
+        }
+        cursor.close();
+        dataBaseHelper.close();
+
+    }
+
 
     @Override
     public void onLoaderReset(@NonNull Loader<String> loader) {
