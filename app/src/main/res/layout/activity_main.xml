@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/viewIndex"
@@ -8,6 +9,7 @@
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/teste"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="-178dp"
@@ -72,7 +74,6 @@
             android:layout_marginTop="40dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:onClick="LoadResult"
             android:text="@string/btn_search"
             app:layout_constraintEnd_toStartOf="@+id/btn_clear"
             app:layout_constraintHorizontal_bias="0.47"
@@ -88,7 +89,6 @@
             android:layout_marginTop="40dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:onClick="BtnClear"
             android:text="@string/clear_bd"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btn_search"

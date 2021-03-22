@@ -7,8 +7,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private TextView brandType;
     private TextView description;
     private TextView result;
+    private Button search, clear;
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager recLayoutManager;
@@ -52,14 +55,27 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
         editType = findViewById(R.id.edit_type);
         editBrand = findViewById(R.id.edit_brand);
+        search = findViewById(R.id.btn_search);
+        clear = findViewById(R.id.btn_clear);
+        result =  findViewById(R.id.txt_result);
         type = editType.toString();
         brand = editBrand.toString();
         setRecyclerView(); //Inicia o RecyclerView
+
+        search.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoadResult(v);
+            }
+        });
 
         //Inicia o Loader assim que a atividade Inicia
         if (getSupportLoaderManager().getLoader(0) != null) {
             getSupportLoaderManager().initLoader(0, null, this);
         }
+
+
+
 
     }
 
@@ -71,17 +87,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         String queryBrand = editBrand.getText().toString();
 
         //Esconde o Teclado
-        InputMethodManager keyboardManager = (InputMethodManager)
+     /*   InputMethodManager keyboardManager = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
         if (keyboardManager != null) {
             keyboardManager.hideSoftInputFromWindow(view.getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
-        }
+        }*/
 
 
         //Valida a conexão com a Internet
         ConnectivityManager connectionManager = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
+
         NetworkInfo networkInfo = null;
 
         if (connectionManager != null) {
@@ -100,25 +117,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             editBrand.setText(R.string.string_empty);
 
             getSupportLoaderManager().restartLoader(0, queryBundle, this);
-            onCreateLoader(0, queryBundle);
+            //onCreateLoader(0, queryBundle);
 
         }
-
         //Mostra um aviso para informar que não há conexão/termo de busca
         else {
             if (queryType.length() == 0 || queryBrand.length() == 0) {
-                Snackbar errorInputs = Snackbar.make(view, R.string.error_input, 15);
-                result.setText(R.string.error_input);
+                Snackbar errorInputs = Snackbar.make(view, R.string.error_input, 60000);
+                errorInputs.show();
+
             } else {
-                Snackbar errorConnection = Snackbar.make(view, R.string.error_connection, 15);
-                result.setText(R.string.error_connection);
+                Snackbar errorConnection = Snackbar.make(view, R.string.error_connection, 60000);
+                errorConnection.show();
             }
 
+            editBrand.setText(R.string.string_empty);
             editType.setText(R.string.string_empty);
-            editType.setText(R.string.string_empty);
-            result.setText("");
         }
-
     }
 
 

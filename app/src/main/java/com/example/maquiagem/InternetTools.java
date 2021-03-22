@@ -17,8 +17,8 @@ public class InternetTools {
     // URL da API
     private static final String MAKEUP_URL = "http://makeup-api.herokuapp.com/api/v1/products.json?";
     // Parametros da string de Busca
-    private static final String TYPE_PARAM = "t";
-    private static final String BRAND_PARAM = "b";
+    private static final String TYPE_PARAM = "product_type";
+    private static final String BRAND_PARAM = "brand";
 
     //Metodo para Buscar Produtos de Maquigem - API
     static String searchMakeup(String type, String brand) {
