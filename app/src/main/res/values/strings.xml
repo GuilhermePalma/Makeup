@@ -7,5 +7,6 @@
     <string name="title_result">Resultado da Busca</string>
     <string name="error_input">Preencha os Campos</string>
     <string name="error_connection">Erro na Conexão</string>
-    <string name="string_empty">" "</string>
+    <string name="string_empty"> </string>
+    <string name="clear_bd">Limpar Dados Salvos</string>
 </resources>
