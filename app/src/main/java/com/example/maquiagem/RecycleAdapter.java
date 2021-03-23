@@ -3,6 +3,8 @@ package com.example.maquiagem;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +25,7 @@ import java.util.List;
 
 public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleViewHolder> {
 
-    //Interface, context e list
+    //Context e List/Array
     Context context;
     private List<Makeup> makeupList;
 
@@ -74,14 +76,23 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
         holder.type_brand.setText(makeup.getType() + " - " + makeup.getBrand());
         holder.description.setText(makeup.getDescription());
 
-
+        HttpURLConnection urlConnection = null;
+        BufferedReader reader = null;
+/*
         try {
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
 
-            URL url = new URL(makeup.getImage_link().toString());
+            URL requestURL = new URL(makeup.getImage_link());
+            InputStream inputStream = (InputStream) requestURL.getContent();
+            Drawable drawable = Drawable.createFromStream(inputStream, "scr_name");
+/////////////
+           System.out.println(makeup.getImage_link());
 
-            urlConnection = (HttpURLConnection) url.openConnection();
+            URL requestURL = new URL(makeup.getImage_link());
+            //Inicio da Conexão
+            urlConnection = (HttpURLConnection) requestURL.openConnection();
+            urlConnection.connect();
+
+            urlConnection = (HttpURLConnection) requestURL.openConnection();
             //Conexão da URL
             urlConnection.connect();
 
@@ -90,12 +101,13 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
 
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
-            holder.image.setImageBitmap(bitmap);
+            holder.image.setImageDrawable(drawable);
 
         } catch (IOException e) {
             //Mostra o Erro/Exceção
+            System.out.println("Exception: " + e);
             e.printStackTrace();
-        }
+        }*/
 
     }
 

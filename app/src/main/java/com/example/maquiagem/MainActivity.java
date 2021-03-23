@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private EditText editType;
     private EditText editBrand;
-    private String type, brand;
     private TextView result;
     private Button search, clear;
 
@@ -80,13 +79,29 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
+
     String queryType, queryBrand;
+
+    //Limpa o Banco de Dados
+    public void BtnClear(View view){
+        //Limpa o Array MakeList(P/ reiniciar o RecycleView) e Limpa o Texto de Resultado
+        makesList.clear();
+        result.setText(R.string.string_empty);
+        recyclerView.setAdapter(adapter);
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        databaseHelper.clearTable();
+    }
 
     //Metodo do Botão Pesquisar
     public void LoadResult(View view) {
+        //Limpa o Array MakeList(P/ reiniciar o RecycleView) e Limpa o Texto de Resultado
+        makesList.clear();
+        result.setText(R.string.string_empty);
+        recyclerView.setAdapter(adapter);
         //Instancia de Valores
         queryType = editType.getText().toString();
         queryBrand = editBrand.getText().toString();
+
 
         //Esconde o Teclado
         InputMethodManager keyboardManager = (InputMethodManager)
@@ -138,11 +153,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
-    //Limpa o Banco de Dados
-    public void BtnClear(View view){
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
-        databaseHelper.clearTable();
-    }
+
 
 
     //Criação da atividade Assincrona
@@ -212,11 +223,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     name = jsonObject.getString("name");
                     price = jsonObject.getString("price");
                     currency = jsonObject.getString("currency");
-                    image = jsonObject.getString("image_link");
+                    image = jsonObject.getString("image_link").replaceAll("\\\\" , "\\");
                     type = jsonObject.getString("product_type");
                     description = jsonObject.getString("description");
 
-                    if(currency == null){
+                    //.replaceAll("[\\]", “\\”+"\\");
+
+                    if(currency == "null"){
                         currency = " ";
                     }
 
@@ -282,6 +295,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 makesList.add(makeup);
                 //Atualiza o RecyclerView
                 adapter.notifyDataSetChanged();
+                result.setText(R.string.title_result);
             } while (cursor.moveToNext());
 
         }

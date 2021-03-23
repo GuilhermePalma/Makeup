@@ -2,9 +2,11 @@
     <string name="app_name">API - Maquiagem</string>
     <string name="edit_type">Tipo</string>
     <string name="edit_marca">Marca</string>
+    <string name="price_currency">Moeda Preço</string>
+    <string name="description">Descrição</string>
     <string name="btn_search">Pesquisar</string>
-    <string name="img_makeup">Imagem de Maquiagem</string>
-    <string name="title_result">Resultado da Busca</string>
+    <string name="tip_image">Imagem de Maquiagem</string>
+    <string name="title_result">Resultados da Busca</string>
     <string name="error_input">Preencha os Campos</string>
     <string name="error_connection">Sem Conexão</string>
     <string name="string_empty"> </string>
