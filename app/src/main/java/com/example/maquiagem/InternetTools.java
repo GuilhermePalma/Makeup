@@ -12,7 +12,8 @@ import java.net.URL;
 
 
 public class InternetTools {
-    private static final String LOG_TAG = InternetTools.class.getSimpleName();
+    //private static final String LOG_TAG = InternetTools.class.getSimpleName();
+    private static final String LOG_TAG = "LOG_MAKEUP";
 
     // URL da API
     private static final String MAKEUP_URL = "http://makeup-api.herokuapp.com/api/v1/products.json?";
@@ -33,6 +34,7 @@ public class InternetTools {
                     .appendQueryParameter(TYPE_PARAM, type)
                     .appendQueryParameter(BRAND_PARAM, brand)
                     .build();
+            System.out.println(buildURI.toString());
 
             //URI ==> URL.
             URL requestURL = new URL(buildURI.toString());
@@ -40,37 +42,42 @@ public class InternetTools {
             //Inicio da Conexão
             urlConnection = (HttpURLConnection) requestURL.openConnection();
             urlConnection.setRequestMethod("GET");
-            //Conexão da URL
+            System.out.println(urlConnection.toString());
             urlConnection.connect();
+
 
             //Busca o InputStream
             InputStream inputStream = urlConnection.getInputStream();
 
+            if (inputStream == null) {
+                // Nothing to do.
+                return null;
+            }
+
             //Cria um buffer para InputStream
             reader = new BufferedReader(new InputStreamReader(inputStream));
-
             // Usa o StringBuilder para receber a resposta.
-            StringBuilder builderResponse = new StringBuilder();
+            //StringBuilder builderResponse = new StringBuilder();
+            StringBuffer bufferResponse = new StringBuffer();
             String linha;
 
             //Loop para a Leitura Linha por Linha
             //.readLine = Metodo de Leitura de uma linha
             while ((linha = reader.readLine()) != null) {
                 //Recebe o Valor da Linha
-                builderResponse.append(linha)
-                               .append("\n");
+                bufferResponse.append(linha + "\n");
             }
 
-            //Caso não tenha retorno
-            if (builderResponse.length() == 0) {
+            if (bufferResponse.length() == 0) {
                 return null;
             }
 
-            makeupJSONString = builderResponse.toString();
+            //makeupJSONString = builderResponse.toString();
+            makeupJSONString = bufferResponse.toString();
 
         } catch (IOException e) {
-            //Mostra o Erro/Exceção
             e.printStackTrace();
+            return null;
         } finally {
             //Fecha a Conexão e o Reader Aberto
             if (urlConnection != null) {

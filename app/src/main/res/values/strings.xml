@@ -6,8 +6,9 @@
     <string name="img_makeup">Imagem de Maquiagem</string>
     <string name="title_result">Resultado da Busca</string>
     <string name="error_input">Preencha os Campos</string>
-    <string name="error_connection">Erro na Conexão</string>
+    <string name="error_connection">Sem Conexão</string>
     <string name="string_empty"> </string>
     <string name="clear_bd">Limpar Dados Salvos</string>
-    <string name="error_json">Erro na Leitura do JSON</string>
+    <string name="error_json">Erro na Leitura dos Dados :(</string>
+    <string name="table_empty">A Tabela não Possuem nenhum Dado</string>
 </resources>

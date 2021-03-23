@@ -53,10 +53,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public void insertMakeup(com.example.maquiagem.Model.Makeup makeup) {
+    public void insertMakeup(Makeup makeup) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put((ID), Integer.toString(makeup.getId()));
         values.put(BRAND, makeup.getBrand());
         values.put(NAME, makeup.getName());
         values.put(TYPE, makeup.getType());

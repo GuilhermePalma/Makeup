@@ -37,16 +37,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private EditText editType;
     private EditText editBrand;
     private String type, brand;
-    private TextView name;
-    private TextView currencyPrice;
-    private TextView brandType;
-    private TextView description;
     private TextView result;
     private Button search, clear;
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager recLayoutManager;
     RecycleAdapter adapter;
+
     private List<Makeup> makesList = new ArrayList<>();
 
     @Override
@@ -58,14 +55,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         search = findViewById(R.id.btn_search);
         clear = findViewById(R.id.btn_clear);
         result =  findViewById(R.id.txt_result);
-        type = editType.toString();
-        brand = editBrand.toString();
+        //Armazena os valores inseridos p/ usar no select do BD
+        type = editType.getText().toString();
+        brand = editBrand.getText().toString();
         setRecyclerView(); //Inicia o RecyclerView
 
+        //TODO Arrumar esses Metodos
         search.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 LoadResult(v);
+            }
+        });
+
+        clear.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BtnClear(v);
             }
         });
 
@@ -74,60 +80,56 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             getSupportLoaderManager().initLoader(0, null, this);
         }
 
-
-
-
     }
+
 
     //Metodo do Botão Pesquisar
     public void LoadResult(View view) {
-
         //Instancia de Valores
         String queryType = editType.getText().toString();
         String queryBrand = editBrand.getText().toString();
 
         //Esconde o Teclado
-     /*   InputMethodManager keyboardManager = (InputMethodManager)
+        InputMethodManager keyboardManager = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
         if (keyboardManager != null) {
             keyboardManager.hideSoftInputFromWindow(view.getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
-        }*/
+        }
 
 
         //Valida a conexão com a Internet
         ConnectivityManager connectionManager = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
-
         NetworkInfo networkInfo = null;
-
         if (connectionManager != null) {
             networkInfo = connectionManager.getActiveNetworkInfo();
         }
 
+
         //Validação da Conexão Ativa e dos Campos Preenchidos
         if (networkInfo != null && networkInfo.isConnected()
                 && queryType.length() != 0 && queryBrand.length() != 0) {
+
             Bundle queryBundle = new Bundle();
+            //Insere no budle, o id(como ele se chamara) e em seguida o dado/variavel
             queryBundle.putString("product_type", queryType);
             queryBundle.putString("brand", queryBrand);
 
-            //Limpando os campos
+            //Limpa os campos
             editType.setText(R.string.string_empty);
             editBrand.setText(R.string.string_empty);
 
             getSupportLoaderManager().restartLoader(0, queryBundle, this);
-            //onCreateLoader(0, queryBundle);
-
         }
         //Mostra um aviso para informar que não há conexão/termo de busca
         else {
             if (queryType.length() == 0 || queryBrand.length() == 0) {
-                Snackbar errorInputs = Snackbar.make(view, R.string.error_input, 60000);
+                Snackbar errorInputs = Snackbar.make(view, R.string.error_input, 30000);
                 errorInputs.show();
 
             } else {
-                Snackbar errorConnection = Snackbar.make(view, R.string.error_connection, 60000);
+                Snackbar errorConnection = Snackbar.make(view, R.string.error_connection, 30000);
                 errorConnection.show();
             }
 
@@ -137,12 +139,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
+    //Limpa o Banco de Dados
     public void BtnClear(View view){
         DatabaseHelper databaseHelper = new DatabaseHelper(this);
         databaseHelper.clearTable();
     }
 
 
+    //Criação da atividade Assincrona
     @NonNull
     @Override
     public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
@@ -158,16 +162,34 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
+    //Fim da Atividade Assincrona
     @Override
     public void onLoadFinished(@NonNull Loader<String> loader, String data) {
         try {
+       /*     JSONArray minhaArray = new JSONArray(teste);
+
+            //Itera
+            for (int i = 0; i < trendsArray.length(); i++) {
+
+                //Pega o item atual
+                obj = new JSONObject(minhaArray.getString(i));
+
+                obj.getString("nome");
+                obj.getString("cpf");
+                obj.getString("idade");*/
             //Converte em JSON
-            JSONObject jsonObject = new JSONObject(data);
+            //JSONObject jsonObject;
+
+
 
             //Utiliza JSONArray das Makeup
-            JSONArray itensArray = new JSONArray("makeups");
+            //JSONArray itemsArray = new JSONArray("LOG_MAKEUP");
 
-            int id = 0, i = 0;
+            //TODO https://pt.stackoverflow.com/questions/237484/como-ler-json-com-android
+            JSONArray itemsArray = new JSONArray(data);
+
+            DatabaseHelper databaseHelper = new DatabaseHelper(this);
+            int id = 0, i, z = 0;
             String name = null;
             String type = null;
             String brand = null;
@@ -175,48 +197,63 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             String currency = null;
             String description = null;
             String image = null;
-            DatabaseHelper databaseHelper = new DatabaseHelper(this);
+
+            //Limita a quantidade de Array. Maximo 5 Elementos.
+            //TODO https://stackoverflow.com/questions/27282673/jsonexception-index-5-out-of-range-0-5
+            if(itemsArray.length() < 4){
+                z = itemsArray.length();
+            }
+            else{
+                z = 4;
+            }
 
             //Procura pro resultados nos itens do array
-            //Limitando para 5 Resultados
-            for (i = 0; i <= 4; i++) {
-                //TODO Base https://pt.stackoverflow.com/questions/124861/android-ler-dados-json
-
-                //Obtem as informações do Array itensArray
-                JSONObject makeup = itensArray.getJSONObject(i); //Pega por Numero o JSON
-                JSONObject infosMakeup = makeup.getJSONObject("resposta"); //TODO ALTERAR
+            for (i = 0; i <= z; i++) {
+                //Pega um objeto de acordo com sua posição
+                //Cada posição é um item (cada posição = 1 Produto)
+                JSONObject jsonObject = new JSONObject(itemsArray.getString(i));
 
                 //Tenta Obter as Informações
                 try {
-                    id = Integer.parseInt(infosMakeup.getString("id"));
-                    brand = infosMakeup.getString("brand");
-                    name = infosMakeup.getString("name");
-                    price = infosMakeup.getString("price");
-                    currency = infosMakeup.getString("currency");
-                    image = infosMakeup.getString("image_link");
-                    type = infosMakeup.getString("product_type");
-                    description = infosMakeup.getString("description");
+                    id = Integer.parseInt(jsonObject.getString("id"));
+                    brand = jsonObject.getString("brand");
+                    name = jsonObject.getString("name");
+                    price = jsonObject.getString("price");
+                    currency = jsonObject.getString("currency");
+                    image = jsonObject.getString("image_link");
+                    type = jsonObject.getString("product_type");
+                    description = jsonObject.getString("description");
 
                     Makeup make = new Makeup(id, brand, name, type, price, currency, image, description);
+                    System.out.println(make);
                     databaseHelper.insertMakeup(make);
-
                 } catch (Exception e) {
+
                     e.printStackTrace();
                 }
             }
 
+            //Metodo que Exibe os dados do SQLite (coloca no RecycleView)
             showWindow();
 
         } catch (Exception e) {
             // Se não receber um JSON valido, informa ao usuário
             editType.setText(R.string.string_empty);
             editBrand.setText(R.string.string_empty);
-            Snackbar errorInputs = Snackbar.make(findViewById(R.id.viewIndex), R.string.error_json,15);
+
+            Snackbar errorInputs = Snackbar.make(
+                    findViewById(R.id.viewIndex),
+                    R.string.error_json,
+                    30000);
+            errorInputs.show();
+
+            System.out.println("Erro da leitura JSON: " + e);
             e.printStackTrace();
         }
     }
 
 
+    //Configurações do RecyclerView
     public void setRecyclerView(){
         //Instancia o RecyclerView
         recyclerView =  findViewById(R.id.recyclerView);
@@ -232,8 +269,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         DatabaseHelper dataBaseHelper = new DatabaseHelper(MainActivity.this);
         Cursor cursor = dataBaseHelper.getData(type,brand);
 
+        //Caso haja alguma posição para o Cursor
         if(cursor.moveToFirst()){
             String brand, name, price, currency, image, type, description;
+
+            //Pega os dados enquanto o Cursor tiver proxima posição
             do{
                 brand = cursor.getString(1);
                 name = cursor.getString(2);
@@ -251,11 +291,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             } while (cursor.moveToNext());
         }
         else{
-            System.out.println("Tabela Vazia");
+            Snackbar errorInputs = Snackbar.make(
+                    findViewById(R.id.viewIndex),
+                    R.string.table_empty,
+                    30000);
         }
         cursor.close();
         dataBaseHelper.close();
-
     }
 
 
