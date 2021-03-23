@@ -56,8 +56,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         clear = findViewById(R.id.btn_clear);
         result =  findViewById(R.id.txt_result);
         //Armazena os valores inseridos p/ usar no select do BD
-        type = editType.getText().toString();
-        brand = editBrand.getText().toString();
         setRecyclerView(); //Inicia o RecyclerView
 
         //TODO Arrumar esses Metodos
@@ -82,12 +80,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
+    String queryType, queryBrand;
 
     //Metodo do Botão Pesquisar
     public void LoadResult(View view) {
         //Instancia de Valores
-        String queryType = editType.getText().toString();
-        String queryBrand = editBrand.getText().toString();
+        queryType = editType.getText().toString();
+        queryBrand = editBrand.getText().toString();
 
         //Esconde o Teclado
         InputMethodManager keyboardManager = (InputMethodManager)
@@ -162,34 +161,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
-    //Fim da Atividade Assincrona
+    //Quando acaba a Atividade Assincrona
     @Override
     public void onLoadFinished(@NonNull Loader<String> loader, String data) {
         try {
-       /*     JSONArray minhaArray = new JSONArray(teste);
-
-            //Itera
-            for (int i = 0; i < trendsArray.length(); i++) {
-
-                //Pega o item atual
-                obj = new JSONObject(minhaArray.getString(i));
-
-                obj.getString("nome");
-                obj.getString("cpf");
-                obj.getString("idade");*/
-            //Converte em JSON
-            //JSONObject jsonObject;
-
-
 
             //Utiliza JSONArray das Makeup
-            //JSONArray itemsArray = new JSONArray("LOG_MAKEUP");
-
-            //TODO https://pt.stackoverflow.com/questions/237484/como-ler-json-com-android
             JSONArray itemsArray = new JSONArray(data);
-
             DatabaseHelper databaseHelper = new DatabaseHelper(this);
-            int id = 0, i, z = 0;
+
+            int id = 0, i, maxResult = 0;
             String name = null;
             String type = null;
             String brand = null;
@@ -198,19 +179,30 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             String description = null;
             String image = null;
 
-            //Limita a quantidade de Array. Maximo 5 Elementos.
-            //TODO https://stackoverflow.com/questions/27282673/jsonexception-index-5-out-of-range-0-5
-            if(itemsArray.length() < 4){
-                z = itemsArray.length();
+            //Recebe o valor do tamanho do Array
+            int numberArray = itemsArray.length();
+            if(numberArray == 0){
+                //Array Vazio
+                Snackbar dataEmpty = Snackbar.make(
+                        findViewById(R.id.viewIndex),
+                        R.string.no_exists,
+                        30000);
+                dataEmpty.show();
+                return;
+            }
+            else if(numberArray < 4){
+                //Caso retorne menos que 5 Itens
+                maxResult = numberArray;
             }
             else{
-                z = 4;
+                //Limite de no Maximo 5 Resultados por Marca/Tipo
+                maxResult = 6;
             }
 
-            //Procura pro resultados nos itens do array
-            for (i = 0; i <= z; i++) {
-                //Pega um objeto de acordo com sua posição
-                //Cada posição é um item (cada posição = 1 Produto)
+            //Busca os resultados nos itens do array
+            for (i = 0; i < maxResult; i++) {
+                //Pega um objeto de acordo com a posição
+                //Cada posição é um item (Cada Posição = 1 Produto)
                 JSONObject jsonObject = new JSONObject(itemsArray.getString(i));
 
                 //Tenta Obter as Informações
@@ -224,20 +216,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     type = jsonObject.getString("product_type");
                     description = jsonObject.getString("description");
 
-                    Makeup make = new Makeup(id, brand, name, type, price, currency, image, description);
-                    System.out.println(make);
-                    databaseHelper.insertMakeup(make);
-                } catch (Exception e) {
+                    if(currency == null){
+                        currency = " ";
+                    }
 
+                    Makeup make = new Makeup(id, brand, name, type, price, currency, image, description);
+                    //Insere os dados da Classe Makeup no SQLite
+                    databaseHelper.insertMakeup(make);
+
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
 
-            //Metodo que Exibe os dados do SQLite (coloca no RecycleView)
+            //Metodo que Exibe os dados do SQLite (Mostra no RecycleView)
             showWindow();
 
         } catch (Exception e) {
-            // Se não receber um JSON valido, informa ao usuário
+            //Caso não receba um JSON Valido
             editType.setText(R.string.string_empty);
             editBrand.setText(R.string.string_empty);
 
@@ -247,7 +243,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     30000);
             errorInputs.show();
 
-            System.out.println("Erro da leitura JSON: " + e);
             e.printStackTrace();
         }
     }
@@ -267,9 +262,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public void showWindow(){
         DatabaseHelper dataBaseHelper = new DatabaseHelper(MainActivity.this);
-        Cursor cursor = dataBaseHelper.getData(type,brand);
+        Cursor cursor = dataBaseHelper.getData(queryType,queryBrand);
 
-        //Caso haja alguma posição para o Cursor
+        //Caso haja posição para o Cursor
         if(cursor.moveToFirst()){
             String brand, name, price, currency, image, type, description;
 
@@ -277,24 +272,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             do{
                 brand = cursor.getString(1);
                 name = cursor.getString(2);
-                price = cursor.getString(3);
-                currency = cursor.getString(4);
-                image = cursor.getString(5);
-                type = cursor.getString(6);
+                type = cursor.getString(3);
+                price = cursor.getString(4);
+                currency = cursor.getString(5);
+                image = cursor.getString(6);
                 description = cursor.getString(7);
 
                 Makeup makeup = new Makeup(brand, name, type, price, currency, image, description);
                 makesList.add(makeup);
-
+                //Atualiza o RecyclerView
                 adapter.notifyDataSetChanged();
-
             } while (cursor.moveToNext());
+
         }
         else{
-            Snackbar errorInputs = Snackbar.make(
+            //Array está vazio
+            Snackbar dataEmpty = Snackbar.make(
                     findViewById(R.id.viewIndex),
                     R.string.table_empty,
                     30000);
+            dataEmpty.show();
         }
         cursor.close();
         dataBaseHelper.close();

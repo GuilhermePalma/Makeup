@@ -12,7 +12,6 @@ import java.net.URL;
 
 
 public class InternetTools {
-    //private static final String LOG_TAG = InternetTools.class.getSimpleName();
     private static final String LOG_TAG = "LOG_MAKEUP";
 
     // URL da API
@@ -20,6 +19,7 @@ public class InternetTools {
     // Parametros da string de Busca
     private static final String TYPE_PARAM = "product_type";
     private static final String BRAND_PARAM = "brand";
+
 
     //Metodo para Buscar Produtos de Maquigem - API
     static String searchMakeup(String type, String brand) {
@@ -34,30 +34,25 @@ public class InternetTools {
                     .appendQueryParameter(TYPE_PARAM, type)
                     .appendQueryParameter(BRAND_PARAM, brand)
                     .build();
-            System.out.println(buildURI.toString());
 
             //URI ==> URL.
             URL requestURL = new URL(buildURI.toString());
-
             //Inicio da Conexão
             urlConnection = (HttpURLConnection) requestURL.openConnection();
             urlConnection.setRequestMethod("GET");
-            System.out.println(urlConnection.toString());
             urlConnection.connect();
 
 
-            //Busca o InputStream
+            //Inicia o InputStream
             InputStream inputStream = urlConnection.getInputStream();
 
             if (inputStream == null) {
-                // Nothing to do.
+                //Caso não tenha dados no inpuStream
                 return null;
             }
 
             //Cria um buffer para InputStream
             reader = new BufferedReader(new InputStreamReader(inputStream));
-            // Usa o StringBuilder para receber a resposta.
-            //StringBuilder builderResponse = new StringBuilder();
             StringBuffer bufferResponse = new StringBuffer();
             String linha;
 
@@ -69,20 +64,22 @@ public class InternetTools {
             }
 
             if (bufferResponse.length() == 0) {
+                //Buffer sem Informações
                 return null;
             }
 
-            //makeupJSONString = builderResponse.toString();
+            //String que recebe os valores da Busca
             makeupJSONString = bufferResponse.toString();
 
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         } finally {
-            //Fecha a Conexão e o Reader Aberto
+            //Fecha a Conexão
             if (urlConnection != null) {
                 urlConnection.disconnect();
             }
+            //Fecha o Reader
             if (reader != null) {
                 try {
                     reader.close();
@@ -92,7 +89,7 @@ public class InternetTools {
             }
         }
 
-        //Cria um JSON no LOG
+        //Cria um LOG do JSON
         Log.d(LOG_TAG, makeupJSONString);
         return makeupJSONString;
     }

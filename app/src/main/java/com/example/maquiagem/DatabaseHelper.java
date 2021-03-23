@@ -33,15 +33,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db){
         db.execSQL(
-            "create table products" +
-                    "(id integer primary key, " +
-                    "brand text, " +
-                    "name text, " +
-                    "type text, " +
-                    "price text, " +
-                    "currency varchar(5), " +
-                    "image_link text, " +
-                    "description text)"
+            "create table " + TABLE_NAME + " (" +
+                    ID + " integer PRIMARY KEY AUTOINCREMENT, " +
+                    BRAND + " text, " +
+                    NAME + " text, " +
+                    TYPE + " text, " +
+                    PRICE + " text, " +
+                    CURRENCY + " varchar(5), " +
+                    IMAGE + " text, " +
+                    DESCRIPTION + " text)"
         );
     }
 
@@ -67,6 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insert(TABLE_NAME, null, values);
         db.close();
     }
+
 
     public void clearTable() {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -102,6 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         else{
             System.out.println("Tabela Vazia");
+            return returnAll;
         }
         cursor.close();
         db.close();
@@ -113,8 +115,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor =  db.rawQuery( "SELECT * FROM " + TABLE_NAME +
                 " WHERE " +
-                TYPE + "=" + type + " AND " +
-                BRAND +  "=" + brand, null );
+                TYPE + "='" + type + "' AND " +
+                BRAND +  "='" + brand + "'", null );
         return cursor;
     }
 }
