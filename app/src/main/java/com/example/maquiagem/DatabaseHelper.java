@@ -21,7 +21,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TYPE = "type";
     private static final String PRICE = "price";
     private static final String CURRENCY = "currency";
-    private static final String IMAGE = "image_link";
     private static final String DESCRIPTION = "description";
 
     public DatabaseHelper(Context context){
@@ -38,7 +37,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     TYPE + " text, " +
                     PRICE + " text, " +
                     CURRENCY + " varchar(5), " +
-                    IMAGE + " text, " +
                     DESCRIPTION + " text)"
         );
     }
@@ -59,7 +57,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(TYPE, makeup.getType());
         values.put(PRICE, makeup.getPrice());
         values.put(CURRENCY, makeup.getCurrency());
-        values.put(IMAGE, makeup.getImage_link());
         values.put(DESCRIPTION, makeup.getDescription());
 
         db.insert(TABLE_NAME, null, values);
@@ -92,7 +89,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(querryDB, null);
 
         if(cursor.moveToFirst()){
-            String brand, name, price, currency, image, type, description;
+            String brand, name, price, currency, type, description;
             int id;
             do{
                 id = cursor.getInt(0);
@@ -100,11 +97,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 name = cursor.getString(2);
                 price = cursor.getString(3);
                 currency = cursor.getString(4);
-                image = cursor.getString(5);
-                type = cursor.getString(6);
-                description = cursor.getString(7);
+                type = cursor.getString(5);
+                description = cursor.getString(6);
 
-                Makeup makeup = new Makeup(id, brand, name, type, price, currency, image, description);
+                Makeup makeup = new Makeup(id, brand, name, type, price, currency, description);
                 returnAll.add(makeup);
             }while (cursor.moveToNext());
         }

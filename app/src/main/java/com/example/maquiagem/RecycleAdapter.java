@@ -1,26 +1,15 @@
 package com.example.maquiagem;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maquiagem.Model.Makeup;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 
 public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleViewHolder> {
@@ -42,7 +31,6 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
         protected TextView currency_price;
         protected TextView type_brand;
         protected TextView description;
-        protected ImageView image;
 
         public RecycleViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -50,7 +38,6 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
             currency_price = itemView.findViewById(R.id.currency_price);
             type_brand = itemView.findViewById(R.id.type_brand);
             description = itemView.findViewById(R.id.description);
-            image = itemView.findViewById(R.id.img);
         }
     }
 
@@ -69,44 +56,10 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
     public void onBindViewHolder(@NonNull RecycleAdapter.RecycleViewHolder holder, int position) {
 
         Makeup makeup = makeupList.get(position);
-
         holder.name.setText(makeup.getName());
         holder.currency_price.setText(makeup.getCurrency() + " " + makeup.getPrice());
         holder.type_brand.setText("Tipo: " + makeup.getType() + " - " + makeup.getBrand());
         holder.description.setText("Descrição: " + makeup.getDescription());
-
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
-/*
-        try {
-
-            URL requestURL = new URL(makeup.getImage_link());
-            InputStream inputStream = (InputStream) requestURL.getContent();
-            Drawable drawable = Drawable.createFromStream(inputStream, "scr_name");
-/////////////
-           System.out.println(makeup.getImage_link());
-
-            URL requestURL = new URL(makeup.getImage_link());
-            //Inicio da Conexão
-            urlConnection = (HttpURLConnection) requestURL.openConnection();
-            urlConnection.connect();
-
-            urlConnection = (HttpURLConnection) requestURL.openConnection();
-            //Conexão da URL
-            urlConnection.connect();
-
-            //Busca o InputStream
-            InputStream inputStream = urlConnection.getInputStream();
-
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-            holder.image.setImageDrawable(drawable);
-
-        } catch (IOException e) {
-            //Mostra o Erro/Exceção
-            System.out.println("Exception: " + e);
-            e.printStackTrace();
-        }*/
 
     }
 

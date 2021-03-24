@@ -2,15 +2,11 @@ package com.example.maquiagem;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -194,7 +190,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             String price = null;
             String currency = null;
             String description = null;
-            String image = null;
 
             //Recebe o valor do tamanho do Array
             int numberArray = itemsArray.length();
@@ -229,11 +224,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     name = jsonObject.getString("name");
                     price = jsonObject.getString("price");
                     currency = jsonObject.getString("currency");
-                    image = jsonObject.getString("image_link").replaceAll("\\\\" , "\\");
                     type = jsonObject.getString("product_type");
-                    description = jsonObject.getString("description");
-
-                    //.replaceAll("[\\]", “\\”+"\\");
+                    description = jsonObject.getString("description").replaceAll("\n", "");
 
                     //Caso não tenha dados inseridos
                     if(currency.equals("null")){
@@ -249,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         name = "Erro ao procurar o nome do Produto.";
                     }
 
-                    Makeup make = new Makeup(id, brand, name, type, price, currency, image, description);
+                    Makeup make = new Makeup(id, brand, name, type, price, currency, description);
                     //Insere os dados da Classe Makeup no SQLite
                     dataBaseHelper.insertMakeup(make);
 
@@ -282,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         //Caso haja posição para o Cursor
         if(cursor.moveToFirst()){
-            String brand, name, price, currency, image, type, description;
+            String brand, name, price, currency, type, description;
 
             //Pega os dados enquanto o Cursor tiver proxima posição
             do{
@@ -291,10 +283,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 type = cursor.getString(3);
                 price = cursor.getString(4);
                 currency = cursor.getString(5);
-                image = cursor.getString(6);
-                description = cursor.getString(7);
+                description = cursor.getString(6);
 
-                Makeup makeup = new Makeup(brand, name, type, price, currency, image, description);
+                Makeup makeup = new Makeup(brand, name, type, price, currency, description);
 
                 //Atualiza o RecyclerView
                 makesList.add(makeup);
