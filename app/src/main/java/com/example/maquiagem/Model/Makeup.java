@@ -25,6 +25,7 @@ public class Makeup {
     public String getType () { return type; }
 
 
+    //Contrutor usando ID
     public Makeup(int id, String brand, String name, String type, String price ,String currency,
                   String image_link, String description) {
         this.id = id;
@@ -37,6 +38,7 @@ public class Makeup {
         this.description = description;
     }
 
+    //Contrutor sem ID
     public Makeup(String brand, String name, String type, String price ,String currency,
                   String image_link, String description) {
         this.brand = brand;
@@ -48,7 +50,4 @@ public class Makeup {
         this.description = description;
     }
 
-    public byte[] getDefinition() {
-        return new byte[0];
-    }
 }

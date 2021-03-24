@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private EditText editType;
     private EditText editBrand;
     private TextView result;
-    private Button search, clear;
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager recLayoutManager;
@@ -51,26 +50,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
         editType = findViewById(R.id.edit_type);
         editBrand = findViewById(R.id.edit_brand);
-        search = findViewById(R.id.btn_search);
-        clear = findViewById(R.id.btn_clear);
         result =  findViewById(R.id.txt_result);
-        //Armazena os valores inseridos p/ usar no select do BD
-        setRecyclerView(); //Inicia o RecyclerView
-
-        //TODO Arrumar esses Metodos
-        search.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LoadResult(v);
-            }
-        });
-
-        clear.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BtnClear(v);
-            }
-        });
+        //Inicia o RecyclerView
+        setRecyclerView();
 
         //Inicia o Loader assim que a atividade Inicia
         if (getSupportLoaderManager().getLoader(0) != null) {
@@ -81,23 +63,43 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
     String queryType, queryBrand;
+    DatabaseHelper dataBaseHelper = new DatabaseHelper(this);
 
-    //Limpa o Banco de Dados
-    public void BtnClear(View view){
-        //Limpa o Array MakeList(P/ reiniciar o RecycleView) e Limpa o Texto de Resultado
-        makesList.clear();
-        result.setText(R.string.string_empty);
+    //Configurações do RecyclerView
+    public void setRecyclerView(){
+        //Instancia o RecyclerView
+        recyclerView =  findViewById(R.id.recyclerView);
+        recLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(recLayoutManager);
+
+        adapter = new RecycleAdapter(this,makesList, this);
         recyclerView.setAdapter(adapter);
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
-        databaseHelper.clearTable();
     }
+
+
+    //Apaga todos os registros do Banco de Dados
+    public void BtnClear(View view){
+        //Limpa o Array MakeList(P/ reiniciar o RecycleView) e apaga o Texto de Resultado
+        editType.setText(R.string.string_empty);
+        editBrand.setText(R.string.string_empty);
+        result.setText(R.string.string_empty);
+
+        makesList.clear();
+        recyclerView.setAdapter(adapter);
+
+
+        dataBaseHelper.clearTable();
+    }
+
 
     //Metodo do Botão Pesquisar
     public void LoadResult(View view) {
-        //Limpa o Array MakeList(P/ reiniciar o RecycleView) e Limpa o Texto de Resultado
+        //Limpa o Array e Limpa o Texto de Resultado
         makesList.clear();
-        result.setText(R.string.string_empty);
         recyclerView.setAdapter(adapter);
+
+        result.setText(R.string.string_empty);
+
         //Instancia de Valores
         queryType = editType.getText().toString();
         queryBrand = editBrand.getText().toString();
@@ -126,27 +128,27 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 && queryType.length() != 0 && queryBrand.length() != 0) {
 
             Bundle queryBundle = new Bundle();
-            //Insere no budle, o id(como ele se chamara) e em seguida o dado/variavel
+            //Insere no budle, o id(como sera chamado) em seguida, o dado/variavel
             queryBundle.putString("product_type", queryType);
             queryBundle.putString("brand", queryBrand);
 
-            //Limpa os campos
+            //Limpa os campos que tinham os valores
             editType.setText(R.string.string_empty);
             editBrand.setText(R.string.string_empty);
 
+            //Reinicia e Inicia a Atividade Assincrona
             getSupportLoaderManager().restartLoader(0, queryBundle, this);
         }
-        //Mostra um aviso para informar que não há conexão/termo de busca
+        //Mostra um aviso de que não há Conexão ou Termos de Buscas
         else {
             if (queryType.length() == 0 || queryBrand.length() == 0) {
-                Snackbar errorInputs = Snackbar.make(view, R.string.error_input, 30000);
+                Snackbar errorInputs = Snackbar.make(view, R.string.error_input, 15000);
                 errorInputs.show();
 
             } else {
-                Snackbar errorConnection = Snackbar.make(view, R.string.error_connection, 30000);
+                Snackbar errorConnection = Snackbar.make(view, R.string.error_connection, 15000);
                 errorConnection.show();
             }
-
             editBrand.setText(R.string.string_empty);
             editType.setText(R.string.string_empty);
         }
@@ -154,9 +156,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
 
-
-
-    //Criação da atividade Assincrona
+    //Criação da Atividade Assincrona
     @NonNull
     @Override
     public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
@@ -168,20 +168,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             queryType = args.getString("product_type");
             queryBrand = args.getString("brand");
         }
+
+        //Incia/Instancia a Atividade Assincrona
         return new LoadMakeup(this, queryType, queryBrand);
     }
 
 
-    //Quando acaba a Atividade Assincrona
+    @Override
+    public void onLoaderReset(@NonNull Loader<String> loader) {
+        //Metodo Vazio com Implementação Obrigatoria
+    }
+
+
+    //Quando Finaliza a Atividade Assincrona
     @Override
     public void onLoadFinished(@NonNull Loader<String> loader, String data) {
         try {
-
             //Utiliza JSONArray das Makeup
             JSONArray itemsArray = new JSONArray(data);
-            DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
-            int id = 0, i, maxResult = 0;
+            int id = 0, maxResult = 0, i;
             String name = null;
             String type = null;
             String brand = null;
@@ -197,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Snackbar dataEmpty = Snackbar.make(
                         findViewById(R.id.viewIndex),
                         R.string.no_exists,
-                        30000);
+                        15000);
                 dataEmpty.show();
                 return;
             }
@@ -206,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 maxResult = numberArray;
             }
             else{
-                //Limite de no Maximo 5 Resultados por Marca/Tipo
+                //Limite Maximo de 5 Resultados por Marca/Tipo
                 maxResult = 6;
             }
 
@@ -229,13 +235,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                     //.replaceAll("[\\]", “\\”+"\\");
 
-                    if(currency == "null"){
-                        currency = " ";
+                    //Caso não tenha dados inseridos
+                    if(currency.equals("null")){
+                        currency = "";
+                    }
+                    else if (description.equals("null")){
+                        description = "Esse produto não possui Descrição Cadastrada.";
+                    }
+                    else if (price.equals("null")){
+                        price = "Esse produto não possui Preço Cadastrado.";
+                    }
+                    else if (name.equals("null")){
+                        name = "Erro ao procurar o nome do Produto.";
                     }
 
                     Makeup make = new Makeup(id, brand, name, type, price, currency, image, description);
                     //Insere os dados da Classe Makeup no SQLite
-                    databaseHelper.insertMakeup(make);
+                    dataBaseHelper.insertMakeup(make);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -253,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Snackbar errorInputs = Snackbar.make(
                     findViewById(R.id.viewIndex),
                     R.string.error_json,
-                    30000);
+                    15000);
             errorInputs.show();
 
             e.printStackTrace();
@@ -261,20 +277,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
-    //Configurações do RecyclerView
-    public void setRecyclerView(){
-        //Instancia o RecyclerView
-        recyclerView =  findViewById(R.id.recyclerView);
-        recLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(recLayoutManager);
-
-        adapter = new RecycleAdapter(this,makesList, this);
-        recyclerView.setAdapter(adapter);
-    }
-
-
     public void showWindow(){
-        DatabaseHelper dataBaseHelper = new DatabaseHelper(MainActivity.this);
         Cursor cursor = dataBaseHelper.getData(queryType,queryBrand);
 
         //Caso haja posição para o Cursor
@@ -292,9 +295,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 description = cursor.getString(7);
 
                 Makeup makeup = new Makeup(brand, name, type, price, currency, image, description);
-                makesList.add(makeup);
+
                 //Atualiza o RecyclerView
+                makesList.add(makeup);
                 adapter.notifyDataSetChanged();
+
                 result.setText(R.string.title_result);
             } while (cursor.moveToNext());
 
@@ -304,19 +309,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Snackbar dataEmpty = Snackbar.make(
                     findViewById(R.id.viewIndex),
                     R.string.table_empty,
-                    30000);
+                    15000);
             dataEmpty.show();
         }
         cursor.close();
         dataBaseHelper.close();
     }
 
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<String> loader) {
-        //Metodo Vazio com Implementação Obrigatoria
-    }
 }
-
-
-

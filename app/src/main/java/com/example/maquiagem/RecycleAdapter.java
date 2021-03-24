@@ -67,14 +67,13 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
     //Pega os Valores da List
     @Override
     public void onBindViewHolder(@NonNull RecycleAdapter.RecycleViewHolder holder, int position) {
+
         Makeup makeup = makeupList.get(position);
-        /* holder.txtName.setText(makeup.getNome());
-        holder.txtIdade.setText(Integer.toString(makeup.getAge()));*/
 
         holder.name.setText(makeup.getName());
         holder.currency_price.setText(makeup.getCurrency() + " " + makeup.getPrice());
-        holder.type_brand.setText(makeup.getType() + " - " + makeup.getBrand());
-        holder.description.setText(makeup.getDescription());
+        holder.type_brand.setText("Tipo: " + makeup.getType() + " - " + makeup.getBrand());
+        holder.description.setText("Descrição: " + makeup.getDescription());
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;

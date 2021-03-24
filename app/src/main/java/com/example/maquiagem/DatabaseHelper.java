@@ -24,8 +24,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String IMAGE = "image_link";
     private static final String DESCRIPTION = "description";
 
-    private Object Makeup;
-
     public DatabaseHelper(Context context){
         super(context, BD, null, VERSION);
     }
@@ -76,6 +74,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public Cursor getData(String type, String brand) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor =  db.rawQuery( "SELECT * FROM " + TABLE_NAME +
+                " WHERE " +
+                TYPE + "='" + type + "' AND " +
+                BRAND +  "='" + brand + "'", null );
+        return cursor;
+    }
 
     public List<Makeup> selectAll(){
         List<Makeup> returnAll = new ArrayList<Makeup>();
@@ -111,15 +117,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return returnAll;
     }
 
-
-    public Cursor getData(String type, String brand) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor =  db.rawQuery( "SELECT * FROM " + TABLE_NAME +
-                " WHERE " +
-                TYPE + "='" + type + "' AND " +
-                BRAND +  "='" + brand + "'", null );
-        return cursor;
-    }
 }
 
 

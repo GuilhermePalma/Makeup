@@ -12,8 +12,8 @@ import java.net.URL;
 
 
 public class InternetTools {
+    //Nome do LOG
     private static final String LOG_TAG = "LOG_MAKEUP";
-
     // URL da API
     private static final String MAKEUP_URL = "http://makeup-api.herokuapp.com/api/v1/products.json?";
     // Parametros da string de Busca
@@ -47,7 +47,7 @@ public class InternetTools {
             InputStream inputStream = urlConnection.getInputStream();
 
             if (inputStream == null) {
-                //Caso não tenha dados no inpuStream
+                //Caso não tenha dados no InpuStream
                 return null;
             }
 
@@ -60,7 +60,8 @@ public class InternetTools {
             //.readLine = Metodo de Leitura de uma linha
             while ((linha = reader.readLine()) != null) {
                 //Recebe o Valor da Linha
-                bufferResponse.append(linha + "\n");
+                bufferResponse.append(linha)
+                            .append("\n");
             }
 
             if (bufferResponse.length() == 0) {
@@ -74,6 +75,7 @@ public class InternetTools {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+
         } finally {
             //Fecha a Conexão
             if (urlConnection != null) {
