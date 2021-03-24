@@ -53,12 +53,11 @@ O Projeto consumiu a API Makeup, para ver sua documentação, acesse [API Makeup
   - [x] Tipo
 
 - [x] A Aplicação ira exibir:
-  - Imagem
-  - Nome
-  - Preço
-  - Marca
-  - Tipo
-  - Descrição
+  - [x] Nome
+  - [x] Preço
+  - [x] Marca
+  - [x] Tipo
+  - [x] Descrição
 
 ---
 
