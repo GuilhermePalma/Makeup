@@ -25,7 +25,7 @@ Tabela de conteúdos
 =================
 <!--ts-->
  * [Sobre o projeto](#-sobre-o-projeto)
-   * [Funcionalidades](#-funcionalidades)
+   * [Funcionalidades](#funcionalidades)
    * [Layout](#-layout)
      * [Mobile](#mobile)
    * [Como executar o projeto](#-como-executar-o-projeto)
@@ -46,7 +46,7 @@ O Projeto consumiu a API Makeup, para ver sua documentação, acesse [API Makeup
 ---
 
 
-## ⚙️ Funcionalidades
+## Funcionalidades
 
 - [x] Os usuarios podem pesquisar na API usando os filtros de:
   - [x] Marca
@@ -114,10 +114,6 @@ $ cd Maquiagem
 ## 🛠 Tecnologias
 
 As seguintes ferramentas foram usadas na construção do projeto:
-
-
-#### **Mobile** 
-
 -   **[Java](https://developer.android.com/docs)**
 
 
