@@ -1,6 +1,5 @@
-<h1 align="center">
-    <p>💄 API - Maquiagem</p>
-</h1>
+<h1 align="center">💄 API - Maquiagem</h1>
+
 
 <h3 align="center">
     💄 Busca de Maquiagens dentro da <a href="http://makeup-api.herokuapp.com" tagert="_blank">API - Makeup</a>
@@ -26,19 +25,18 @@ Tabela de conteúdos
 =================
 <!--ts-->
  * [Sobre o projeto](#-sobre-o-projeto)
-   * [Funcionalidades](#-funcionalidades)
+   * [Funcionalidades](#funcionalidades)
    * [Layout](#-layout)
      * [Mobile](#mobile)
    * [Como executar o projeto](#-como-executar-o-projeto)
      * [Pré-requisitos](#pré-requisitos)
    * [Tecnologias](#-tecnologias)
-     * [Mobile](#user-content-mobile--react-native----typescript)
    * [Contribuidores](#-contribuidores)
    * [Como contribuir no projeto](#-como-contribuir-no-projeto)
 <!--te-->
 
 
-## 💻 Sobre o projeto
+# 💻 Sobre o projeto
 
 💄 Makeup - é um aplicativo que busca em uma API dados sobre maquiagem, listando Nome, Preço, Tipo, Marca e Descrição de cada Produto
 
@@ -48,19 +46,18 @@ O Projeto consumiu a API Makeup, para ver sua documentação, acesse [API Makeup
 ---
 
 
-## ⚙️ Funcionalidades
+## Funcionalidades
 
 - [x] Os usuarios podem pesquisar na API usando os filtros de:
   - [x] Marca
   - [x] Tipo
 
 - [x] A Aplicação ira exibir:
-  - Imagem
-  - Nome
-  - Preço
-  - Marca
-  - Tipo
-  - Descrição
+  - [x] Nome
+  - [x] Preço
+  - [x] Marca
+  - [x] Tipo
+  - [x] Descrição
 
 ---
 
@@ -116,14 +113,10 @@ $ cd Maquiagem
 ## 🛠 Tecnologias
 
 As seguintes ferramentas foram usadas na construção do projeto:
-
-
-#### [](https://github.com/tgmarinho/Ecoleta#mobile-react-native--typescript)**Mobile** 
-
 -   **[Java](https://developer.android.com/docs)**
 
 
-#### [](https://github.com/tgmarinho/Ecoleta#utilit%C3%A1rios)**Utilitários**
+#### **Utilitários**
 
 -   Protótipo:  **[Winsic](https://whimsical.com/)**  →  **[Protótipo (Maquiagem)](https://whimsical.com/mobile-UmVv4wcQh1YZLBppfhptCm)**
 -   API:  **[API Makeup](http://makeup-api.herokuapp.com/)**  →  **[API de Tipos](makeup-api.herokuapp.com/api/v1/products.json?product_type=)**,  **[API de Marcas](http://makeup-api.herokuapp.com/api/v1/products.json?brand=)**
