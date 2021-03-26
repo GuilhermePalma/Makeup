@@ -64,7 +64,7 @@ O Projeto consumiu a API Makeup, para ver sua documentação, acesse [API Makeup
 
 ## 🎨 Layout
 
-O layout da aplicação está disponível no Whimsical:
+O layout da aplicação está disponível no [Whimsical](https://whimsical.com/mobile-UmVv4wcQh1YZLBppfhptCm):
 
 <a href="https://whimsical.com/mobile-UmVv4wcQh1YZLBppfhptCm">
   <img alt="Made by Guilherme Palma e Guilherme Callegari" src="https://img.shields.io/badge/Acessar%20Layout-Whimsical-green">
@@ -72,11 +72,14 @@ O layout da aplicação está disponível no Whimsical:
 
 ### Mobile
 
+Video Mostrando o Funcionamento do APP: [API - Makeup](./app/src/main/res/drawable/Makeup%20-%20API.mp4)  
+    
 <p align="center">
-  <img alt="NextLevelWeek" title="#NextLevelWeek" src="./assets/home-mobile.png" width="200px">
-
-  <img alt="NextLevelWeek" title="#NextLevelWeek" src="./assets/detalhes-mobile.svg" width="200px">
+  <img alt="Imagem da Tela Principal" title="#home" src="./app/src/main/res/drawable/Screen (1).png" width="200px">
+  <img alt="Imagem da Parte de Resultados" title="#results" src="./app/src/main/res/drawable/Screen (2).png" width="200px">
 </p>
+
+
 
 
 ## 🚀 Como executar o projeto
