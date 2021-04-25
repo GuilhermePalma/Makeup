@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.maquiagem.Model.Makeup;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public void insertMakeup(Makeup makeup) {
+    public void insertMakeup(MakeupClass makeup) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(BRAND, makeup.getBrand());
@@ -80,8 +78,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public List<Makeup> selectAll(){
-        List<Makeup> returnAll = new ArrayList<Makeup>();
+    public List<MakeupClass> selectAll(){
+        List<MakeupClass> returnAll = new ArrayList<MakeupClass>();
 
         String querryDB = "SELECT * FROM " + TABLE_NAME ;
 
@@ -100,7 +98,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 type = cursor.getString(5);
                 description = cursor.getString(6);
 
-                Makeup makeup = new Makeup(id, brand, name, type, price, currency, description);
+                MakeupClass makeup = new MakeupClass(id, brand, name, type, price, currency, description);
                 returnAll.add(makeup);
             }while (cursor.moveToNext());
         }

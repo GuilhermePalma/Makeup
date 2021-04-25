@@ -9,17 +9,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.maquiagem.Model.Makeup;
 import java.util.List;
 
 public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleViewHolder> {
 
     //Context e List/Array
     Context context;
-    private List<Makeup> makeupList;
+    private List<MakeupClass> makeupList;
 
     //Contrutor
-    public RecycleAdapter(Context context, List<Makeup> list, MainActivity mainActivity) {
+    public RecycleAdapter(Context context, List<MakeupClass> list, MainActivity mainActivity) {
         this.context = context;
         this.makeupList = list;
     }
@@ -55,7 +54,7 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
     @Override
     public void onBindViewHolder(@NonNull RecycleAdapter.RecycleViewHolder holder, int position) {
 
-        Makeup makeup = makeupList.get(position);
+        MakeupClass makeup = makeupList.get(position);
         holder.name.setText(makeup.getName());
         holder.currency_price.setText(makeup.getCurrency() + " " + makeup.getPrice());
         holder.type_brand.setText("Tipo: " + makeup.getType() + " - " + makeup.getBrand());

@@ -18,7 +18,6 @@ import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.maquiagem.Model.Makeup;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
@@ -38,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private RecyclerView.LayoutManager recLayoutManager;
     RecycleAdapter adapter;
 
-    private List<Makeup> makesList = new ArrayList<>();
+    private List<MakeupClass> makesList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -241,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         name = "Erro ao procurar o nome do Produto.";
                     }
 
-                    Makeup make = new Makeup(id, brand, name, type, price, currency, description);
+                    MakeupClass make = new MakeupClass(id, brand, name, type, price, currency, description);
                     //Insere os dados da Classe Makeup no SQLite
                     dataBaseHelper.insertMakeup(make);
 
@@ -285,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 currency = cursor.getString(5);
                 description = cursor.getString(6);
 
-                Makeup makeup = new Makeup(brand, name, type, price, currency, description);
+                MakeupClass makeup = new MakeupClass(brand, name, type, price, currency, description);
 
                 //Atualiza o RecyclerView
                 makesList.add(makeup);
