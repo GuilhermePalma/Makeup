@@ -39,14 +39,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private List<MakeupClass> makesList = new ArrayList<>();
 
+    private final DatabaseHelper dataBaseHelper = new DatabaseHelper(this);
+    private String infoType, infoBrand;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         editType = findViewById(R.id.edit_type);
         editBrand = findViewById(R.id.edit_brand);
         result =  findViewById(R.id.txt_result);
-        //Inicia o RecyclerView
+
+        // Inicia o RecyclerView
         setRecyclerView();
 
         //Inicia o Loader assim que a atividade Inicia
@@ -56,18 +62,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
-
-    String queryType, queryBrand;
-    DatabaseHelper dataBaseHelper = new DatabaseHelper(this);
-
-    //Configurações do RecyclerView
+    // Configurações do RecyclerView
     public void setRecyclerView(){
-        //Instancia o RecyclerView
+        // Instancia o RecyclerView
         recyclerView =  findViewById(R.id.recyclerView);
         recLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(recLayoutManager);
 
-        adapter = new RecycleAdapter(this,makesList, this);
+        // Informa o Context, Listarray utilizado e a Activity que será usada
+        adapter = new RecycleAdapter(this, makesList, this);
         recyclerView.setAdapter(adapter);
     }
 
@@ -77,39 +80,48 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //Limpa o Array MakeList(P/ reiniciar o RecycleView) e apaga o Texto de Resultado
         editType.setText(R.string.string_empty);
         editBrand.setText(R.string.string_empty);
+
+        //TODO testar
+        result.setVisibility(View.VISIBLE);
         result.setText(R.string.string_empty);
 
+        // Limpa o Array
         makesList.clear();
+        // Reinicia o RecyclerView sem nenhuma informação no Listarray
         recyclerView.setAdapter(adapter);
 
-
+        // Apaga os Registros do Banco de Dados
         dataBaseHelper.clearTable();
     }
 
+    //
 
     //Metodo do Botão Pesquisar
     public void LoadResult(View view) {
-        //Limpa o Array e Limpa o Texto de Resultado
+        //Limpa o Array e Reinicia o Adapter
         makesList.clear();
         recyclerView.setAdapter(adapter);
 
-        result.setText(R.string.string_empty);
+        result.setVisibility(View.GONE);
+        // TODO testar - result.setText(R.string.string_empty);
 
         //Instancia de Valores
-        queryType = editType.getText().toString();
-        queryBrand = editBrand.getText().toString();
+        // TODO criar validação para esses campos serem obrigatorios
+        infoType = editType.getText().toString();
+        infoBrand = editBrand.getText().toString();
 
 
         //Esconde o Teclado
         InputMethodManager keyboardManager = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
+        // Caso o teclado esteja ativo
         if (keyboardManager != null) {
             keyboardManager.hideSoftInputFromWindow(view.getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
         }
 
 
-        //Valida a conexão com a Internet
+        //Valida se há conexão com a Internet
         ConnectivityManager connectionManager = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = null;
@@ -119,13 +131,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
         //Validação da Conexão Ativa e dos Campos Preenchidos
-        if (networkInfo != null && networkInfo.isConnected()
-                && queryType.length() != 0 && queryBrand.length() != 0) {
+        if (networkInfo != null
+                && networkInfo.isConnected()
+                && infoType.length() != 0
+                && infoBrand.length() != 0) {
 
+            // Insere no bundle, o id(como sera chamado) e o dado/variavel
             Bundle queryBundle = new Bundle();
-            //Insere no budle, o id(como sera chamado) em seguida, o dado/variavel
-            queryBundle.putString("product_type", queryType);
-            queryBundle.putString("brand", queryBrand);
+            queryBundle.putString("product_type", infoType);
+            queryBundle.putString("brand", infoBrand);
 
             //Limpa os campos que tinham os valores
             editType.setText(R.string.string_empty);
@@ -134,9 +148,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             //Reinicia e Inicia a Atividade Assincrona
             getSupportLoaderManager().restartLoader(0, queryBundle, this);
         }
-        //Mostra um aviso de que não há Conexão ou Termos de Buscas
+        //Mostra um aviso de que não há Termos de Buscas ou Conexão
         else {
-            if (queryType.length() == 0 || queryBrand.length() == 0) {
+            if (infoType.length() == 0 || infoBrand.length() == 0) {
                 Snackbar errorInputs = Snackbar.make(view, R.string.error_input, 15000);
                 errorInputs.show();
 
@@ -155,13 +169,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @NonNull
     @Override
     public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
-        String queryType = "";
-        String queryBrand = "";
 
-        //Pega os Valores atraves da Keys(Chave do Bundle)
+        String queryType, queryBrand;
+
+        // Caso exista, recupera os Valores atraves da Keys(Chave do Bundle)
         if (args != null) {
             queryType = args.getString("product_type");
             queryBrand = args.getString("brand");
+        }
+        else{
+            Snackbar errorInputs = Snackbar.make(findViewById(R.id.viewIndex),
+                    R.string.error_input, 15000);
+            errorInputs.show();
+            return null;
         }
 
         //Incia/Instancia a Atividade Assincrona
@@ -182,13 +202,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             //Utiliza JSONArray das Makeup
             JSONArray itemsArray = new JSONArray(data);
 
-            int id = 0, maxResult = 0, i;
-            String name = null;
-            String type = null;
-            String brand = null;
-            String price = null;
-            String currency = null;
-            String description = null;
+            int id = 0, maxResult = 0;
+            String name, type , brand, price, currency, description;
 
             //Recebe o valor do tamanho do Array
             int numberArray = itemsArray.length();
@@ -210,10 +225,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 maxResult = 6;
             }
 
-            //Busca os resultados nos itens do array
-            for (i = 0; i < maxResult; i++) {
-                //Pega um objeto de acordo com a posição
-                //Cada posição é um item (Cada Posição = 1 Produto)
+            // Busca os resultados nos itens do array
+            for (int i = 0; i < maxResult; i++) {
+                // Pega um objeto de acordo com a posição
+                // Cada posição é um Item/Produto
                 JSONObject jsonObject = new JSONObject(itemsArray.getString(i));
 
                 //Tenta Obter as Informações
@@ -227,19 +242,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     description = jsonObject.getString("description").replaceAll("\n", "");
 
                     //Caso não tenha dados inseridos
+
                     if(currency.equals("null")){
                         currency = "";
                     }
-                    else if (description.equals("null")){
+                    if (description.equals("null")){
                         description = "Esse produto não possui Descrição Cadastrada.";
                     }
-                    else if (price.equals("null")){
+                    if (price.equals("null")){
                         price = "Esse produto não possui Preço Cadastrado.";
                     }
-                    else if (name.equals("null")){
+                    if (name.equals("null")){
                         name = "Erro ao procurar o nome do Produto.";
                     }
 
+                    //Instancia a Classe com os Dados
                     MakeupClass make = new MakeupClass(id, brand, name, type, price, currency, description);
                     //Insere os dados da Classe Makeup no SQLite
                     dataBaseHelper.insertMakeup(make);
@@ -268,8 +285,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
+    // Mostra os Dados na Tela
     public void showWindow(){
-        Cursor cursor = dataBaseHelper.getData(queryType,queryBrand);
+        // Recebe os Valores do BD
+        // Valores dos dados inseridos pelo usuario
+        Cursor cursor = dataBaseHelper.getData(infoType, infoBrand);
 
         //Caso haja posição para o Cursor
         if(cursor.moveToFirst()){
@@ -286,16 +306,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 MakeupClass makeup = new MakeupClass(brand, name, type, price, currency, description);
 
-                //Atualiza o RecyclerView
+                // Atualiza o RecyclerView
                 makesList.add(makeup);
+                // Notifica ao adpter que houve mudança
                 adapter.notifyDataSetChanged();
-
-                result.setText(R.string.title_result);
+                // Mostra o Titulo na Tela
+                result.setVisibility(View.VISIBLE);
+                //TODO Testar result.setText(R.string.title_result);
             } while (cursor.moveToNext());
 
         }
         else{
-            //Array está vazio
+            // Não possui dados na Tabela
             Snackbar dataEmpty = Snackbar.make(
                     findViewById(R.id.viewIndex),
                     R.string.table_empty,

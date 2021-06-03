@@ -31,6 +31,7 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
         protected TextView type_brand;
         protected TextView description;
 
+        // Recupera os valores definidos no Layout do RecycleAdpater
         public RecycleViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.product_name);
@@ -44,13 +45,18 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
     @NonNull
     @Override
     public RecycleAdapter.RecycleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+
+        //Cria uma View
         View itemView;
+
+        // Instancia o valor do layout usado
         itemView = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.layout_result, viewGroup, false);
+
         return new RecycleAdapter.RecycleViewHolder(itemView);
     }
 
-    //Pega os Valores da List
+    // Recupera os Valores do Listarray
     @Override
     public void onBindViewHolder(@NonNull RecycleAdapter.RecycleViewHolder holder, int position) {
 

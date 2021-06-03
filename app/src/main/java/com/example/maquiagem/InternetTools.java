@@ -16,7 +16,7 @@ public class InternetTools {
     private static final String LOG_TAG = "LOG_MAKEUP";
     // URL da API
     private static final String MAKEUP_URL = "http://makeup-api.herokuapp.com/api/v1/products.json?";
-    // Parametros da string de Busca
+    // Constantes de Parametros da string da Busca
     private static final String TYPE_PARAM = "product_type";
     private static final String BRAND_PARAM = "brand";
 
@@ -26,7 +26,7 @@ public class InternetTools {
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
-        String makeupJSONString = null;
+        String makeupJSONString;
 
         try {
             //Formação da URI
@@ -37,7 +37,7 @@ public class InternetTools {
 
             //URI ==> URL.
             URL requestURL = new URL(buildURI.toString());
-            //Inicio da Conexão
+            //Inicio da Conexão usando o metodo GET da API
             urlConnection = (HttpURLConnection) requestURL.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
@@ -51,17 +51,17 @@ public class InternetTools {
                 return null;
             }
 
-            //Cria um buffer para InputStream
+            // Cria um buffer(p/ armazenar dados) para InputStream
             reader = new BufferedReader(new InputStreamReader(inputStream));
             StringBuffer bufferResponse = new StringBuffer();
+            // Variavel que recupera da consulta na API o valor por linha
             String linha;
 
             //Loop para a Leitura Linha por Linha
             //.readLine = Metodo de Leitura de uma linha
             while ((linha = reader.readLine()) != null) {
                 //Recebe o Valor da Linha
-                bufferResponse.append(linha)
-                            .append("\n");
+                bufferResponse.append(linha).append("\n");
             }
 
             if (bufferResponse.length() == 0) {
@@ -75,7 +75,6 @@ public class InternetTools {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
-
         } finally {
             //Fecha a Conexão
             if (urlConnection != null) {

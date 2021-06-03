@@ -6,8 +6,8 @@ import androidx.annotation.Nullable;
 import androidx.loader.content.AsyncTaskLoader;
 
 public class LoadMakeup extends AsyncTaskLoader<String> {
-    private String type;
-    private String brand;
+    private final String type;
+    private final String brand;
 
     LoadMakeup(Context context, String dataType, String dataBrand) {
         super(context);
@@ -21,6 +21,7 @@ public class LoadMakeup extends AsyncTaskLoader<String> {
         forceLoad();
     }
 
+    // Executa a Busca na API em Background
     @Nullable
     @Override
     public String loadInBackground() {

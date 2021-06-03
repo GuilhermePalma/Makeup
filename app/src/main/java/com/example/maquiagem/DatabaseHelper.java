@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+
+    //Definição das Constantes usadas
     private static final String BD = "maquigemDB";
     private static int VERSION = 1;
     private static final String TABLE_NAME = "products";
@@ -25,6 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, BD, null, VERSION);
     }
 
+    //Crição do Banco de Dados
     @Override
     public void onCreate(SQLiteDatabase db){
         db.execSQL(
@@ -47,6 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    //Inserção de Dados no Banco de Dados ---> Usa a classe MakeupClass
     public void insertMakeup(MakeupClass makeup) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -62,33 +66,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    //Limpa toda a Tabela do Banco de Dados
     public void clearTable() {
         SQLiteDatabase db = this.getWritableDatabase();
-        //db.delete(TABLE_NAME, null, null);
         db.execSQL("DELETE FROM " + TABLE_NAME);
         db.close();
     }
 
+    //Seleciona uma maquiagem do Banco de Dados
     public Cursor getData(String type, String brand) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor =  db.rawQuery( "SELECT * FROM " + TABLE_NAME +
-                " WHERE " +
-                TYPE + "='" + type + "' AND " +
-                BRAND +  "='" + brand + "'", null );
+        Cursor cursor;
+
+        //Form
+        cursor =  db.rawQuery( "SELECT * FROM " + TABLE_NAME +
+                " WHERE " + TYPE + "='" + type +
+                "' AND " + BRAND +  "='" + brand + "'",
+                null );
+
         return cursor;
     }
 
+    //Seleciona todos os itens do Banco de Dados
     public List<MakeupClass> selectAll(){
+
+        //Cria um arrei baseado na classe makeup
         List<MakeupClass> returnAll = new ArrayList<MakeupClass>();
 
-        String querryDB = "SELECT * FROM " + TABLE_NAME ;
+        String queryDB = "SELECT * FROM " + TABLE_NAME ;
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(querryDB, null);
+        Cursor cursor = db.rawQuery(queryDB, null);
 
         if(cursor.moveToFirst()){
             String brand, name, price, currency, type, description;
             int id;
+
+            //Loop de Repetição que ira funcionar enquanto o cursor tiver uma proxima posição
             do{
                 id = cursor.getInt(0);
                 brand = cursor.getString(1);
@@ -100,12 +114,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 MakeupClass makeup = new MakeupClass(id, brand, name, type, price, currency, description);
                 returnAll.add(makeup);
+
             }while (cursor.moveToNext());
         }
         else{
             System.out.println("Tabela Vazia");
             return returnAll;
         }
+
         cursor.close();
         db.close();
         return returnAll;

@@ -1,7 +1,6 @@
 package com.example.maquiagem;
 
 public class MakeupClass {
-    //TODO Arrumar os Erros
     private int id;
     private String brand;
     private String name;
