@@ -1,18 +1,24 @@
 package com.example.maquiagem;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -46,8 +52,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar;
+        toolbar = findViewById(R.id.toolbar2);
+        setSupportActionBar(toolbar);
+
         editType = findViewById(R.id.edit_type);
         editBrand = findViewById(R.id.edit_brand);
         result =  findViewById(R.id.txt_result);
@@ -93,8 +103,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Apaga os Registros do Banco de Dados
         dataBaseHelper.clearTable();
     }
-
-    //
 
     //Metodo do Botão Pesquisar
     public void LoadResult(View view) {
