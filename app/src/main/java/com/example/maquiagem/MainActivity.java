@@ -54,8 +54,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Criação da ToolBar
         Toolbar toolbar;
-        toolbar = findViewById(R.id.toolbar2);
+        toolbar = findViewById(R.id.personalized_toolBar);
         setSupportActionBar(toolbar);
 
         editType = findViewById(R.id.edit_type);
