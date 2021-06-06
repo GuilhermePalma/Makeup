@@ -15,4 +15,5 @@
     <string name="table_empty">A Tabela não Possuem nenhum Dado</string>
     <string name="no_exists">Não existe nenhum Produto Cadastrado com esse Tipo e Marca</string>
     <string name="location_now">Localização Atual</string>
+    <string name="clear_window">Limpar dados da Tela</string>
 </resources>

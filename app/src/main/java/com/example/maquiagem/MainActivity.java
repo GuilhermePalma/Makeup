@@ -85,8 +85,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             case (R.id.location):
                 System.out.println("Localização");
                 break;
+            case (R.id.clearWindow):
+
             case (R.id.clearDb):
-                System.out.println("Banco de Dados");
+                clearDataBase();
                 break;
             default:
                 return  false;
@@ -107,8 +109,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
-    //Apaga todos os registros do Banco de Dados
-    public void BtnClear(View view){
+    public void clearWindow(){
         //Limpa o Array MakeList(P/ reiniciar o RecycleView) e apaga o Texto de Resultado
         editType.setText(R.string.string_empty);
         editBrand.setText(R.string.string_empty);
@@ -121,6 +122,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         makesList.clear();
         // Reinicia o RecyclerView sem nenhuma informação no Listarray
         recyclerView.setAdapter(adapter);
+
+    }
+
+    //Apaga todos os registros do Banco de Dados
+    public void clearDataBase(){
+        clearWindow();
 
         // Apaga os Registros do Banco de Dados
         dataBaseHelper.clearTable();
@@ -171,9 +178,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             queryBundle.putString("product_type", infoType);
             queryBundle.putString("brand", infoBrand);
 
-            //Limpa os campos que tinham os valores
-            editType.setText(R.string.string_empty);
-            editBrand.setText(R.string.string_empty);
+            // Limpa os valores da Tela Inteira
+            clearWindow();
 
             //Reinicia e Inicia a Atividade Assincrona
             getSupportLoaderManager().restartLoader(0, queryBundle, this);
@@ -188,8 +194,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Snackbar errorConnection = Snackbar.make(view, R.string.error_connection, 15000);
                 errorConnection.show();
             }
-            editBrand.setText(R.string.string_empty);
-            editType.setText(R.string.string_empty);
         }
     }
 
@@ -301,8 +305,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         } catch (Exception e) {
             //Caso não receba um JSON Valido
-            editType.setText(R.string.string_empty);
-            editBrand.setText(R.string.string_empty);
 
             Snackbar errorInputs = Snackbar.make(
                     findViewById(R.id.viewIndex),
