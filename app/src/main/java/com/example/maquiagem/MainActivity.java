@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             //Utiliza JSONArray das Makeup
             JSONArray itemsArray = new JSONArray(data);
 
-            int id = 0, maxResult = 0;
+            int id, maxResult;
             String name, type , brand, price, currency, description;
 
             //Recebe o valor do tamanho do Array
