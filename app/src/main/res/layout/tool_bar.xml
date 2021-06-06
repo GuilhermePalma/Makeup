@@ -9,17 +9,10 @@
     android:layout_height="?attr/actionBarSize"
     android:background="?attr/colorPrimaryVariant"
     android:elevation="4dp"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     tools:targetApi="lollipop"
-    app:menu="@menu/menu_main">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textSize="20sp"
-        android:gravity="center_vertical"
-        android:textStyle="bold"/>
+    app:menu="@menu/menu_main"
+    app:titleTextColor="@color/white_light" >
 
 </androidx.appcompat.widget.Toolbar>

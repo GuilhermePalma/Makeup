@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Criação da ToolBar
         Toolbar toolbar;
         toolbar = (Toolbar) findViewById(R.id.toolBar);
-        toolbar.setTitle("");
+        toolbar.setTitle(R.string.app_name);
         setSupportActionBar(toolbar);
 
         editType = findViewById(R.id.edit_type);
@@ -92,7 +92,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 clearDataBase();
                 break;
             case (R.id.alter_theme):
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                if(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES){
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                }
+                else{
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                }
                 break;
             default:
                 return  false;

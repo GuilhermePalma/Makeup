@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- Paleta de cores do App-->
     <color name="royal_blue">#FF196F8C</color>
     <color name="cerise">#FFE63561</color>
     <color name="blue_crayola">#FF1CA9D9</color>
 
-    <color name="cerise_dark">#FFCC2F56</color>
+    <!-- Cores para o Dark Mode-->
+    <color name="cerise_dark">#FFA62646</color>
 
+    <!-- Cores Base-->
     <color name="white">#FFFFFFFF</color>
     <color name="white_light">#FFF8F8F8</color>
     <color name="black">#FF000000</color>

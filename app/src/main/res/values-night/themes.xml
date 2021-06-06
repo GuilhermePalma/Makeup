@@ -12,6 +12,9 @@
         <item name="colorSecondaryVariant">@color/royal_blue</item>
         <item name="colorOnSecondary">@color/white_light</item>
 
+        <!-- Implementação do Dark Theme. Definição do Background e Texto -->
+        <item name="android:windowBackground">@color/grey</item>
+        <item name="android:textColor">@color/white_light</item>
         <item name="android:textColorPrimary">@color/white_light</item>
 
         <!-- Status bar color. -->
