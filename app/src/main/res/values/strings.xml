@@ -16,4 +16,5 @@
     <string name="no_exists">Não existe nenhum Produto Cadastrado com esse Tipo e Marca</string>
     <string name="location_now">Localização Atual</string>
     <string name="clear_window">Limpar dados da Tela</string>
+    <string name="change_theme">Mudar o Tema</string>
 </resources>
