@@ -71,6 +71,63 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             getSupportLoaderManager().initLoader(0, null, this);
         }
 
+            /*toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+
+            if(item.getItemId()==R.id.item1)
+            {
+                // do something
+            }
+            else if(item.getItemId()== R.id.filter)
+            {
+               // do something
+            }
+            else{
+               // do something
+            }
+
+            return false;
+        }
+    });
+
+
+             Outro Jeito de Criar
+        //setOnClickListener = Metodo que monitora quando o btn é clicado
+        //Dentro do setOnClickListener recebe uma classe anonima
+        btnShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Define uma variavel e recebe o valor do editText
+                //.toString() converte para String
+                String text = "Valor" + editTextValue.getText().toString();
+                //Envia o txt para Tela
+                txtResult.setText(text);
+            }
+        });
+
+    }
+
+    public void Test(View v){
+        //'text' recebe o valor do editText
+        //.toString() converte para String
+        String text = "Resultado: " + editTextValue.getText().toString();
+        txtResult.setText(text); //Envia o txt para Tela
+    }*/
+
+    }
+
+    public void optionsItemSelected(View item) {
+        // Handle item selection
+        switch (item.getId()) {
+            case R.id.location:
+               System.out.println("IMPRIMIU");
+            case R.id.clearDb:
+                System.out.println("IMPRIMIU");
+            default:
+                return;
+        }
     }
 
     // Configurações do RecyclerView
