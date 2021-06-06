@@ -10,8 +10,9 @@
     android:orientation="vertical">
 
     <include
-        android:id="@+id/toolbar1"
+        android:id="@+id/toolBar"
         layout="@layout/tool_bar" />
+
 
     <ScrollView
         android:id="@+id/viewIndex"

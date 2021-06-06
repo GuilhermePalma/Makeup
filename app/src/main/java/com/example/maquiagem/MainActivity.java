@@ -1,7 +1,6 @@
 package com.example.maquiagem;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,7 +54,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // Criação da ToolBar
         Toolbar toolbar;
-        toolbar = findViewById(R.id.personalized_toolBar);
+        toolbar = (Toolbar) findViewById(R.id.toolBar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         editType = findViewById(R.id.edit_type);
@@ -71,63 +70,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             getSupportLoaderManager().initLoader(0, null, this);
         }
 
-            /*toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-
-        @Override
-        public boolean onMenuItemClick(MenuItem item) {
-
-            if(item.getItemId()==R.id.item1)
-            {
-                // do something
-            }
-            else if(item.getItemId()== R.id.filter)
-            {
-               // do something
-            }
-            else{
-               // do something
-            }
-
-            return false;
-        }
-    });
-
-
-             Outro Jeito de Criar
-        //setOnClickListener = Metodo que monitora quando o btn é clicado
-        //Dentro do setOnClickListener recebe uma classe anonima
-        btnShow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Define uma variavel e recebe o valor do editText
-                //.toString() converte para String
-                String text = "Valor" + editTextValue.getText().toString();
-                //Envia o txt para Tela
-                txtResult.setText(text);
-            }
-        });
-
     }
 
-    public void Test(View v){
-        //'text' recebe o valor do editText
-        //.toString() converte para String
-        String text = "Resultado: " + editTextValue.getText().toString();
-        txtResult.setText(text); //Envia o txt para Tela
-    }*/
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
     }
 
-    public void optionsItemSelected(View item) {
-        // Handle item selection
-        switch (item.getId()) {
-            case R.id.location:
-               System.out.println("IMPRIMIU");
-            case R.id.clearDb:
-                System.out.println("IMPRIMIU");
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case (R.id.location):
+                System.out.println("Localização");
+                break;
+            case (R.id.clearDb):
+                System.out.println("Banco de Dados");
+                break;
             default:
-                return;
+                return  false;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     // Configurações do RecyclerView
