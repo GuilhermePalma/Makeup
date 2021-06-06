@@ -26,100 +26,111 @@
             tools:layout_editor_absoluteX="-178dp"
             tools:layout_editor_absoluteY="-59dp">
 
-            <TextView
-                android:id="@+id/txt_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="@string/app_name"
-                android:textSize="25sp"
+            <LinearLayout
+                android:id="@+id/layoutInputs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:text="@string/app_name"
+                    android:textSize="25sp" />
+
+                <ImageView
+                    android:id="@+id/image_makeup"
+                    android:layout_width="290dp"
+                    android:layout_height="186dp"
+                    android:layout_marginTop="30dp"
+                    android:contentDescription="@string/tip_image"
+                    android:foregroundGravity="center_vertical|center|center_horizontal"
+                    app:srcCompat="@drawable/make" />
+
+                <EditText
+                    android:id="@+id/edit_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:autofillHints=""
+                    android:ems="10"
+                    android:hint="@string/edit_type"
+                    android:inputType="textPersonName" />
+
+                <EditText
+                    android:id="@+id/edit_brand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:autofillHints=""
+                    android:ems="10"
+                    android:hint="@string/edit_marca"
+                    android:inputType="textPersonName" />
+
+                <Button
+                    android:id="@+id/btn_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="25dp"
+                    android:onClick="LoadResult"
+                    android:text="@string/btn_search"
+                    android:textColorHighlight="#FFFFFF" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/layoutResult"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/layoutInputs">
 
-            <ImageView
-                android:id="@+id/image_makeup"
-                android:layout_width="290dp"
-                android:layout_height="186dp"
-                android:layout_marginTop="30dp"
-                android:contentDescription="@string/tip_image"
-                android:foregroundGravity="center_vertical|center|center_horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/recyclerView"
-                app:layout_constraintTop_toBottomOf="@+id/txt_title"
-                app:srcCompat="@drawable/make" />
+                <Button
+                    android:id="@+id/button"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|start"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:onClick="returnInputs"
+                    android:text="@string/return_search"
+                    app:icon="@drawable/ic_arrow_back" />
 
-            <EditText
-                android:id="@+id/edit_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:autofillHints=""
-                android:ems="10"
-                android:hint="@string/edit_type"
-                android:inputType="textPersonName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_makeup" />
+                <TextView
+                    android:id="@+id/txt_result"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="@string/title_result"
+                    android:textSize="25sp"
+                    android:visibility="visible" />
 
-            <EditText
-                android:id="@+id/edit_brand"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:autofillHints=""
-                android:ems="10"
-                android:hint="@string/edit_marca"
-                android:inputType="textPersonName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edit_type" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:listitem="@layout/layout_result">
 
-            <Button
-                android:id="@+id/btn_search"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:onClick="LoadResult"
-                android:text="@string/btn_search"
-                android:textColorHighlight="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edit_brand" />
-
-
-            <TextView
-                android:id="@+id/txt_result"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="45dp"
-                android:text="@string/string_empty"
-                android:textSize="25sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.502"
-                app:layout_constraintStart_toStartOf="@+id/recyclerView"
-                app:layout_constraintTop_toBottomOf="@+id/btn_search" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_result"
-                app:layout_constraintVertical_bias="0.0"
-                tools:listitem="@layout/layout_result">
-
-            </androidx.recyclerview.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
+
 </LinearLayout>

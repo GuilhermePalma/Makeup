@@ -17,4 +17,5 @@
     <string name="location_now">Localização Atual</string>
     <string name="clear_window">Limpar dados da Tela</string>
     <string name="change_theme">Mudar o Tema</string>
+    <string name="return_search">Fazer outra Busca</string>
 </resources>

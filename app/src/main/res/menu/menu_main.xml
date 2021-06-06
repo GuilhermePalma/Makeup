@@ -8,11 +8,6 @@
         app:showAsAction="never"/>
 
     <item
-        android:id="@+id/clearWindow"
-        android:title="@string/clear_window"
-        app:showAsAction="never"/>
-
-    <item
         android:id="@+id/clearDb"
         android:title="@string/clear_bd"
         app:showAsAction="never"/>
