@@ -16,7 +16,7 @@
 
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/imageProduct"
             android:layout_width="151dp"
             android:layout_height="111dp"
             android:layout_gravity="start"

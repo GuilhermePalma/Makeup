@@ -2,6 +2,7 @@ package com.example.maquiagem;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -12,7 +13,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (getSupportLoaderManager().getLoader(0) != null) {
             getSupportLoaderManager().initLoader(0, null, this);
         }
-
     }
 
     // Cria o menu na ToolBar
@@ -239,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             JSONArray itemsArray = new JSONArray(data);
 
             int id, maxResult;
-            String name, type , brand, price, currency, description;
+            String name, type , brand, price, currency, description, urlImage;
 
             //Recebe o valor do tamanho do Array
             int numberArray = itemsArray.length();
@@ -252,13 +251,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 dataEmpty.show();
                 return;
             }
-            else if(numberArray < 4){
+            else if(numberArray < 19){
                 //Caso retorne menos que 5 Itens
                 maxResult = numberArray;
             }
             else{
                 //Limite Maximo de 5 Resultados por Marca/Tipo
-                maxResult = 6;
+                maxResult = 20;
             }
 
             // Busca os resultados nos itens do array (JSON)
@@ -275,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     currency = jsonObject.getString("currency");
                     type = jsonObject.getString("product_type");
                     description = jsonObject.getString("description").replaceAll("\n", "");
+                    urlImage = jsonObject.getString("image_link");
 
                     //Caso não tenha dados inseridos
 
@@ -290,10 +290,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     if (price.equals("null") || price.equals("")){
                         price = "Não possui Preço Cadastrado";
                     }
+                    if (urlImage.equals("null") || urlImage.equals("")){
+                        //TODO Implementar
+                    }
 
 
                     // Instancia a Classe com os Dados
-                    MakeupClass make = new MakeupClass(id, brand, name, type, price, currency, description);
+                    MakeupClass make = new MakeupClass(id, brand, name, type, price, currency, description, urlImage);
                     // Insere os dados da Classe Makeup no SQLite
                     dataBaseHelper.insertMakeup(make);
 
@@ -327,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // Caso haja posição para o Cursor
         if(cursor.moveToFirst()){
-            String brand, name, price, currency, type, description;
+            String brand, name, price, currency, type, description, urlImage;
 
             // Esconde o Layout de Pesquisa e mostra o Layout de Resultados
             layoutInputs.setVisibility(View.GONE);
@@ -341,8 +344,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 price = cursor.getString(4);
                 currency = cursor.getString(5);
                 description = cursor.getString(6);
+                urlImage = cursor.getString(7);
 
-                MakeupClass makeup = new MakeupClass(brand, name, type, price, currency, description);
+                MakeupClass makeup = new MakeupClass(brand, name, type, price, currency, description,urlImage);
 
                 // Atualiza o RecyclerView
                 makesList.add(makeup);

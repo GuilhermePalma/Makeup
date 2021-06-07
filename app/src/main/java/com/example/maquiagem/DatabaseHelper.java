@@ -22,6 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String PRICE = "price";
     private static final String CURRENCY = "currency";
     private static final String DESCRIPTION = "description";
+    private static final String IMAGE = "image";
 
     public DatabaseHelper(Context context){
         super(context, BD, null, VERSION);
@@ -38,10 +39,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     TYPE + " text, " +
                     PRICE + " text, " +
                     CURRENCY + " varchar(5), " +
-                    DESCRIPTION + " text)"
+                    DESCRIPTION + " text, " +
+                    IMAGE + " text)"
         );
     }
-
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int newI) {
@@ -60,6 +61,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(PRICE, makeup.getPrice());
         values.put(CURRENCY, makeup.getCurrency());
         values.put(DESCRIPTION, makeup.getDescription());
+        values.put(IMAGE, makeup.getUrlImage());
 
         db.insert(TABLE_NAME, null, values);
         db.close();
@@ -99,7 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(queryDB, null);
 
         if(cursor.moveToFirst()){
-            String brand, name, price, currency, type, description;
+            String brand, name, price, currency, type, description, urlImage;
             int id;
 
             //Loop de Repetição que ira funcionar enquanto o cursor tiver uma proxima posição
@@ -111,8 +113,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 currency = cursor.getString(4);
                 type = cursor.getString(5);
                 description = cursor.getString(6);
+                urlImage = cursor.getString(7);
 
-                MakeupClass makeup = new MakeupClass(id, brand, name, type, price, currency, description);
+                MakeupClass makeup = new MakeupClass(id, brand, name, type, price, currency, description, urlImage);
                 returnAll.add(makeup);
 
             }while (cursor.moveToNext());

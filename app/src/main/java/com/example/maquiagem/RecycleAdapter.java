@@ -1,13 +1,19 @@
 package com.example.maquiagem;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.List;
 
@@ -30,6 +36,7 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
         protected TextView currency_price;
         protected TextView type_brand;
         protected TextView description;
+        protected ImageView image;
 
         // Recupera os valores definidos no Layout do RecycleAdpater
         public RecycleViewHolder(@NonNull View itemView) {
@@ -38,6 +45,7 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
             currency_price = itemView.findViewById(R.id.currency_price);
             type_brand = itemView.findViewById(R.id.type_brand);
             description = itemView.findViewById(R.id.description);
+            image = itemView.findViewById(R.id.imageProduct);
         }
     }
 
@@ -56,7 +64,8 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
         return new RecycleAdapter.RecycleViewHolder(itemView);
     }
 
-    // Recupera os Valores do Listarray
+    // Recupera os Valores do ListArray
+    // Insere os Valores na Tela de acordo com a posição pedida
     @Override
     public void onBindViewHolder(@NonNull RecycleAdapter.RecycleViewHolder holder, int position) {
 
@@ -65,6 +74,9 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
         holder.currency_price.setText(makeup.getCurrency() + " " + makeup.getPrice());
         holder.type_brand.setText("Tipo: " + makeup.getType() + " - " + makeup.getBrand());
         holder.description.setText("Descrição: " + makeup.getDescription());
+        Picasso.with(holder.image.getContext()).load(makeup.getUrlImage())
+                .error(R.drawable.makeup_no_image)
+                .into(holder.image);
 
     }
 
