@@ -1,8 +1,6 @@
 package com.example.maquiagem;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.util.List;
 
@@ -43,8 +40,8 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
             super(itemView);
             name = itemView.findViewById(R.id.product_name);
             currency_price = itemView.findViewById(R.id.currency_price);
-            type_brand = itemView.findViewById(R.id.type_brand);
-            description = itemView.findViewById(R.id.description);
+            type_brand = itemView.findViewById(R.id.content_typeBrand);
+            description = itemView.findViewById(R.id.content_description);
             image = itemView.findViewById(R.id.imageProduct);
         }
     }
@@ -72,8 +69,8 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
         MakeupClass makeup = makeupList.get(position);
         holder.name.setText(makeup.getName());
         holder.currency_price.setText(makeup.getCurrency() + " " + makeup.getPrice());
-        holder.type_brand.setText("Tipo: " + makeup.getType() + " - " + makeup.getBrand());
-        holder.description.setText("Descrição: " + makeup.getDescription());
+        holder.type_brand.setText(makeup.getType() + " - " + makeup.getBrand());
+        holder.description.setText(makeup.getDescription());
         Picasso.with(holder.image.getContext()).load(makeup.getUrlImage())
                 .error(R.drawable.makeup_no_image)
                 .into(holder.image);

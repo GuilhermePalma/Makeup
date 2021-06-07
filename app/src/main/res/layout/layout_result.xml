@@ -38,11 +38,11 @@
             android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
             android:layout_marginRight="20dp"
-            android:text="@string/app_name"
+            android:text="@string/name_product"
             android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toEndOf="@+id/imageProduct"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -54,11 +54,11 @@
             android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
             android:layout_marginRight="20dp"
-            android:text="@string/price_currency"
+            android:text="@string/currencyPrice_product"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toEndOf="@+id/imageProduct"
             app:layout_constraintTop_toBottomOf="@+id/product_name" />
 
         <TextView
@@ -68,12 +68,22 @@
             android:layout_marginStart="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="15dp"
+            android:text="@string/type_product"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/imageProduct"
+            app:layout_constraintTop_toBottomOf="@+id/currency_price" />
+
+        <TextView
+            android:id="@+id/content_typeBrand"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
             android:layout_marginRight="20dp"
-            android:text="@string/edit_type"
+            android:text="@string/fill_text"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toEndOf="@+id/type_brand"
             app:layout_constraintTop_toBottomOf="@+id/currency_price" />
 
         <TextView
@@ -82,15 +92,25 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="35dp"
             android:layout_marginLeft="35dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/description_product"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/content_typeBrand" />
+
+        <TextView
+            android:id="@+id/content_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
             android:layout_marginRight="20dp"
-            android:paddingBottom="10dp"
-            android:text="@string/description"
+            android:text="@string/fill_text"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/type_brand" />
+            app:layout_constraintStart_toEndOf="@+id/description"
+            app:layout_constraintTop_toBottomOf="@+id/content_typeBrand" />
+
 
         <View
             android:layout_width="match_parent"

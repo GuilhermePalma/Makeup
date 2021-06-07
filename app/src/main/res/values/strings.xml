@@ -1,22 +1,34 @@
 <resources>
     <string name="app_name">API - Maquiagem</string>
+
+    <!-- Layout MainActivity-->
     <string name="edit_type">Tipo</string>
     <string name="edit_marca">Marca</string>
-    <string name="price_currency">Moeda Preço</string>
-    <string name="description">Descrição</string>
-    <string name="btn_search">Pesquisar</string>
     <string name="tip_image">Imagem de Maquiagem</string>
-    <string name="title_result">Resultados da Busca</string>
+    <string name="btn_search">Pesquisar</string>
+    <string name="string_empty"> </string>
+
+    <!-- Mensagens de Erro -->
     <string name="error_input">Preencha os Campos</string>
     <string name="error_connection">Sem Conexão</string>
-    <string name="string_empty"> </string>
-    <string name="clear_bd">Limpar Dados Salvos</string>
     <string name="error_json">Erro na Leitura dos Dados</string>
     <string name="table_empty">A Tabela não Possuem nenhum Dado</string>
     <string name="no_exists">Não existe nenhum Produto Cadastrado com esse Tipo e Marca</string>
-    <string name="location_now">Localização Atual</string>
-    <string name="clear_window">Limpar dados da Tela</string>
+
+
+    <!-- Strings do Menu -->
+    <string name="clear_bd">Limpar Dados Salvos</string>
     <string name="change_theme">Mudar o Tema</string>
+    <string name="location_now">Localização Atual</string>
+
+    <!-- Layout Result-->
+    <string name="title_result">Resultados da Busca</string>
     <string name="return_search">Fazer outra Busca</string>
+    <string name="name_product">Nome do Produto</string>
+    <string name="currencyPrice_product">Moeda - Preço</string>
+    <string name="type_product"><b>Tipo: </b></string>
+    <string name="description_product"><b>Descrição: </b></string>
+    <string name="fill_text">Informações da API</string>
     <string name="description_imageProduct">Imagem do Produto</string>
+
 </resources>
