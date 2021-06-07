@@ -290,10 +290,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     if (price.equals("null") || price.equals("")){
                         price = "Não possui Preço Cadastrado";
                     }
-                    if (urlImage.equals("null") || urlImage.equals("")){
-                        //TODO Implementar
-                    }
-
 
                     // Instancia a Classe com os Dados
                     MakeupClass make = new MakeupClass(id, brand, name, type, price, currency, description, urlImage);
