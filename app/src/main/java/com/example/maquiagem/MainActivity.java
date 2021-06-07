@@ -37,15 +37,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private EditText editType;
     private EditText editBrand;
-
-    Toolbar toolbar;
-
-    LinearLayout layoutInputs;
-    LinearLayout layoutResult;
+    private Toolbar toolbar;
+    private LinearLayout layoutInputs;
+    private LinearLayout layoutResult;
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager recLayoutManager;
-    RecycleAdapter adapter;
+    private RecycleAdapter adapter;
 
     private List<MakeupClass> makesList = new ArrayList<>();
 
@@ -126,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         recLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(recLayoutManager);
 
-        // Informa o Context, Listarray utilizado e a Activity que será usada
+        // Informa o Context, ListArray utilizado e a Activity que será usada
         adapter = new RecycleAdapter(this, makesList, this);
         recyclerView.setAdapter(adapter);
     }
@@ -136,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         editType.setText(R.string.string_empty);
         editBrand.setText(R.string.string_empty);
 
-        //TODO testar
         layoutResult.setVisibility(View.GONE);
 
         // Limpa o Array
@@ -255,13 +252,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 dataEmpty.show();
                 return;
             }
-            else if(numberArray < 21){
+            else if(numberArray < 4){
                 //Caso retorne menos que 5 Itens
                 maxResult = numberArray;
             }
             else{
                 //Limite Maximo de 5 Resultados por Marca/Tipo
-                maxResult = 21;
+                maxResult = 6;
             }
 
             // Busca os resultados nos itens do array (JSON)
@@ -290,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     if (description.equals("null") || description.equals("")){
                         description = "Esse Produto não possui Descrição Cadastrada.";
                     }
-                    if (price.equals("null") || description.equals("")){
+                    if (price.equals("null") || price.equals("")){
                         price = "Não possui Preço Cadastrado";
                     }
 
@@ -332,6 +329,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if(cursor.moveToFirst()){
             String brand, name, price, currency, type, description;
 
+            // Esconde o Layout de Pesquisa e mostra o Layout de Resultados
+            layoutInputs.setVisibility(View.GONE);
+            layoutResult.setVisibility(View.VISIBLE);
+
             // Pega os dados enquanto o Cursor tiver proxima posição
             do{
                 brand = cursor.getString(1);
@@ -348,10 +349,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 // Notifica ao adpter que houve mudança
                 adapter.notifyDataSetChanged();
-
-                // Esconde o Layout de Pesquisa e mostra o Layout de Resultados
-                layoutInputs.setVisibility(View.GONE);
-                layoutResult.setVisibility(View.VISIBLE);
             } while (cursor.moveToNext());
 
         }

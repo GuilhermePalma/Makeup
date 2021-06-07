@@ -18,4 +18,5 @@
     <string name="clear_window">Limpar dados da Tela</string>
     <string name="change_theme">Mudar o Tema</string>
     <string name="return_search">Fazer outra Busca</string>
+    <string name="description_imageProduct">Imagem do Produto</string>
 </resources>
