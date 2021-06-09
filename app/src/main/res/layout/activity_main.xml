@@ -48,7 +48,7 @@
                     android:layout_marginTop="30dp"
                     android:contentDescription="@string/tip_image"
                     android:foregroundGravity="center_vertical|center|center_horizontal"
-                    app:srcCompat="@drawable/make" />
+                    app:srcCompat="@drawable/makeup" />
 
                 <EditText
                     android:id="@+id/edit_type"
