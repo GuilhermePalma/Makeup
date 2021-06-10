@@ -75,8 +75,8 @@ O layout da aplicação está disponível no [Whimsical](https://whimsical.com/m
 Video Mostrando o Funcionamento do APP: [API - Makeup](./app/src/main/res/drawable/Makeup%20-%20API.mp4)  
     
 <p align="center">
-  <img alt="Imagem da Tela Principal" title="#home" src="./app/src/main/res/drawable/Screen (1).png" width="200px">
-  <img alt="Imagem da Parte de Resultados" title="#results" src="./app/src/main/res/drawable/Screen (2).png" width="200px">
+  <img alt="Imagem da Tela Principal" title="#home" src="./printscreen/Screen (1).png" width="200px">
+  <img alt="Imagem da Parte de Resultados" title="#results" src="./printscreen/Screen (2).png" width="200px">
 </p>
 
 
