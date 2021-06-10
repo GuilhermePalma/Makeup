@@ -18,7 +18,7 @@
 
     <!-- Strings do Menu -->
     <string name="clear_bd">Limpar Dados Salvos</string>
-    <string name="change_theme">Mudar o Tema</string>
+    <string name="change_theme">Alterar Tema</string>
     <string name="location_now">Localização Atual</string>
 
     <!-- Layout Result-->

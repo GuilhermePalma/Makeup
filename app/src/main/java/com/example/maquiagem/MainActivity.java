@@ -23,6 +23,9 @@ import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.maquiagem.model.DataBaseMakeup;
+import com.example.maquiagem.model.AsyncMakeup;
+import com.example.maquiagem.model.Makeup;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
@@ -44,9 +47,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private RecyclerView.LayoutManager recLayoutManager;
     private RecycleAdapter adapter;
 
-    private List<MakeupClass> makesList = new ArrayList<>();
+    private List<Makeup> makesList = new ArrayList<>();
 
-    private final DatabaseHelper dataBaseHelper = new DatabaseHelper(this);
+    private final DataBaseMakeup dataBaseHelper = new DataBaseMakeup(this);
     private String infoType, infoBrand;
 
 
@@ -215,11 +218,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             queryBrand = args.getString("brand");
         }
         else{
-            return new LoadMakeup(this, "", "");
+            return new AsyncMakeup(this, "", "");
         }
 
         //Incia/Instancia a Atividade Assincrona
-        return new LoadMakeup(this, queryType, queryBrand);
+        return new AsyncMakeup(this, queryType, queryBrand);
     }
 
 
@@ -291,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     }
 
                     // Instancia a Classe com os Dados
-                    MakeupClass make = new MakeupClass(id, brand, name, type, price, currency, description, urlImage);
+                    Makeup make = new Makeup(id, brand, name, type, price, currency, description, urlImage);
                     // Insere os dados da Classe Makeup no SQLite
                     dataBaseHelper.insertMakeup(make);
 
@@ -341,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 description = cursor.getString(6);
                 urlImage = cursor.getString(7);
 
-                MakeupClass makeup = new MakeupClass(brand, name, type, price, currency, description,urlImage);
+                Makeup makeup = new Makeup(brand, name, type, price, currency, description,urlImage);
 
                 // Atualiza o RecyclerView
                 makesList.add(makeup);

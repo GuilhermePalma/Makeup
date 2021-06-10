@@ -1,15 +1,19 @@
-package com.example.maquiagem;
+package com.example.maquiagem.model;
 
 import android.content.Context;
 
 import androidx.annotation.Nullable;
 import androidx.loader.content.AsyncTaskLoader;
 
-public class LoadMakeup extends AsyncTaskLoader<String> {
+import com.example.maquiagem.model.InternetTools;
+
+// Metodo Assincrono da Pesquisa de Maquiagem
+public class AsyncMakeup extends AsyncTaskLoader<String> {
     private final String type;
     private final String brand;
 
-    LoadMakeup(Context context, String dataType, String dataBrand) {
+    // Construtor/Instancia da Classe
+    public AsyncMakeup(Context context, String dataType, String dataBrand) {
         super(context);
         type = dataType;
         brand = dataBrand;
@@ -21,7 +25,7 @@ public class LoadMakeup extends AsyncTaskLoader<String> {
         forceLoad();
     }
 
-    // Executa a Busca na API em Background
+    // Executa a Busca na API em Background/2° Plano
     @Nullable
     @Override
     public String loadInBackground() {

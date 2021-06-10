@@ -10,23 +10,25 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.maquiagem.model.Makeup;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+// Classe Responsavel pelo controle do RecyclerView
 public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleViewHolder> {
 
-    //Context e List/Array
+    // Context e List/Array
     Context context;
-    private List<MakeupClass> makeupList;
+    private List<Makeup> makeupList;
 
-    //Contrutor
-    public RecycleAdapter(Context context, List<MakeupClass> list, MainActivity mainActivity) {
+    // Contrutor da Calsse
+    public RecycleAdapter(Context context, List<Makeup> list, MainActivity mainActivity) {
         this.context = context;
         this.makeupList = list;
     }
 
-    //Classe Protegida que retorna os campos usados e a Interface
+    // Classe Protegida que retorna os campos usados e a Interface
     protected class RecycleViewHolder extends RecyclerView.ViewHolder {
 
         protected TextView name;
@@ -66,7 +68,7 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
     @Override
     public void onBindViewHolder(@NonNull RecycleAdapter.RecycleViewHolder holder, int position) {
 
-        MakeupClass makeup = makeupList.get(position);
+        Makeup makeup = makeupList.get(position);
         holder.name.setText(makeup.getName());
         holder.currency_price.setText(makeup.getCurrency() + " " + makeup.getPrice());
         holder.type_brand.setText(makeup.getType() + " - " + makeup.getBrand());

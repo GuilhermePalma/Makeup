@@ -1,6 +1,6 @@
-package com.example.maquiagem;
+package com.example.maquiagem.model;
 
-public class MakeupClass {
+public class Makeup {
     private int id;
     private String brand;
     private String name;
@@ -21,8 +21,8 @@ public class MakeupClass {
 
 
     //Contrutor usando ID
-    public MakeupClass(int id, String brand, String name, String type, String price, String currency,
-                       String description, String urlImage) {
+    public Makeup(int id, String brand, String name, String type, String price, String currency,
+                  String description, String urlImage) {
         this.id = id;
         this.brand = brand;
         this.name = name;
@@ -34,8 +34,8 @@ public class MakeupClass {
     }
 
     //Contrutor sem ID
-    public MakeupClass(String brand, String name, String type, String price , String currency,
-                       String description, String urlImage) {
+    public Makeup(String brand, String name, String type, String price , String currency,
+                  String description, String urlImage) {
         this.brand = brand;
         this.name = name;
         this.type = type;

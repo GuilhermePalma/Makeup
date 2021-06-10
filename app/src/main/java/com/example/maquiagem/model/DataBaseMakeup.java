@@ -1,4 +1,4 @@
-package com.example.maquiagem;
+package com.example.maquiagem.model;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class DataBaseMakeup extends SQLiteOpenHelper {
 
     //Definição das Constantes usadas
     private static final String BD = "maquigemDB";
@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DESCRIPTION = "description";
     private static final String IMAGE = "image";
 
-    public DatabaseHelper(Context context){
+    public DataBaseMakeup(Context context){
         super(context, BD, null, VERSION);
     }
 
@@ -52,7 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     //Inserção de Dados no Banco de Dados ---> Usa a classe MakeupClass
-    public void insertMakeup(MakeupClass makeup) {
+    public void insertMakeup(Makeup makeup) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(BRAND, makeup.getBrand());
@@ -90,10 +90,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //Seleciona todos os itens do Banco de Dados
-    public List<MakeupClass> selectAll(){
+    public List<Makeup> selectAll(){
 
         //Cria um arrei baseado na classe makeup
-        List<MakeupClass> returnAll = new ArrayList<MakeupClass>();
+        List<Makeup> returnAll = new ArrayList<Makeup>();
 
         String queryDB = "SELECT * FROM " + TABLE_NAME ;
 
@@ -115,7 +115,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 description = cursor.getString(6);
                 urlImage = cursor.getString(7);
 
-                MakeupClass makeup = new MakeupClass(id, brand, name, type, price, currency, description, urlImage);
+                Makeup makeup = new Makeup(id, brand, name, type, price, currency, description, urlImage);
                 returnAll.add(makeup);
 
             }while (cursor.moveToNext());

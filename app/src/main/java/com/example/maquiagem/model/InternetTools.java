@@ -1,4 +1,4 @@
-package com.example.maquiagem;
+package com.example.maquiagem.model;
 
 import android.net.Uri;
 import android.util.Log;
@@ -12,14 +12,15 @@ import java.net.URL;
 
 
 public class InternetTools {
-    //Nome do LOG
+    // Nome do LOG
     private static final String LOG_TAG = "LOG_MAKEUP";
+
     // URL da API
     private static final String MAKEUP_URL = "http://makeup-api.herokuapp.com/api/v1/products.json?";
-    // Constantes de Parametros da string da Busca
-    private static final String TYPE_PARAM = "product_type";
-    private static final String BRAND_PARAM = "brand";
 
+    // Constantes de Parametros da string da Busca
+    private static final String TYPE_PARAMETERS = "product_type";
+    private static final String BRAND_PARAMETERS = "brand";
 
     //Metodo para Buscar Produtos de Maquigem - API
     static String searchMakeup(String type, String brand) {
@@ -31,8 +32,8 @@ public class InternetTools {
         try {
             //Formação da URI
             Uri buildURI = Uri.parse(MAKEUP_URL).buildUpon()
-                    .appendQueryParameter(TYPE_PARAM, type)
-                    .appendQueryParameter(BRAND_PARAM, brand)
+                    .appendQueryParameter(TYPE_PARAMETERS, type)
+                    .appendQueryParameter(BRAND_PARAMETERS, brand)
                     .build();
 
             //URI ==> URL.
@@ -95,4 +96,10 @@ public class InternetTools {
         return makeupJSONString;
     }
 
+    
+    //TODO Implementar busca da Localização
+    static void pickPosition(){
+        
+    }
+    
 }
