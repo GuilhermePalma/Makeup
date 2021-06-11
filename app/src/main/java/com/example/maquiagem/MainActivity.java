@@ -1,6 +1,7 @@
 package com.example.maquiagem;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -90,7 +91,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case (R.id.location):
-                System.out.println("Localização");
+                Intent location = new Intent(this, LocationActivity.class);
+                startActivity(location);
                 break;
             case (R.id.clearDb):
                 // Limpa o Banco de Dados

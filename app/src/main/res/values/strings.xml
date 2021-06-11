@@ -1,7 +1,8 @@
 <resources>
+
     <string name="app_name">API - Maquiagem</string>
 
-    <!-- Layout MainActivity-->
+    <!-- Activity MainActivity-->
     <string name="edit_type">Tipo</string>
     <string name="edit_marca">Marca</string>
     <string name="tip_image">Imagem de Maquiagem</string>
@@ -15,13 +16,12 @@
     <string name="table_empty">A Tabela não Possuem nenhum Dado</string>
     <string name="no_exists">Não existe nenhum Produto Cadastrado com esse Tipo e Marca</string>
 
-
     <!-- Strings do Menu -->
     <string name="clear_bd">Limpar Dados Salvos</string>
     <string name="change_theme">Alterar Tema</string>
     <string name="location_now">Localização Atual</string>
 
-    <!-- Layout Result-->
+    <!-- Activity Result-->
     <string name="title_result">Resultados da Busca</string>
     <string name="return_search">Fazer outra Busca</string>
     <string name="name_product">Nome do Produto</string>
@@ -30,5 +30,11 @@
     <string name="description_product"><b>Descrição: </b></string>
     <string name="fill_text">Informações da API</string>
     <string name="description_imageProduct">Imagem do Produto</string>
+
+    <!-- Activity Location -->
+    <string name="txt_titleLocation"><b>Localização</b></string>
+    <string name="txt_probablyError">Essa é uma localização baseada na ultima localização
+        registrada. Pode representar um <b>enderço não exato</b></string>
+
 
 </resources>
