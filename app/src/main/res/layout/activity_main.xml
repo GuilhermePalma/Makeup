@@ -107,7 +107,7 @@
                     android:layout_marginTop="10dp"
                     android:onClick="returnInputs"
                     android:text="@string/return_search"
-                    app:icon="@drawable/ic_arrow_back" />
+                    app:icon="@drawable/ic_return_home" />
 
                 <TextView
                     android:id="@+id/txt_result"

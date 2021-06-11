@@ -13,6 +13,7 @@
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     tools:targetApi="lollipop"
     app:menu="@menu/menu_main"
-    app:titleTextColor="@color/white_light" >
+    app:titleTextColor="@color/white_light"
+    app:layout_collapseMode="pin" >
 
 </androidx.appcompat.widget.Toolbar>

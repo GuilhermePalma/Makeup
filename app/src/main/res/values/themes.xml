@@ -26,6 +26,9 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+
+
+    <!-- Cor do Icon Menu -->
     <style name="IconMenu_OverFlow" parent="@style/Widget.AppCompat.ActionButton.Overflow">
         <item name="tintMode">@color/white</item>
     </style>
