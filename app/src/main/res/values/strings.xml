@@ -33,10 +33,11 @@
 
     <!-- Activity Location -->
     <string name="txt_titleLocation"><b>Localização Atual</b></string>
-    <string name="txt_probablyError">Essa é uma localização baseada na ultima localização
-        registrada. Pode representar um <b>enderço não exato</b></string>
+    <string name="txt_waitSearch">Estamos buscando sua Localização...</string>
     <string name="error_searchLocation">Erro na busca do Endereço</string>
     <string name="error_noGps">Sem conexão com o GPS</string>
+    <string name="txt_probablyError">Essa é uma localização baseada na ultima localização
+        registrada. Pode representar um <b>enderço não exato</b></string>
 
 
 </resources>

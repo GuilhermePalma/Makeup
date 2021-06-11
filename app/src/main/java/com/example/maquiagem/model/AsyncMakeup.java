@@ -5,8 +5,6 @@ import android.content.Context;
 import androidx.annotation.Nullable;
 import androidx.loader.content.AsyncTaskLoader;
 
-import com.example.maquiagem.model.InternetTools;
-
 // Metodo Assincrono da Pesquisa de Maquiagem
 public class AsyncMakeup extends AsyncTaskLoader<String> {
     private final String type;
@@ -29,7 +27,8 @@ public class AsyncMakeup extends AsyncTaskLoader<String> {
     @Nullable
     @Override
     public String loadInBackground() {
-        return InternetTools.searchMakeup(type, brand);
+        // Usa a classe SearchMakeupApi para fazer a consulta na API
+        return SearchMakeupApi.searchMakeup(type, brand);
     }
 
 }

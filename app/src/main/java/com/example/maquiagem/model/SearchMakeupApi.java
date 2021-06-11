@@ -11,7 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-public class InternetTools {
+public class SearchMakeupApi {
     // Nome do LOG
     private static final String LOG_TAG = "LOG_MAKEUP";
 
@@ -22,12 +22,14 @@ public class InternetTools {
     private static final String TYPE_PARAMETERS = "product_type";
     private static final String BRAND_PARAMETERS = "brand";
 
-    //Metodo para Buscar Produtos de Maquigem - API
+
+    // Metodo para Buscar Produtos de Maquigem - API
+    // Retorna uma String Buscada no BD
     static String searchMakeup(String type, String brand) {
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
-        String makeupJSONString;
+        String makeupJSONString = "";
 
         try {
             //Formação da URI
@@ -74,6 +76,7 @@ public class InternetTools {
             makeupJSONString = bufferResponse.toString();
 
         } catch (IOException e) {
+            makeupJSONString = "Erro na busca da Maquiagem na API";
             e.printStackTrace();
             return null;
         } finally {
@@ -89,17 +92,12 @@ public class InternetTools {
                     e.printStackTrace();
                 }
             }
+
+            Log.d(LOG_TAG, makeupJSONString);
+
         }
 
-        //Cria um LOG do JSON
-        Log.d(LOG_TAG, makeupJSONString);
         return makeupJSONString;
     }
 
-    
-    //TODO Implementar busca da Localização
-    static void pickPosition(){
-        
-    }
-    
 }

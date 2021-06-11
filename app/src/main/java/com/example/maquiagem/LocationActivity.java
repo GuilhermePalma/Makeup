@@ -31,9 +31,7 @@ import java.util.Locale;
 
 public class LocationActivity extends AppCompatActivity {
 
-
     private TextView showAddress;
-    private Toolbar toolbar;
     public double latitude;
     public double longitude;
 
@@ -43,12 +41,13 @@ public class LocationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_location);
 
         // Criação da ToolBar e Criação da seta de voltar
-        toolbar = findViewById(R.id.toolBar);
+        Toolbar toolbar = findViewById(R.id.toolBar);
         toolbar.setTitle(R.string.app_name);
         setSupportActionBar(toolbar);
+
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_return_home);
-        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        this.getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
         // Controla os serviços de Localziação
@@ -61,7 +60,6 @@ public class LocationActivity extends AppCompatActivity {
 
         // Verifica se o GPS está ativo e se possui conexão com a Internet
         boolean gpsIsEnabled = false;
-
         gpsIsEnabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         // Caso o Conection Manager não tenha sido Inciado (Defalult = Null)
@@ -96,7 +94,8 @@ public class LocationActivity extends AppCompatActivity {
                 getFusedLocationProviderClient(getApplicationContext());
 
         // Verifica se a permissão de Locaçização  foi Concedida
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this, new String[]{
@@ -156,7 +155,7 @@ public class LocationActivity extends AppCompatActivity {
                     }
             })
 
-            // Caso não consiga obter a utlima Localização ---> Erro
+            // Caso não consiga obter a ultima Localização ---> Erro
             .addOnFailureListener(
                 new OnFailureListener() {
                     @Override

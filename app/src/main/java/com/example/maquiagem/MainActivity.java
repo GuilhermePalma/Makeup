@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -40,15 +41,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private EditText editType;
     private EditText editBrand;
-    private Toolbar toolbar;
     private LinearLayout layoutInputs;
     private LinearLayout layoutResult;
 
     private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager recLayoutManager;
-    private RecycleAdapter adapter;
+    private RecyclerView.LayoutManager layoutManagerRecycler;
+    private RecycleAdapter recycleAdapter;
 
-    private List<Makeup> makesList = new ArrayList<>();
+    private List<Makeup> makeupListRecycler = new ArrayList<>();
 
     private final DataBaseMakeup dataBaseHelper = new DataBaseMakeup(this);
     private String infoType, infoBrand;
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
 
         // Criação da ToolBar
-        toolbar = findViewById(R.id.toolBar);
+        Toolbar toolbar = findViewById(R.id.toolBar);
         toolbar.setTitle(R.string.app_name);
         setSupportActionBar(toolbar);
 
@@ -69,14 +69,27 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         layoutInputs = findViewById(R.id.layoutInputs);
         layoutResult = findViewById(R.id.layoutResult);
 
-        // Inicia o RecyclerView
+        // Inicia e Configura o RecyclerView
         setRecyclerView();
 
-        //Inicia o Loader assim que a atividade Inicia
+        //Inicia o Loader junto com a Activity
         if (getSupportLoaderManager().getLoader(0) != null) {
             getSupportLoaderManager().initLoader(0, null, this);
         }
     }
+
+    // Configura o RecyclerView
+    public void setRecyclerView(){
+        // Instancia o RecyclerView
+        recyclerView =  findViewById(R.id.recyclerView);
+        layoutManagerRecycler = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManagerRecycler);
+
+        // Informa o Context, ListArray utilizado e a Activity que será usada
+        recycleAdapter = new RecycleAdapter(this, makeupListRecycler, this);
+        recyclerView.setAdapter(recycleAdapter);
+    }
+
 
     // Cria o menu na ToolBar
     @Override
@@ -85,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         inflater.inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     // Trata os cliques no Menu da TollBar
     @Override
@@ -112,24 +126,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return super.onOptionsItemSelected(item);
     }
 
+
     public void returnInputs(View view){
+        // Limpa a Tela e o Banco de Dados
         clearWindow();
-        // Limpa o Banco de Dados
         dataBaseHelper.clearTable();
+
         layoutResult.setVisibility(View.GONE);
         layoutInputs.setVisibility(View.VISIBLE);
-    }
-
-    // Configurações do RecyclerView
-    public void setRecyclerView(){
-        // Instancia o RecyclerView
-        recyclerView =  findViewById(R.id.recyclerView);
-        recLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(recLayoutManager);
-
-        // Informa o Context, ListArray utilizado e a Activity que será usada
-        adapter = new RecycleAdapter(this, makesList, this);
-        recyclerView.setAdapter(adapter);
     }
 
     public void clearWindow(){
@@ -140,43 +144,55 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         layoutResult.setVisibility(View.GONE);
 
         // Limpa o Array
-        makesList.clear();
+        makeupListRecycler.clear();
         // Reinicia o RecyclerView sem nenhuma informação no Listarray
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(recycleAdapter);
 
     }
 
 
     // Metodo do Botão Pesquisar
     public void LoadResult(View view) {
-        // Instancia de Valores
-        // TODO criar validação para esses campos serem obrigatorios
+
+        // Recupera os valores inseridos pelo Usario
         infoType = editType.getText().toString();
         infoBrand = editBrand.getText().toString();
+
+        if (infoType.equals("")){
+            editType.setError("Campo Obrigatorio !");
+            return;
+        }  else if(infoBrand.equals("")){
+            editBrand.setError("Campo Obrigatorio !");
+            return;
+        }
 
         //Esconde o Teclado
         InputMethodManager keyboardManager = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
-        // Caso o teclado esteja ativo
+        // Ao clicar no botão, caso o teclado esteja ativo ele é fechado
         if (keyboardManager != null) {
             keyboardManager.hideSoftInputFromWindow(view.getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
         }
 
-        //Valida se há conexão com a Internet
+        //Valida se possui conexão com a Internet
         ConnectivityManager connectionManager = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = null;
+
+        Snackbar errorConnection = Snackbar.
+                make(view, R.string.error_connection, 7500);
+
         if (connectionManager != null) {
             networkInfo = connectionManager.getActiveNetworkInfo();
+        } else {
+            //Não há conexão com a Internet
+            errorConnection.show();
+            return;
         }
 
-
-        //Validação da Conexão Ativa e dos Campos Preenchidos
-        if (networkInfo != null
-                && networkInfo.isConnected()
-                && infoType.length() != 0
-                && infoBrand.length() != 0) {
+        //Validação da Conexão Ativa
+        if (networkInfo != null && networkInfo.isConnected()) {
 
             // Insere no bundle, o id(como sera chamado) e o dado/variavel
             Bundle queryBundle = new Bundle();
@@ -191,17 +207,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             //Reinicia e Inicia a Atividade Assincrona
             getSupportLoaderManager().restartLoader(0, queryBundle, this);
-        }
-        //Mostra um aviso de que não há Termos de Buscas ou Conexão
-        else {
-            if (infoType.length() == 0 || infoBrand.length() == 0) {
-                Snackbar errorInputs = Snackbar.make(view, R.string.error_input, 15000);
-                errorInputs.show();
-
-            } else {
-                Snackbar errorConnection = Snackbar.make(view, R.string.error_connection, 15000);
-                errorConnection.show();
-            }
+        } else{
+            // Erro na Conexão
+            Log.e("NO CONECTED", "\n Erro na conexão com a Internet" +
+                    "\nConexão: " + networkInfo);
+            errorConnection.show();
         }
     }
 
@@ -214,17 +224,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         String queryType, queryBrand;
 
-        // Caso exista, recupera os Valores atraves da Keys(Chave do Bundle)
+        // Caso exista, atribui os Valores atraves da Keys (Chave do Bundle)
         if (args != null) {
             queryType = args.getString("product_type");
             queryBrand = args.getString("brand");
+
+            return new AsyncMakeup(getApplicationContext(), queryType, queryBrand);
         }
         else{
-            return new AsyncMakeup(this, "", "");
+            // Caso não apresente dados no Bundle ---> Sem dados inseridos pelo Usuario
+            return null;
         }
-
-        //Incia/Instancia a Atividade Assincrona
-        return new AsyncMakeup(this, queryType, queryBrand);
     }
 
 
@@ -234,19 +244,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
-    //Quando Finaliza a Atividade Assincrona
+    // Quando Finaliza a Atividade Assincrona
+    // Recebe uma String do metodo chamado no loadInBackground (SearchMakeupApi.searchMakeup())
     @Override
     public void onLoadFinished(@NonNull Loader<String> loader, String data) {
         try {
             // Utiliza JSONArray das Makeup
             JSONArray itemsArray = new JSONArray(data);
 
-            int id, maxResult;
+            int numberProducts, maxResult, id;
             String name, type , brand, price, currency, description, urlImage;
 
-            //Recebe o valor do tamanho do Array
-            int numberArray = itemsArray.length();
-            if(numberArray == 0){
+            //Recebe o valor do Tamanho da List com os Produtos
+            numberProducts = itemsArray.length();
+            if(numberProducts == 0){
                 //Array Vazio
                 Snackbar dataEmpty = Snackbar.make(
                         findViewById(R.id.viewIndex),
@@ -255,21 +266,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 dataEmpty.show();
                 return;
             }
-            else if(numberArray < 19){
+            else if(numberProducts < 19){
                 //Caso retorne menos que 5 Itens
-                maxResult = numberArray;
+                maxResult = numberProducts;
             }
             else{
                 //Limite Maximo de 5 Resultados por Marca/Tipo
                 maxResult = 20;
             }
 
-            // Busca os resultados nos itens do array (JSON)
+            // Laço de Repetição que consulta os resultados nos itens do Array(JSON)
             for (int i = 0; i < maxResult; i++) {
+
                 // Pega um objeto de acordo com a Posição (Posição = Item/Produto)
                 JSONObject jsonObject = new JSONObject(itemsArray.getString(i));
 
-                //Tenta Obter as Informações
+                //Tenta Obter as Informações e Converte-las para seus devidos tipos
                 try {
                     id = Integer.parseInt(jsonObject.getString("id"));
                     brand = jsonObject.getString("brand");
@@ -277,7 +289,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     price = jsonObject.getString("price");
                     currency = jsonObject.getString("currency");
                     type = jsonObject.getString("product_type");
-                    description = jsonObject.getString("description").replaceAll("\n", "");
+                    description = jsonObject.getString("description").
+                            replaceAll("\n", "");
                     urlImage = jsonObject.getString("image_link");
 
                     //Caso não tenha dados inseridos
@@ -296,12 +309,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     }
 
                     // Instancia a Classe com os Dados
-                    Makeup make = new Makeup(id, brand, name, type, price, currency, description, urlImage);
+                    Makeup classMakeup = new Makeup(id, brand, name, type, price,
+                            currency, description, urlImage);
                     // Insere os dados da Classe Makeup no SQLite
-                    dataBaseHelper.insertMakeup(make);
+                    dataBaseHelper.insertMakeup(classMakeup);
 
                 } catch (Exception e) {
+                    Log.e("RECOVERY ARRAY", "\nErro ao recuperar os valores do Array" +
+                            "dos Produtos\n" + e);
                     e.printStackTrace();
+                } finally {
+                    dataBaseHelper.close();
                 }
             }
 
@@ -309,13 +327,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             showWindow();
 
         } catch (Exception e) {
-            //Caso não receba um JSON Valido
-
+            //Caso não receba uma String Valida ou tenha algum problema na criação Array
             Snackbar errorInputs = Snackbar.make(
                     findViewById(R.id.viewIndex),
                     R.string.error_json,
                     15000);
             errorInputs.show();
+
+            Log.e("NOT VALID ARRAY",
+                    "\nErro no Array ou no Recebimento da String\n" + e);
 
             e.printStackTrace();
         }
@@ -325,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     // Mostra os Dados na Tela
     public void showWindow(){
         // Busca os Valores no BD
-        // Valores dos dados inseridos pelo usuario e usados pela atividade assicrona
+        // Utiliza os valores inseridos pelo usuario e usados pela atividade assicrona
         Cursor cursor = dataBaseHelper.getData(infoType, infoBrand);
 
         // Caso haja posição para o Cursor
@@ -349,20 +369,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Makeup makeup = new Makeup(brand, name, type, price, currency, description,urlImage);
 
                 // Atualiza o RecyclerView
-                makesList.add(makeup);
+                makeupListRecycler.add(makeup);
 
                 // Notifica ao adpter que houve mudança
-                adapter.notifyDataSetChanged();
+                recycleAdapter.notifyDataSetChanged();
             } while (cursor.moveToNext());
 
-        }
-        else{
+        } else{
+
             // Não possui dados na Tabela
+            Log.e("EMPTY DATABASE", "\nNão foi encontrado nenhum " +
+                    "dado no Banco de Dados\n" + cursor.toString());
+
             Snackbar dataEmpty = Snackbar.make(
                     findViewById(R.id.viewIndex),
                     R.string.table_empty,
                     15000);
             dataEmpty.show();
+
         }
         cursor.close();
         dataBaseHelper.close();

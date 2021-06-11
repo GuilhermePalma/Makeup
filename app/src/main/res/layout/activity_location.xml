@@ -33,7 +33,7 @@
         android:layout_marginEnd="40dp"
         android:layout_marginRight="40dp"
         android:gravity="center"
-        android:text="@string/string_empty"
+        android:text="@string/txt_waitSearch"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/txt_probablyError"
         app:layout_constraintEnd_toEndOf="parent"
