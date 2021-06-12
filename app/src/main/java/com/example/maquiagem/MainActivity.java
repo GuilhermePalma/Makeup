@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         NetworkInfo networkInfo = null;
 
         Snackbar errorConnection = Snackbar.
-                make(view, R.string.error_connection, 7500);
+                make(view, R.string.error_connection, Snackbar.LENGTH_LONG);
 
         if (connectionManager != null) {
             networkInfo = connectionManager.getActiveNetworkInfo();
@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Snackbar dataEmpty = Snackbar.make(
                         findViewById(R.id.viewIndex),
                         R.string.no_exists,
-                        15000);
+                        Snackbar.LENGTH_LONG);
                 dataEmpty.show();
                 return;
             }
@@ -331,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Snackbar errorInputs = Snackbar.make(
                     findViewById(R.id.viewIndex),
                     R.string.error_json,
-                    15000);
+                    Snackbar.LENGTH_LONG);
             errorInputs.show();
 
             Log.e("NOT VALID ARRAY",
@@ -355,6 +355,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // Esconde o Layout de Pesquisa e mostra o Layout de Resultados
             layoutInputs.setVisibility(View.GONE);
             layoutResult.setVisibility(View.VISIBLE);
+
+
 
             // Pega os dados enquanto o Cursor tiver proxima posição
             do{
@@ -384,7 +386,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Snackbar dataEmpty = Snackbar.make(
                     findViewById(R.id.viewIndex),
                     R.string.table_empty,
-                    15000);
+                    Snackbar.LENGTH_LONG);
             dataEmpty.show();
 
         }

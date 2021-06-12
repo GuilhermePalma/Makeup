@@ -125,6 +125,10 @@ public class LocationActivity extends AppCompatActivity {
                             // Geolocalização Reversa (Longitude + Latidude = Endereço)
                             // Limita a somente 1 Resultado
                             addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                            // Imprime o resultado da List de Endereços (ArrayList)
+                            Log.i("LIST ENDEREÇO","\n" + addresses.get(0).toString()
+                                    + "\n" + addresses.get(0).getAddressLine(0));
+                            // Caso não retorne nenhum endereço
 
                         } catch (IOException e) {
                             // Tratamento de Erro da Localização ---> Erro no Processo
@@ -138,12 +142,8 @@ public class LocationActivity extends AppCompatActivity {
                                     location.getLongitude(), illegalArgumentException);
                         }
                         finally {
-                            // Imprime o resultado da List de Endereços (ArrayList)
-                            Log.i("LIST ENDEREÇO","\n" + addresses.get(0).toString()
-                                    + "\n" + addresses.get(0).getAddressLine(0));
-
-                            // Caso não retorne nenhum endereço
-                            if(addresses == null || addresses.isEmpty()){
+                            Log.d("FINAL LOCATION", "\nLocalização Final" + addresses.toString());
+                            if(addresses == null){
                                 showAddress.setText(R.string.error_searchLocation);
                             }
                             else{

@@ -39,5 +39,9 @@
     <string name="txt_probablyError">Essa é uma localização baseada na ultima localização
         registrada. Pode representar um <b>enderço não exato</b></string>
 
+    <!-- Fragment SaveMakeup -->
+    <string name="rbtn_save">Salvar Produto</string>
+    <string name="rbtn_noSave">Não Salvar Produto</string>
+
 
 </resources>

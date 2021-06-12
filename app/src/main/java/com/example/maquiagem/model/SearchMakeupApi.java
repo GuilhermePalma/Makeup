@@ -76,7 +76,6 @@ public class SearchMakeupApi {
             makeupJSONString = bufferResponse.toString();
 
         } catch (IOException e) {
-            makeupJSONString = "Erro na busca da Maquiagem na API";
             e.printStackTrace();
             return null;
         } finally {
@@ -92,9 +91,7 @@ public class SearchMakeupApi {
                     e.printStackTrace();
                 }
             }
-
             Log.d(LOG_TAG, makeupJSONString);
-
         }
 
         return makeupJSONString;
