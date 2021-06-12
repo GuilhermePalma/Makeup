@@ -10,25 +10,25 @@
     android:orientation="vertical">
 
     <RadioGroup
-        android:id="@+id/group_rbtnSave"
+        android:id="@+id/group_rbtnLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
         <RadioButton
-            android:id="@+id/rbtn_save"
+            android:id="@+id/rbtn_wrongLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="25dp"
             android:layout_marginRight="25dp"
-            android:text="@string/rbtn_noSave" />
+            android:text="@string/rbtn_wrongLocation" />
 
         <RadioButton
-            android:id="@+id/rbtn_notSave"
+            android:id="@+id/rbtn_trueLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/rbtn_save" />
+            android:text="@string/rbtn_correctLocation" />
 
     </RadioGroup>
 

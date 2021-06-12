@@ -180,15 +180,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = null;
 
-        Snackbar errorConnection = Snackbar.
-                make(view, R.string.error_connection, Snackbar.LENGTH_LONG);
-
         if (connectionManager != null) {
             networkInfo = connectionManager.getActiveNetworkInfo();
-        } else {
-            //Não há conexão com a Internet
-            errorConnection.show();
-            return;
         }
 
         //Validação da Conexão Ativa
@@ -211,6 +204,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // Erro na Conexão
             Log.e("NO CONECTED", "\n Erro na conexão com a Internet" +
                     "\nConexão: " + networkInfo);
+            Snackbar errorConnection = Snackbar.
+                    make(view, R.string.error_connection, Snackbar.LENGTH_LONG);
             errorConnection.show();
         }
     }

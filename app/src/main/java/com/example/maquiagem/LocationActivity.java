@@ -4,19 +4,23 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -32,8 +36,10 @@ import java.util.Locale;
 public class LocationActivity extends AppCompatActivity {
 
     private TextView showAddress;
-    public double latitude;
-    public double longitude;
+    private ImageButton showFragment;
+
+    private double latitude;
+    private double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +55,24 @@ public class LocationActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        // Valida conexão de Internet e GPS
+        if (requiredForLocation()){
+            getLastLocationUser();
+        }
 
+        showFragment = findViewById(R.id.btn_showFragment);
+
+        showFragment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+    }
+
+    // Metodo que valida se há conexão e GPS ativos
+    public boolean requiredForLocation(){
         // Controla os serviços de Localziação
         LocationManager service = (LocationManager)
                 getSystemService(LOCATION_SERVICE);
@@ -57,30 +80,36 @@ public class LocationActivity extends AppCompatActivity {
         //Valida a conexão com Internet
         ConnectivityManager connectionManager = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = null;
+        if (connectionManager != null) {
+            // Obteve os serviços de conexão
+            networkInfo = connectionManager.getActiveNetworkInfo();
+        }
 
         // Verifica se o GPS está ativo e se possui conexão com a Internet
         boolean gpsIsEnabled = false;
         gpsIsEnabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         // Caso o Conection Manager não tenha sido Inciado (Defalult = Null)
-        if (connectionManager == null){
+        if (networkInfo == null){
             Snackbar notInternet =  Snackbar.make(
                     findViewById(R.id.layout_location),
                     R.string.error_connection,
                     Snackbar.LENGTH_LONG);
             notInternet.show();
+            return false;
         } else if (!gpsIsEnabled){
             Snackbar noGps =  Snackbar.make(
                     findViewById(R.id.layout_location),
                     R.string.error_noGps,
                     Snackbar.LENGTH_LONG);
             noGps.show();
+            return false;
 
         } else{
             // Pega a localização do Usuario
-            getLastLocationUser();
+            return true;
         }
-
     }
 
 
