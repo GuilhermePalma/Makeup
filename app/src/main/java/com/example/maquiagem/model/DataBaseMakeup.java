@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.strictmode.SqliteObjectLeakedViolation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +15,8 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
     //Definição das Constantes usadas
     private static final String BD = "maquigemDB";
     private static int VERSION = 1;
-    private static final String TABLE_NAME = "products";
-    private static final String ID = "id";
+    private static final String TABLE_MAKEUP = "products";
+    private static final String ID_MAKEUP = "id";
     private static final String BRAND = "brand";
     private static final String NAME = "name";
     private static final String TYPE = "type";
@@ -24,16 +25,21 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
     private static final String DESCRIPTION = "description";
     private static final String IMAGE = "image";
 
+    private static final String TABLE_LOCATION = "location";
+    private static final String ID_LOCATION = "id";
+    private static final String LOCATION = "return_location";
+
     public DataBaseMakeup(Context context){
         super(context, BD, null, VERSION);
     }
 
-    //Crição do Banco de Dados
+
+    // Crição do Banco de Dados
     @Override
     public void onCreate(SQLiteDatabase db){
         db.execSQL(
-            "create table " + TABLE_NAME + " (" +
-                    ID + " integer PRIMARY KEY AUTOINCREMENT, " +
+            "create table " + TABLE_MAKEUP + " (" +
+                    ID_MAKEUP + " integer PRIMARY KEY AUTOINCREMENT, " +
                     BRAND + " text, " +
                     NAME + " text, " +
                     TYPE + " text, " +
@@ -42,16 +48,21 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
                     DESCRIPTION + " text, " +
                     IMAGE + " text)"
         );
+        db.execSQL(
+                "create table " + TABLE_LOCATION + " (" +
+                        ID_LOCATION + " integer PRIMARY KEY AUTOINCREMENT, " +
+                        LOCATION + " text)"
+        );
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int newI) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MAKEUP);
         this.onCreate(db);
     }
 
 
-    //Inserção de Dados no Banco de Dados ---> Usa a classe MakeupClass
+    // Inserção de Dados no Banco de Dados ---> Usa a classe MakeupClass
     public void insertMakeup(Makeup makeup) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -63,71 +74,47 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         values.put(DESCRIPTION, makeup.getDescription());
         values.put(IMAGE, makeup.getUrlImage());
 
-        db.insert(TABLE_NAME, null, values);
+        db.insert(TABLE_MAKEUP, null, values);
         db.close();
     }
 
-
-    //Limpa toda a Tabela do Banco de Dados
-    public void clearTable() {
+    // Insere se a busca da Localização deu certa ou não
+    public void insertLocation(String returnLocation){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLE_NAME);
+        ContentValues values = new ContentValues();
+        values.put(LOCATION, returnLocation);
+
+        db.insert(TABLE_LOCATION, null, values);
+    }
+
+
+    // Limpa toda a Tabela do Banco de Dados
+    public void clearTableMakeup() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_MAKEUP);
         db.close();
     }
+
+    // Apaga todos os dados da Tabela Localização
+    public void clearTableLocation(){
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.execSQL("DELETE FROM " + TABLE_LOCATION);
+        database.close();
+    }
+
 
     //Seleciona uma maquiagem do Banco de Dados
-    public Cursor getData(String type, String brand) {
+    public Cursor getDataMakeup(String type, String brand) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor;
 
         //Form
-        cursor =  db.rawQuery( "SELECT * FROM " + TABLE_NAME +
+        cursor =  db.rawQuery( "SELECT * FROM " + TABLE_MAKEUP +
                 " WHERE " + TYPE + "='" + type +
                 "' AND " + BRAND +  "='" + brand + "'",
                 null );
 
         return cursor;
-    }
-
-    //Seleciona todos os itens do Banco de Dados
-    public List<Makeup> selectAll(){
-
-        //Cria um arrei baseado na classe makeup
-        List<Makeup> returnAll = new ArrayList<Makeup>();
-
-        String queryDB = "SELECT * FROM " + TABLE_NAME ;
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(queryDB, null);
-
-        if(cursor.moveToFirst()){
-            String brand, name, price, currency, type, description, urlImage;
-            int id;
-
-            //Loop de Repetição que ira funcionar enquanto o cursor tiver uma proxima posição
-            do{
-                id = cursor.getInt(0);
-                brand = cursor.getString(1);
-                name = cursor.getString(2);
-                price = cursor.getString(3);
-                currency = cursor.getString(4);
-                type = cursor.getString(5);
-                description = cursor.getString(6);
-                urlImage = cursor.getString(7);
-
-                Makeup makeup = new Makeup(id, brand, name, type, price, currency, description, urlImage);
-                returnAll.add(makeup);
-
-            }while (cursor.moveToNext());
-        }
-        else{
-            System.out.println("Tabela Vazia");
-            return returnAll;
-        }
-
-        cursor.close();
-        db.close();
-        return returnAll;
     }
 
 }

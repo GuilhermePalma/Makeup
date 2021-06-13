@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:background="@color/light_grey">
+    android:background="@color/light_grey" >
 
     <RadioGroup
         android:id="@+id/group_rbtnLocation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <RadioButton
             android:id="@+id/rbtn_wrongLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/rbtn_wrongLocation" />
+            android:text="@string/rbtn_wrongLocation"
+            tools:layout_conversion_absoluteHeight="48dp"
+            tools:layout_conversion_absoluteWidth="166dp" />
 
         <RadioButton
             android:id="@+id/rbtn_trueLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/rbtn_correctLocation" />
+            android:text="@string/rbtn_correctLocation"
+            tools:layout_conversion_absoluteHeight="48dp"
+            tools:layout_conversion_absoluteWidth="157dp" />
 
     </RadioGroup>
 
-    <TextView
-        android:id="@+id/txt_resultOption"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Te" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 

@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 break;
             case (R.id.clearDb):
                 // Limpa o Banco de Dados
-                dataBaseHelper.clearTable();
+                dataBaseHelper.clearTableMakeup();
                 break;
             case (R.id.alter_theme):
                 if(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES){
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void returnInputs(View view){
         // Limpa a Tela e o Banco de Dados
         clearWindow();
-        dataBaseHelper.clearTable();
+        dataBaseHelper.clearTableMakeup();
 
         layoutResult.setVisibility(View.GONE);
         layoutInputs.setVisibility(View.VISIBLE);
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             clearWindow();
 
             // Limpa o Banco de Dados
-            dataBaseHelper.clearTable();
+            dataBaseHelper.clearTableMakeup();
 
             //Reinicia e Inicia a Atividade Assincrona
             getSupportLoaderManager().restartLoader(0, queryBundle, this);
@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void showWindow(){
         // Busca os Valores no BD
         // Utiliza os valores inseridos pelo usuario e usados pela atividade assicrona
-        Cursor cursor = dataBaseHelper.getData(infoType, infoBrand);
+        Cursor cursor = dataBaseHelper.getDataMakeup(infoType, infoBrand);
 
         // Caso haja posição para o Cursor
         if(cursor.moveToFirst()){

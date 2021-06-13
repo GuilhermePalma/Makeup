@@ -1,5 +1,7 @@
 package com.example.maquiagem;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,8 +9,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import com.example.maquiagem.model.DataBaseMakeup;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,6 +25,9 @@ public class FeedbackLocation extends Fragment {
     // Constantes usadas para as opções no radio Button
     private static final int NO = 0;
     private static final int YES = 1;
+
+    private DataBaseMakeup helper = new DataBaseMakeup(getContext());
+
 
     public FeedbackLocation() {
         // Required empty public constructor
@@ -34,7 +42,6 @@ public class FeedbackLocation extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Cria uma view para o Fragment
         View view = inflater.inflate(R.layout.fragment_feedback_location, container, false);
 
@@ -50,17 +57,15 @@ public class FeedbackLocation extends Fragment {
                 // Usa o ID do RadioButton selecionado
                 View radioButton = group.findViewById(checkedId);
 
-                TextView result = view.findViewById(R.id.txt_resultOption);
-
                 int numberButton = group.indexOfChild(radioButton);
 
                 // Comandos de acordo com o Botão selecionado
                 switch (numberButton){
                     case NO:
-                        result.setText("posição errada");
+                        helper.insertLocation("wrong_location");
                         break;
                     case YES:
-                        result.setText("posição correta");
+                        helper.insertLocation("correct_location");
                         break;
                     default:
                         break;

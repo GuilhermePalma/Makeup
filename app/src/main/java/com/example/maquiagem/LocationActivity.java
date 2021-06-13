@@ -138,7 +138,7 @@ public class LocationActivity extends AppCompatActivity {
                     Manifest.permission.ACCESS_FINE_LOCATION},0);
             return;
         } else {
-            Log.d("PERMISSÕES", "\nPermitido o uso do Local ");
+            Log.d("PERMISSÕES", "\nPermitido o uso do Local");
         }
 
         // Recupera a Ultima Localização
