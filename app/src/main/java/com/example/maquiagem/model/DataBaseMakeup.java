@@ -3,9 +3,11 @@ package com.example.maquiagem.model;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.strictmode.SqliteObjectLeakedViolation;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.List;
 public class DataBaseMakeup extends SQLiteOpenHelper {
 
     //Definição das Constantes usadas
-    private static final String BD = "maquigemDB";
+    private static final String BD = "makeupDB";
     private static int VERSION = 1;
     private static final String TABLE_MAKEUP = "products";
     private static final String ID_MAKEUP = "id";
@@ -78,12 +80,31 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         db.close();
     }
 
+    // Verifica se ja existe os produtos buscados
+    public boolean existsRecords(String type, String brand){
+        SQLiteDatabase database = this.getReadableDatabase();
+
+        // Conta cada item com as variavesis recebidas
+        int amountRecords = (int) DatabaseUtils.queryNumEntries(database,TABLE_MAKEUP,
+                TYPE + "='" + type + "' AND " + BRAND + "='" + brand+ "'");
+
+        // Caso tenha 1 ou mais registros ---> True
+        if (amountRecords >= 1){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     // Insere se a busca da Localização deu certa ou não
-    public void insertLocation(String returnLocation){
+    public void insertLocation(boolean returnLocation){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(LOCATION, returnLocation);
-
+        if (returnLocation) {
+            values.put(LOCATION, "correct_position");
+        } else {
+            values.put(LOCATION, "wrong_position");
+        }
         db.insert(TABLE_LOCATION, null, values);
         db.close();
     }
@@ -104,18 +125,43 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
     }
 
 
-    //Seleciona uma maquiagem do Banco de Dados
+    // Seleciona um Produto do Banco de Dados
     public Cursor getDataMakeup(String type, String brand) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor;
-
-        //Form
+        // Cria um cursor com cada Produto
         cursor =  db.rawQuery( "SELECT * FROM " + TABLE_MAKEUP +
                 " WHERE " + TYPE + "='" + type +
                 "' AND " + BRAND +  "='" + brand + "'",
                 null );
-
         return cursor;
+    }
+
+
+    // Recupera a quantidade de posições certas
+    public int getCorrectLocation(){
+        // Abre uma conexão com o Banco de Dados para Leitura (Select)
+        SQLiteDatabase db = this.getReadableDatabase();
+        // Resultado Pesquisado
+        String correct = "correct_position";
+
+        // Retorna a quantidade do select com a palavra acima
+        return (int) DatabaseUtils.queryNumEntries(db, TABLE_LOCATION,
+                LOCATION + "='" + correct + "'");
+    }
+
+    // Recupera a quantidade de posições erradas
+    public int getWrongLocation(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String wrong = "wrong_position";
+
+        return (int) DatabaseUtils.queryNumEntries(db, TABLE_LOCATION,
+                LOCATION + "='" + wrong + "'");
+    }
+
+    public int getBrandSearch(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        return (int) DatabaseUtils.queryNumEntries(db,TABLE_MAKEUP);
     }
 
 }

@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             case (R.id.clearDb):
                 // Limpa o Banco de Dados
                 dataBaseHelper.clearTableMakeup();
+                dataBaseHelper.clearTableLocation();
                 break;
             case (R.id.alter_theme):
                 if(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES){
@@ -130,7 +131,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void returnInputs(View view){
         // Limpa a Tela e o Banco de Dados
         clearWindow();
-        dataBaseHelper.clearTableMakeup();
 
         layoutResult.setVisibility(View.GONE);
         layoutInputs.setVisibility(View.VISIBLE);
@@ -187,8 +187,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //Validação da Conexão Ativa
         if (networkInfo != null && networkInfo.isConnected()) {
 
-            // TODO Retirar
-            dataBaseHelper.insertLocation("wrong_location");
+            // Caso já exista produtos no Banco de Dados com a Marca e Tipo inserida
+            if (dataBaseHelper.existsRecords(infoType, infoBrand)){
+                showWindow();
+                return;
+            }
 
             // Insere no bundle, o id(como sera chamado) e o dado/variavel
             Bundle queryBundle = new Bundle();
@@ -197,9 +200,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             // Limpa os valores da Tela Inteira
             clearWindow();
-
-            // Limpa o Banco de Dados
-            dataBaseHelper.clearTableMakeup();
 
             //Reinicia e Inicia a Atividade Assincrona
             getSupportLoaderManager().restartLoader(0, queryBundle, this);
@@ -342,6 +342,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     // Mostra os Dados na Tela
     public void showWindow(){
+
         // Busca os Valores no BD
         // Utiliza os valores inseridos pelo usuario e usados pela atividade assicrona
         Cursor cursor = dataBaseHelper.getDataMakeup(infoType, infoBrand);
@@ -353,7 +354,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // Esconde o Layout de Pesquisa e mostra o Layout de Resultados
             layoutInputs.setVisibility(View.GONE);
             layoutResult.setVisibility(View.VISIBLE);
-
 
 
             // Pega os dados enquanto o Cursor tiver proxima posição

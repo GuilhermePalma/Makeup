@@ -62,10 +62,10 @@ public class FeedbackLocation extends Fragment {
                 // Comandos de acordo com o Botão selecionado
                 switch (numberButton){
                     case NO:
-                        helper.insertLocation("wrong_location");
+                        helper.insertLocation(false);
                         break;
                     case YES:
-                        helper.insertLocation("correct_location");
+                        helper.insertLocation(true);
                         break;
                     default:
                         break;

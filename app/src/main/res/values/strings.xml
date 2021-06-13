@@ -33,7 +33,7 @@
 
     <!-- Activity Location -->
     <string name="txt_titleLocation"><b>Localização Atual</b></string>
-    <string name="txt_waitSearch">Estamos buscando sua Localização...</string>
+    <string name="txt_waitSearch">Estamos buscando sua Localização…</string>
     <string name="error_searchLocation">Erro na busca do Endereço</string>
     <string name="error_location">Erro ao recuperar a ultima localização</string>
     <string name="error_noGps">Sem conexão com o GPS</string>
@@ -48,15 +48,14 @@
 
 
     <!-- Layout Widget -->
-    <string name="widget_id_label">Numero Widget</string>
-    <string name="widget_update_label">Ultima Atualização</string>
-    <string name="widget_button_update">Atualizar</string>
-    <string name="date_count_format">%1$d @ %2$s</string>
-    <string name="result"> Ver valores</string>
+    <string name="txt_idWidget">Numero Widget</string>
+    <string name="txt_lastUpdate">Ultima Atualização</string>
+    <string name="txt_formatDateCount">%1$d - %2$s</string>
 
     <string name="txt_makeupSearch">Buscas de Maquiagens</string>
     <string name="txt_locationSearch">Localizações Buscadas</string>
-    <string name="txt_brandTypeFormat">%1$s / %2$s</string>
+    <string name="txt_brandTypeFormat">%1$s</string>
     <string name="txt_divider">/</string>
+    <string name="description_imageButton">Atualizar Widget</string>
 
 </resources>

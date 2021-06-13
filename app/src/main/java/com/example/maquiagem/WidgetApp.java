@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 
+import com.example.maquiagem.model.DataBaseMakeup;
+
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -17,78 +19,105 @@ import java.util.Date;
 public class WidgetApp extends AppWidgetProvider {
 
     // Name of shared preferences file & key
-    private static final String SHARED_PREFERENCES_FILE = "com.example.android.appwidgetexemplo";
-    private static final String COUNT_KEY = "contador";
+    private static final String SHARED_PREFERENCES_FILE = "com.example.android.appapimakeup";
+    private static final String COUNT_UPDATE_KEY = "contadorWidget";
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
-
-        // Retorna o contador.
-        SharedPreferences preferencias =
-                context.getSharedPreferences(SHARED_PREFERENCES_FILE, 0);
-        int count = preferencias.getInt(COUNT_KEY + appWidgetId, 0);
-        count++;
-
-        // Obtem a data atual
-        String dateString =
-                DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date());
-
-        // Define o objeto RemoteView
-        /*
-        Uma classe que descreve uma hierarquia de visualização que pode ser exibida em outro processo.
-        A hierarquia é inflada a partir de um arquivo de recurso de layout, e esta classe fornece algumas
-        operações básicas para modificar o conteúdo da hierarquia inflada.
-         */
-        RemoteViews views = new RemoteViews(context.getPackageName(),R.layout.widget_app);
-        views.setImageViewResource(R.id.imageButton, R.drawable.ic_autorenew);
-        views.setTextViewText(R.id.appwidget_id, String.valueOf(appWidgetId));
-        views.setTextViewText(R.id.appwidget_update,  context.getResources().getString(
-                R.string.date_count_format, count, dateString));
-        views.setTextViewText(R.id.txtWidget_brand,  context.getResources().getString(
-                R.string.txt_brandTypeFormat, "54", "24"));
-
-        // Salva a contagem em shared preferences
-        SharedPreferences.Editor preferenciasEditor = preferencias.edit();
-        preferenciasEditor.putInt(COUNT_KEY + appWidgetId, count);
-        preferenciasEditor.apply();
-
-        // configura 0 botão de update
-        Intent intentUpdate = new Intent(context, WidgetApp.class);
-
-        // A ação da intent deve ser um widget update - intent Filter deve estar definido no manifesto
-        intentUpdate.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-
-        // Inclui o id do widget para ser atualizado como extra da intent
-        int[] idArray = new int[]{appWidgetId};
-        intentUpdate.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, idArray);
-
-
-        // Envolve tudo em uma pending intent para enviar um brodcast.
-        // Use o ID do widget do aplicativo como o código de solicitação (terceiro argumento) para que
-        // cada intent seja único.
-        PendingIntent pendingUpdate = PendingIntent.getBroadcast(context,
-                appWidgetId, intentUpdate, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // Associa a pending intent ao clique do botão
-        views.setOnClickPendingIntent(R.id.imageButton, pendingUpdate);
-
-        // atualiza o widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
-    }
 
     /**
-     * Override for onUpdate() method, to handle all widget update requests.
+     * Sobrescreve o metodo onUpdate para lidar com todas as atualizações do Wodget
      *
-     * @param context          The application context.
-     * @param appWidgetManager The app widget manager.
-     * @param appWidgetIds     An array of the app widget IDs.
+     * @param context          Contexto da Aplicação
+     * @param appWidgetManager Widget manager.
+     * @param appWidgetIds     Array com ID do Widget
      */
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
-        // Atualiza todos os widgetes pendentes
+        // Laço de repetição que atualiza  ID por ID de cada Widget pendente
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
     }
+
+
+    // Metodo que atualiza o Widget
+    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+                                int appWidgetId) {
+
+        // Obtem o arquivo que armazena o contador
+        SharedPreferences preferences = context.
+                getSharedPreferences(SHARED_PREFERENCES_FILE, 0);
+        // Recupera o Valor. Caso não exista ---> Retorna 0
+        int counter = preferences.getInt(COUNT_UPDATE_KEY + appWidgetId, 0);
+        // Adiciona +1 no contador de Atualização
+        counter++;
+
+        // Obtem a Data Atual para informar no Widget (Utlima Atualização)
+        String dateString = DateFormat.
+                getTimeInstance(DateFormat.SHORT).format(new Date());
+
+        /* RemoteView = Classe que descreve uma view que pode ser exibida em outro processo.
+           Ela é inflada a partir de um Layout (widget_app) que possui suas operações que podem
+           alterar o conteudo desse Layout */
+        RemoteViews views = new RemoteViews(context.getPackageName(),R.layout.widget_app);
+
+        // Instancia o HelperDatabase
+        DataBaseMakeup database = new DataBaseMakeup(context);
+
+        int correct = database.getCorrectLocation();
+        int wrong = database.getWrongLocation();
+
+
+        // Mostra o ID do Widget
+        views.setTextViewText(R.id.appwidget_id, Integer.toString(appWidgetId));
+
+        // Icon do ImageButton
+        views.setImageViewResource(R.id.imgBtn_update, R.drawable.ic_autorenew);
+
+        // Buscas de Maquiagem
+        views.setTextViewText(R.id.txtWidget_search,
+                context.getResources().
+                        getString( R.string.txt_brandTypeFormat,
+                                Integer.toString(database.getBrandSearch())
+                        )
+        );
+
+        // Mostra a Hora e a quantidade das Atualizações
+        views.setTextViewText(R.id.appwidget_update,  context.getResources().getString(
+                R.string.txt_formatDateCount, counter, dateString));
+
+        // Mostra as Posições Certas e Erradas na Tela
+        views.setTextViewText(R.id.txtWidget_correctResult, Integer.toString(correct));
+        views.setTextViewText(R.id.txtWidget_wrongResult, Integer.toString(wrong));
+
+        // Armazena a contagem/numero em um SharedPreferences
+        SharedPreferences.Editor preferencesEditor = preferences.edit();
+        // Usa a chave das Preferences, Seleciona pelo ID atual do Widget e Substitui pelo novo
+        preferencesEditor.putInt(COUNT_UPDATE_KEY + appWidgetId, counter);
+        preferencesEditor.apply();
+
+        // Botão de Update
+        Intent intentUpdate = new Intent(context, WidgetApp.class);
+
+        // ACTION_APPWIDGET_UPDATE definido no Manisfest = Ação da Intent é de Update
+        intentUpdate.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+
+        // Inclui o id do widget para ser atualizado como extra da intent
+        // Usado para chamar varios appWidgetsID. Inclui o ID atual para ser atualizado
+        int[] idArray = new int[]{appWidgetId};
+        intentUpdate.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, idArray);
+
+        // Envolve em um PendingIntent para enviar um Broadcast.
+        // Usa o ID do WidgetApp p/ que cada Intent seja unico.
+        // Ultimo Parametro = Recoloca os ExtraData Alterados
+        PendingIntent pendingUpdate = PendingIntent.getBroadcast(context,
+                appWidgetId, intentUpdate, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Associa o clique no Botão com o PendingUpdate criado acima
+        views.setOnClickPendingIntent(R.id.imgBtn_update, pendingUpdate);
+
+        // Atualiza o Widget usando o ID e a RemoteView
+        appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
 }
