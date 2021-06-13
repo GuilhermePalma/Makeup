@@ -12,7 +12,7 @@
         <item name="colorOnSecondary">@color/white_light</item>
 
         <!-- Implementação do Light Theme. Definição do Background e Texto -->
-        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowBackground">@color/white_light</item>
         <item name="android:textColorPrimary">@color/black</item>
 
         <!-- Torna o Icone de Menu Branco -->

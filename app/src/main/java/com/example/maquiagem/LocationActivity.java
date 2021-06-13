@@ -19,27 +19,30 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class LocationActivity extends AppCompatActivity {
 
     private TextView showAddress;
-    private ImageButton showFragment;
+    private ImageButton btnFragment;
 
-    private double latitude;
-    private double longitude;
+    private double latitude = 0;
+    private double longitude = 0;
+    private boolean activeFragment = false;
+    static final String STATE_FRAGMENT = "STATE FRAGMENT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,32 +53,41 @@ public class LocationActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolBar);
         toolbar.setTitle(R.string.app_name);
         setSupportActionBar(toolbar);
-
+        // Icon de voltar para a Tela Home
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_return_home);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        // Valida conexão de Internet e GPS
-        if (requiredForLocation()){
+        btnFragment = findViewById(R.id.btn_showFragment);
+        btnFragment.setImageResource(R.drawable.ic_keyboard_arrow_down);
+
+        if (requiredForLocation()) {
             getLastLocationUser();
         }
-
-        showFragment = findViewById(R.id.btn_showFragment);
-
-        showFragment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
     }
+
+    // Metodo ao clicar no ImageButton ---> Setinha em baixo da Localização
+    public void buttonFragment(View view){
+        // Caso o Fragment esteja ativo --> Fecha. Se não está ativo ----> Abre
+        if (activeFragment) {
+            closeFragment();
+        } else {
+            showFragment();
+        }
+    }
+
 
     // Metodo que valida se há conexão e GPS ativos
     public boolean requiredForLocation(){
+
         // Controla os serviços de Localziação
         LocationManager service = (LocationManager)
                 getSystemService(LOCATION_SERVICE);
+
+
+        // Verifica se o GPS está ativo e se possui conexão com a Internet
+        boolean gpsIsEnabled = false;
+        gpsIsEnabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         //Valida a conexão com Internet
         ConnectivityManager connectionManager = (ConnectivityManager)
@@ -85,10 +97,6 @@ public class LocationActivity extends AppCompatActivity {
             // Obteve os serviços de conexão
             networkInfo = connectionManager.getActiveNetworkInfo();
         }
-
-        // Verifica se o GPS está ativo e se possui conexão com a Internet
-        boolean gpsIsEnabled = false;
-        gpsIsEnabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         // Caso o Conection Manager não tenha sido Inciado (Defalult = Null)
         if (networkInfo == null){
@@ -112,7 +120,6 @@ public class LocationActivity extends AppCompatActivity {
         }
     }
 
-
     // Metodo que recupera a Ultima Localização Conhecida
     public void getLastLocationUser() {
 
@@ -128,8 +135,7 @@ public class LocationActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this, new String[]{
-                    Manifest.permission.ACCESS_FINE_LOCATION},1);
-
+                    Manifest.permission.ACCESS_FINE_LOCATION},0);
             return;
         } else {
             Log.d("PERMISSÕES", "\nPermitido o uso do Local ");
@@ -142,9 +148,18 @@ public class LocationActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Location location) {
 
-                        List<Address> addresses = null;
+                        List<Address> addresses = new ArrayList<>();
                         Geocoder geocoder = new Geocoder(getApplicationContext(),
                                 Locale.getDefault());
+
+                        if (location == null){
+                            Log.e("LOCATION", "\nErro na Localização\n" + location);
+                            Snackbar errorLocation = Snackbar.make(
+                                    findViewById(R.id.layout_location),
+                                    R.string.error_location,Snackbar.LENGTH_LONG);
+                            errorLocation.show();
+                            return;
+                        }
 
                         try {
                             // Tenta obter a Latitude e Longitude do Local atual
@@ -172,7 +187,7 @@ public class LocationActivity extends AppCompatActivity {
                         }
                         finally {
                             Log.d("FINAL LOCATION", "\nLocalização Final" + addresses.toString());
-                            if(addresses == null){
+                            if(addresses.isEmpty()){
                                 showAddress.setText(R.string.error_searchLocation);
                             }
                             else{
@@ -195,4 +210,51 @@ public class LocationActivity extends AppCompatActivity {
             );
     }
 
+
+    // Mostra o Fragment na Tela
+    public void showFragment(){
+        // Instancia a classe do Fragment
+        FeedbackLocation feedbackLocation = FeedbackLocation.newInstance();
+
+        // Dá suporte ao Fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        // Cria uma ação a ser executada
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        fragmentTransaction.add(R.id.fragment_location, feedbackLocation).
+                addToBackStack(null).commit();
+
+        // Altera o Icone para Setinha para Cima
+        btnFragment.setImageResource(R.drawable.ic_keyboard_arrow_up);
+        activeFragment = true;
+    }
+
+    // Fecha o Fragment
+    public void closeFragment(){
+        //Obtem o gerenciametno de Fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        // Instancia a Classe do Fragment e busca se existe um Fragment Ativo no ID Informado
+        FeedbackLocation feedbackLocation = (FeedbackLocation) fragmentManager.
+                findFragmentById(R.id.fragment_location);
+
+        // Existe o Fragment no id Informado
+        if (feedbackLocation != null){
+            // Cria uma ação a ser executada
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+            fragmentTransaction.remove(feedbackLocation).commit();
+        }
+
+        // Altera o Icone para Setinha para Baixo
+        btnFragment.setImageResource(R.drawable.ic_keyboard_arrow_down);
+        activeFragment = false;
+    }
+
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Salva/Armazena o estado do Fragment, usando uma key e um valor Boolean
+        savedInstanceState.putBoolean(STATE_FRAGMENT, activeFragment);
+        super.onSaveInstanceState(savedInstanceState);
+    }
 }
