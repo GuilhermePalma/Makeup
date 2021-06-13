@@ -44,13 +44,19 @@
     <string name="rbtn_wrongLocation">Localização Incorreta</string>
     <string name="rbtn_correctLocation">Localização Correta</string>
     <string name="btn_showFragment">Mostrar Opções</string>
+    <string name="btn_sendLocation">Enviar Dados</string>
 
 
     <!-- Layout Widget -->
-    <string name="widget_id_label">Widget ID</string>
+    <string name="widget_id_label">Numero Widget</string>
     <string name="widget_update_label">Ultima Atualização</string>
     <string name="widget_button_update">Atualizar</string>
-    <string name="date_count_format">%1$d @%2$s</string>
+    <string name="date_count_format">%1$d @ %2$s</string>
     <string name="result"> Ver valores</string>
+
+    <string name="txt_makeupSearch">Buscas de Maquiagens</string>
+    <string name="txt_locationSearch">Localizações Buscadas</string>
+    <string name="txt_brandTypeFormat">%1$s / %2$s</string>
+    <string name="txt_divider">/</string>
 
 </resources>

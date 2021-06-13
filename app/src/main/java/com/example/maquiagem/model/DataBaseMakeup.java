@@ -85,6 +85,7 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         values.put(LOCATION, returnLocation);
 
         db.insert(TABLE_LOCATION, null, values);
+        db.close();
     }
 
 

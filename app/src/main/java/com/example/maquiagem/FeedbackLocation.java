@@ -26,7 +26,7 @@ public class FeedbackLocation extends Fragment {
     private static final int NO = 0;
     private static final int YES = 1;
 
-    private DataBaseMakeup helper = new DataBaseMakeup(getContext());
+    private DataBaseMakeup helper = new DataBaseMakeup(getActivity());
 
 
     public FeedbackLocation() {

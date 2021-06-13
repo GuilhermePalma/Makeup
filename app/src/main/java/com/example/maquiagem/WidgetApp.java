@@ -40,9 +40,12 @@ public class WidgetApp extends AppWidgetProvider {
         operações básicas para modificar o conteúdo da hierarquia inflada.
          */
         RemoteViews views = new RemoteViews(context.getPackageName(),R.layout.widget_app);
+        views.setImageViewResource(R.id.imageButton, R.drawable.ic_autorenew);
         views.setTextViewText(R.id.appwidget_id, String.valueOf(appWidgetId));
         views.setTextViewText(R.id.appwidget_update,  context.getResources().getString(
                 R.string.date_count_format, count, dateString));
+        views.setTextViewText(R.id.txtWidget_brand,  context.getResources().getString(
+                R.string.txt_brandTypeFormat, "54", "24"));
 
         // Salva a contagem em shared preferences
         SharedPreferences.Editor preferenciasEditor = preferencias.edit();
@@ -67,7 +70,7 @@ public class WidgetApp extends AppWidgetProvider {
                 appWidgetId, intentUpdate, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Associa a pending intent ao clique do botão
-        views.setOnClickPendingIntent(R.id.button_update, pendingUpdate);
+        views.setOnClickPendingIntent(R.id.imageButton, pendingUpdate);
 
         // atualiza o widget
         appWidgetManager.updateAppWidget(appWidgetId, views);

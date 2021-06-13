@@ -187,6 +187,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //Validação da Conexão Ativa
         if (networkInfo != null && networkInfo.isConnected()) {
 
+            // TODO Retirar
+            dataBaseHelper.insertLocation("wrong_location");
+
             // Insere no bundle, o id(como sera chamado) e o dado/variavel
             Bundle queryBundle = new Bundle();
             queryBundle.putString("product_type", infoType);
