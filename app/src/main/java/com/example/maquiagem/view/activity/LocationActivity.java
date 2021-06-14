@@ -26,6 +26,7 @@ import com.example.maquiagem.view.AlertDialogs;
 import com.example.maquiagem.view.FeedbackLocation;
 import com.example.maquiagem.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -103,14 +104,12 @@ public class LocationActivity extends AppCompatActivity {
 
         // Caso o Conection Manager não tenha sido Inciado (Defalult = Null)
         if (networkInfo == null){
-            dialogs.message(getApplicationContext(),"Sem Internet",
+            dialogs.message(LocationActivity.this,"Sem Internet",
                     getString(R.string.error_connection)).show();
 
-            dialogs.message(getApplicationContext(),"Sem Dados",
-                    getString(R.string.table_empty)).show();
             return false;
         } else if (!gpsIsEnabled){
-            dialogs.message(getApplicationContext(),"Sem GPS",
+            dialogs.message(LocationActivity.this,"Sem GPS",
                     getString(R.string.error_noGps)).show();
             return false;
 
@@ -155,7 +154,7 @@ public class LocationActivity extends AppCompatActivity {
                         if (location == null){
                             Log.e("LOCATION", "\nErro na Localização\n" + location);
 
-                            dialogs.message(getApplicationContext(),
+                            dialogs.message(LocationActivity.this,
                                     "Não encontramos a Localização",
                                     getString(R.string.error_location)).show();
                             return;

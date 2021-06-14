@@ -110,7 +110,7 @@ public class CustomEditText extends AppCompatEditText {
             @Override
             public void onTextChanged(CharSequence s,
                                       int start, int before, int count) {
-                showClearButton(clearButton);
+                //showClearButton(clearButton);
             }
 
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)

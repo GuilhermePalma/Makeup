@@ -226,7 +226,7 @@ public class  MainActivity extends AppCompatActivity implements LoaderManager.Lo
             Log.e("NO CONECTED", "\n Erro na conexão com a Internet" +
                     "\nConexão: " + networkInfo);
 
-            dialogs.message(getApplicationContext(),"Sem Internet",
+            dialogs.message(MainActivity.this,"Sem Internet",
                      getString(R.string.error_connection)).show();
 
         }
@@ -276,7 +276,7 @@ public class  MainActivity extends AppCompatActivity implements LoaderManager.Lo
             numberProducts = itemsArray.length();
             if(numberProducts == 0){
                 //Array Vazio
-                dialogs.message(getApplicationContext(),"Produto/Marca não encontrado",
+                dialogs.message(MainActivity.this,"Produto/Marca não encontrado",
                         getString(R.string.no_exists)).show();
                 return;
             }
@@ -343,7 +343,7 @@ public class  MainActivity extends AppCompatActivity implements LoaderManager.Lo
 
         } catch (Exception e) {
             //Caso não receba uma String Valida ou tenha algum problema na criação Array
-            dialogs.message(getApplicationContext(),"Erro na leitura",
+            dialogs.message(MainActivity.this,"Erro na leitura",
                     getString(R.string.error_json)).show();
 
             Log.e("NOT VALID ARRAY",
@@ -394,7 +394,7 @@ public class  MainActivity extends AppCompatActivity implements LoaderManager.Lo
             // Não possui dados na Tabela
             Log.e("EMPTY DATABASE", "\nNão foi encontrado nenhum " +
                     "dado no Banco de Dados\n" + cursor.toString());
-            dialogs.message(getApplicationContext(),"Sem Dados",
+            dialogs.message(MainActivity.this,"Sem Dados",
                     getString(R.string.table_empty)).show();
 
 
