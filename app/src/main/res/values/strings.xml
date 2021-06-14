@@ -20,6 +20,7 @@
     <string name="clear_bd">Limpar Dados Salvos</string>
     <string name="change_theme">Alterar Tema</string>
     <string name="location_now">Localização Atual</string>
+    <string name="description_location">Ver Localização Atual</string>
 
     <!-- Activity Result-->
     <string name="title_result">Resultados da Busca</string>

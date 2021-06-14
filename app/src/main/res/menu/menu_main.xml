@@ -5,7 +5,9 @@
     <item
         android:id="@+id/location"
         android:title="@string/location_now"
-        app:showAsAction="never"/>
+        app:showAsAction="always"
+        android:icon="@drawable/ic_location_on"
+        android:contentDescription="@string/description_location"/>
 
     <item
         android:id="@+id/clearDb"
@@ -14,7 +16,6 @@
 
     <item
         android:id="@+id/alter_theme"
-        android:title="@string/change_theme"
-        app:showAsAction="never"/>
+        android:title="@string/change_theme" />
 
 </menu>
