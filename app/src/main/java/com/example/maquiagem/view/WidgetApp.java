@@ -1,4 +1,4 @@
-package com.example.maquiagem;
+package com.example.maquiagem.view;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 
+import com.example.maquiagem.R;
 import com.example.maquiagem.model.DataBaseMakeup;
 
 import java.text.DateFormat;
@@ -55,7 +56,7 @@ public class WidgetApp extends AppWidgetProvider {
         /* RemoteView = Classe que descreve uma view que pode ser exibida em outro processo.
            Ela é inflada a partir de um Layout (widget_app) que possui suas operações que podem
            alterar o conteudo desse Layout */
-        RemoteViews views = new RemoteViews(context.getPackageName(),R.layout.widget_app);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_app);
 
         // Instancia o HelperDatabase
         DataBaseMakeup database = new DataBaseMakeup(context);

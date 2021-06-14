@@ -1,4 +1,4 @@
-package com.example.maquiagem;
+package com.example.maquiagem.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,13 +7,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -22,6 +19,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -30,11 +28,12 @@ import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.maquiagem.model.CustomEditText;
+import com.example.maquiagem.R;
+import com.example.maquiagem.view.AlertDialogs;
+import com.example.maquiagem.view.RecycleAdapter;
 import com.example.maquiagem.model.DataBaseMakeup;
 import com.example.maquiagem.model.AsyncMakeup;
 import com.example.maquiagem.model.Makeup;
-import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
+public class  MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
 
     private EditText editType;
     private EditText editBrand;
@@ -58,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private final DataBaseMakeup dataBaseHelper = new DataBaseMakeup(this);
     private String infoType, infoBrand;
+
+    AlertDialogs dialogs = new AlertDialogs();
 
 
     @Override
@@ -224,9 +225,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // Erro na Conexão
             Log.e("NO CONECTED", "\n Erro na conexão com a Internet" +
                     "\nConexão: " + networkInfo);
-            Snackbar errorConnection = Snackbar.
-                    make(view, R.string.error_connection, Snackbar.LENGTH_LONG);
-            errorConnection.show();
+
+            dialogs.message(getApplicationContext(),"Sem Internet",
+                     getString(R.string.error_connection)).show();
+
         }
     }
 
@@ -274,11 +276,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             numberProducts = itemsArray.length();
             if(numberProducts == 0){
                 //Array Vazio
-                Snackbar dataEmpty = Snackbar.make(
-                        findViewById(R.id.viewIndex),
-                        R.string.no_exists,
-                        Snackbar.LENGTH_LONG);
-                dataEmpty.show();
+                dialogs.message(getApplicationContext(),"Produto/Marca não encontrado",
+                        getString(R.string.no_exists)).show();
                 return;
             }
             else if(numberProducts < 19){
@@ -344,11 +343,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         } catch (Exception e) {
             //Caso não receba uma String Valida ou tenha algum problema na criação Array
-            Snackbar errorInputs = Snackbar.make(
-                    findViewById(R.id.viewIndex),
-                    R.string.error_json,
-                    Snackbar.LENGTH_LONG);
-            errorInputs.show();
+            dialogs.message(getApplicationContext(),"Erro na leitura",
+                    getString(R.string.error_json)).show();
 
             Log.e("NOT VALID ARRAY",
                     "\nErro no Array ou no Recebimento da String\n" + e);
@@ -398,12 +394,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // Não possui dados na Tabela
             Log.e("EMPTY DATABASE", "\nNão foi encontrado nenhum " +
                     "dado no Banco de Dados\n" + cursor.toString());
+            dialogs.message(getApplicationContext(),"Sem Dados",
+                    getString(R.string.table_empty)).show();
 
-            Snackbar dataEmpty = Snackbar.make(
-                    findViewById(R.id.viewIndex),
-                    R.string.table_empty,
-                    Snackbar.LENGTH_LONG);
-            dataEmpty.show();
 
         }
         cursor.close();

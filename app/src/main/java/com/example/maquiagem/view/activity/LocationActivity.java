@@ -1,4 +1,4 @@
-package com.example.maquiagem;
+package com.example.maquiagem.view.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,12 +22,13 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.maquiagem.view.AlertDialogs;
+import com.example.maquiagem.view.FeedbackLocation;
+import com.example.maquiagem.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,6 +44,8 @@ public class LocationActivity extends AppCompatActivity {
     private double longitude = 0;
     private boolean activeFragment = false;
     static final String STATE_FRAGMENT = "STATE FRAGMENT";
+
+    AlertDialogs dialogs = new AlertDialogs();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,18 +103,15 @@ public class LocationActivity extends AppCompatActivity {
 
         // Caso o Conection Manager não tenha sido Inciado (Defalult = Null)
         if (networkInfo == null){
-            Snackbar notInternet =  Snackbar.make(
-                    findViewById(R.id.layout_location),
-                    R.string.error_connection,
-                    Snackbar.LENGTH_LONG);
-            notInternet.show();
+            dialogs.message(getApplicationContext(),"Sem Internet",
+                    getString(R.string.error_connection)).show();
+
+            dialogs.message(getApplicationContext(),"Sem Dados",
+                    getString(R.string.table_empty)).show();
             return false;
         } else if (!gpsIsEnabled){
-            Snackbar noGps =  Snackbar.make(
-                    findViewById(R.id.layout_location),
-                    R.string.error_noGps,
-                    Snackbar.LENGTH_LONG);
-            noGps.show();
+            dialogs.message(getApplicationContext(),"Sem GPS",
+                    getString(R.string.error_noGps)).show();
             return false;
 
         } else{
@@ -154,10 +154,10 @@ public class LocationActivity extends AppCompatActivity {
 
                         if (location == null){
                             Log.e("LOCATION", "\nErro na Localização\n" + location);
-                            Snackbar errorLocation = Snackbar.make(
-                                    findViewById(R.id.layout_location),
-                                    R.string.error_location,Snackbar.LENGTH_LONG);
-                            errorLocation.show();
+
+                            dialogs.message(getApplicationContext(),
+                                    "Não encontramos a Localização",
+                                    getString(R.string.error_location)).show();
                             return;
                         }
 

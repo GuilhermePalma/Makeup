@@ -1,4 +1,4 @@
-package com.example.maquiagem;
+package com.example.maquiagem.view;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioButton;
 
+import com.example.maquiagem.R;
 import com.example.maquiagem.model.DataBaseMakeup;
 
 public class FeedbackLocation extends Fragment {
