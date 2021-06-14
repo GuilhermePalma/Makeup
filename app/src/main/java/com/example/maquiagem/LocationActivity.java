@@ -214,7 +214,7 @@ public class LocationActivity extends AppCompatActivity {
     // Mostra o Fragment na Tela
     public void showFragment(){
         // Instancia a classe do Fragment
-        FeedbackLocation feedbackLocation = FeedbackLocation.newInstance();
+        FeedbackLocation feedbackLocation = FeedbackLocation.newInstance(getApplicationContext());
 
         // Dá suporte ao Fragment
         FragmentManager fragmentManager = getSupportFragmentManager();

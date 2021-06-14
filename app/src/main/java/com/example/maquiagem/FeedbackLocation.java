@@ -1,6 +1,5 @@
 package com.example.maquiagem;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -9,33 +8,24 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
-import android.widget.RadioGroup;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.RadioButton;
 
 import com.example.maquiagem.model.DataBaseMakeup;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FeedbackLocation#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FeedbackLocation extends Fragment {
 
-    // Constantes usadas para as opções no radio Button
-    private static final int NO = 0;
-    private static final int YES = 1;
+    private final DataBaseMakeup helperDatabase;
 
-    private DataBaseMakeup helper = new DataBaseMakeup(getActivity());
-
-
-    public FeedbackLocation() {
-        // Required empty public constructor
+    // Construtor que recebe context p/ usar no BD
+    public FeedbackLocation(Context context) {
+        helperDatabase = new DataBaseMakeup(context);
     }
 
-    // Cria novamente a classe do Fragmente
-    public static FeedbackLocation newInstance() {
-        return new FeedbackLocation();
+
+    // Cria novamente uma nova instancia do Fragmente
+    public static FeedbackLocation newInstance(Context context) {
+        return new FeedbackLocation(context);
     }
 
     // Retorna uma View do Fragment para ser usado em uma view
@@ -45,32 +35,19 @@ public class FeedbackLocation extends Fragment {
         // Cria uma view para o Fragment
         View view = inflater.inflate(R.layout.fragment_feedback_location, container, false);
 
-        // Recupera o radioButton com asopções
-        RadioGroup radioGroup = view.findViewById(R.id.group_rbtnLocation);
+        // Recebe os valores dos Botões do Fragment
+        Button btn_insertDb = view.findViewById(R.id.btn_sendData);
+        RadioButton rbtn_correct = view.findViewById(R.id.rbtn_trueLocation);
 
-        // Metodo caso alguma opção seja selecionada no radioButton
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        btn_insertDb.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
+            public void onClick(View v) {
 
-                // Cria uma View = View do RadioButton
-                // Usa o ID do RadioButton selecionado
-                View radioButton = group.findViewById(checkedId);
+                // Desativa o Botão apos o Clique
+                btn_insertDb.setEnabled(false);
 
-                int numberButton = group.indexOfChild(radioButton);
-
-                // Comandos de acordo com o Botão selecionado
-                switch (numberButton){
-                    case NO:
-                        helper.insertLocation(false);
-                        break;
-                    case YES:
-                        helper.insertLocation(true);
-                        break;
-                    default:
-                        break;
-                }
-
+                // Caso a posição seja correta, insere no Banco de Dados 'True', se não = 'False'
+                helperDatabase.insertLocation(rbtn_correct.isChecked());
             }
         });
 
