@@ -12,7 +12,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.example.maquiagem.R;
@@ -37,11 +36,11 @@ public class CustomEditText extends AppCompatEditText {
         init();
     }
 
-    //define o drawable q será instanciado
+    // Define o Drawable = Icon (X)
     Drawable mClearButtonImage;
 
 
-    //metodo para inicialização do componente
+    // Metodo para criar o componente
     private void init() {
 
         // Obtem um Drawable para ser utilizado
@@ -75,7 +74,7 @@ public class CustomEditText extends AppCompatEditText {
                         isClearButtonClicked.set(true);
                     }
 
-                    // Recupera o valor do AtomicBoolean
+                    // Recupera o valor do AtomicBoolean = True
                     if (isClearButtonClicked.get()) {
 
                         // Recupera o Valor do Toque do Usuario (MotionEvent.____)
@@ -90,10 +89,12 @@ public class CustomEditText extends AppCompatEditText {
                         }
                         // Verifica o  ACTION_UP.
                         if (event.getAction() == MotionEvent.ACTION_UP) {
-                            // Troca pela versão opaca
+                            // ACTION_UP = Fim do pressionar do Botão (Clique) ---> Apagar
+                            // Desativa o Botão
+                            // Caso insira algum Texto ---> Mostra o Botão Opaco na Tela
                             mClearButtonImage =
                                     ResourcesCompat.getDrawable(getResources(),
-                                            R.drawable.ic_clear, null);
+                                            R.drawable.ic_clear_off, null);
                             // limpa o texto
                              getText().clear();
                             //esconde o botão
@@ -103,9 +104,11 @@ public class CustomEditText extends AppCompatEditText {
                             return false;
                         }
                     } else {
+                        // Caso o valor do AtomicButton = False
                         return false;
                     }
                 } else {
+                    // Caso não obtenha valor do Layout
                     return false;
                 }
             }
@@ -126,9 +129,15 @@ public class CustomEditText extends AppCompatEditText {
                 showClearButton();
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
             @Override
             public void afterTextChanged(Editable s) {
-                // Metodo Vazio
+                if (s.length() == 0){
+                    mClearButtonImage =
+                            ResourcesCompat.getDrawable(getResources(),
+                                    R.drawable.ic_clear_off, null);
+                    hideClearButton();
+                }
             }
         });
     }
@@ -150,6 +159,5 @@ public class CustomEditText extends AppCompatEditText {
         setCompoundDrawablesRelativeWithIntrinsicBounds
                 (null,null, null,null);
     }
-
 
 }

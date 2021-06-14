@@ -22,14 +22,10 @@ public class WidgetApp extends AppWidgetProvider {
     private static final String SHARED_PREFERENCES_FILE = "com.example.android.appapimakeup";
     private static final String COUNT_UPDATE_KEY = "contadorWidget";
 
-
-    /**
-     * Sobrescreve o metodo onUpdate para lidar com todas as atualizações do Wodget
-     *
+   /** Sobrescreve o metodo onUpdate para lidar com todas as atualizações do Widget
      * @param context          Contexto da Aplicação
      * @param appWidgetManager Widget manager.
-     * @param appWidgetIds     Array com ID do Widget
-     */
+     * @param appWidgetIds     Array com ID do Widget */
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
@@ -93,6 +89,7 @@ public class WidgetApp extends AppWidgetProvider {
         views.setTextViewText(R.id.txtWidget_correctResult, Integer.toString(correct));
         views.setTextViewText(R.id.txtWidget_wrongResult, Integer.toString(wrong));
 
+        database.close();
 
         // Armazena a contagem/numero em um SharedPreferences
         SharedPreferences.Editor preferencesEditor = preferences.edit();

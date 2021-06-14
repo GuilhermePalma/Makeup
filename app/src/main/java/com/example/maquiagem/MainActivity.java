@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -25,6 +27,7 @@ import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.maquiagem.model.CustomEditText;
 import com.example.maquiagem.model.DataBaseMakeup;
 import com.example.maquiagem.model.AsyncMakeup;
 import com.example.maquiagem.model.Makeup;
@@ -112,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 // Limpa o Banco de Dados
                 dataBaseHelper.clearTableMakeup();
                 dataBaseHelper.clearTableLocation();
+                dataBaseHelper.close();
                 break;
             case (R.id.alter_theme):
                 if(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES){
@@ -128,18 +132,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void returnInputs(View view){
         // Limpa a Tela e o Banco de Dados
         clearWindow();
-
-        layoutResult.setVisibility(View.GONE);
         layoutInputs.setVisibility(View.VISIBLE);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void clearWindow(){
         // Limpa o Array MakeList(P/ reiniciar o RecycleView) e apaga o Texto de Resultado
-        editType.setText(R.string.string_empty);
-        editBrand.setText(R.string.string_empty);
+        /*editType.setText(R.string.string_empty);
+        editBrand.setText(R.string.string_empty);*/
+
+/*        // TODO IMPLEMENTAR LIMPAR OS INPUTS
+        CustomEditText customEditText = new CustomEditText(editBrand.getContext());
+//        customEditText.clickedClearButton.set(false);
+        customEditText.hideClearButton();*/
 
         layoutResult.setVisibility(View.GONE);
 
@@ -152,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
     // Metodo do Botão Pesquisar
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void LoadResult(View view) {
 
         // Recupera os valores inseridos pelo Usario
@@ -188,10 +198,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (networkInfo != null && networkInfo.isConnected()) {
 
             // Caso já exista produtos no Banco de Dados com a Marca e Tipo inserida
-            if (dataBaseHelper.existsRecords(infoType, infoBrand)){
+            if (dataBaseHelper.existsRecords(infoType, infoBrand)) {
+                dataBaseHelper.close();
                 showWindow();
                 return;
             }
+
+            // Fecha a Conexão com o Banco de Dados
+            dataBaseHelper.close();
 
             // Insere no bundle, o id(como sera chamado) e o dado/variavel
             Bundle queryBundle = new Bundle();
@@ -310,6 +324,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     Makeup classMakeup = new Makeup(id, brand, name, type, price,
                             currency, description, urlImage);
                     // Insere os dados da Classe Makeup no SQLite
+
                     dataBaseHelper.insertMakeup(classMakeup);
 
                 } catch (Exception e) {

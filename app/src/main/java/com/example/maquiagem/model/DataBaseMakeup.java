@@ -6,11 +6,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.strictmode.SqliteObjectLeakedViolation;
 import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DataBaseMakeup extends SQLiteOpenHelper {
 
@@ -77,7 +73,6 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         values.put(IMAGE, makeup.getUrlImage());
 
         db.insert(TABLE_MAKEUP, null, values);
-        db.close();
     }
 
     // Verifica se ja existe os produtos buscados
@@ -88,13 +83,11 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         int amountRecords = (int) DatabaseUtils.queryNumEntries(database,TABLE_MAKEUP,
                 TYPE + "='" + type + "' AND " + BRAND + "='" + brand+ "'");
 
-        database.close();
-
         // Caso tenha 1 ou mais registros ---> True
-        if (amountRecords >= 1){
-            return true;
-        } else {
+        if (amountRecords == 0){
             return false;
+        } else {
+            return true;
         }
     }
 
@@ -108,7 +101,6 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
             values.put(LOCATION, "wrong_position");
         }
         db.insert(TABLE_LOCATION, null, values);
-        db.close();
     }
 
 
@@ -116,14 +108,12 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
     public void clearTableMakeup() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_MAKEUP);
-        db.close();
     }
 
     // Apaga todos os dados da Tabela Localização
     public void clearTableLocation(){
         SQLiteDatabase database = this.getWritableDatabase();
         database.execSQL("DELETE FROM " + TABLE_LOCATION);
-        database.close();
     }
 
 
@@ -136,7 +126,6 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
                 " WHERE " + TYPE + "='" + type +
                 "' AND " + BRAND +  "='" + brand + "'",
                 null );
-        db.close();
         return cursor;
     }
 
@@ -149,39 +138,26 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         String correct = "correct_position";
 
         // Retorna a quantidade do select com a palavra acima
-        int amountCorrect = (int) DatabaseUtils.queryNumEntries(db, TABLE_LOCATION,
+        return (int) DatabaseUtils.queryNumEntries(db, TABLE_LOCATION,
                 LOCATION + "='" + correct + "'");
-
-        db.close();
-        return amountCorrect;
     }
 
     // Recupera a quantidade de posições erradas
     public int getWrongLocation(){
         SQLiteDatabase db = this.getReadableDatabase();
         String wrong = "wrong_position";
-
-        int amountWrong = (int) DatabaseUtils.queryNumEntries(db, TABLE_LOCATION,
+        return (int) DatabaseUtils.queryNumEntries(db, TABLE_LOCATION,
                 LOCATION + "='" + wrong + "'");
-
-        db.close();
-        return amountWrong;
     }
 
     public int getAmountLocation(){
         SQLiteDatabase database = this.getReadableDatabase();
-        int amountLocation = (int) DatabaseUtils.queryNumEntries(database,TABLE_LOCATION);
-
-        database.close();
-        return amountLocation;
+        return (int) DatabaseUtils.queryNumEntries(database,TABLE_LOCATION);
     }
 
     public int getProductsSearch(){
         SQLiteDatabase db = this.getReadableDatabase();
-        int amountProducts = (int) DatabaseUtils.queryNumEntries(db,TABLE_MAKEUP);
-
-        db.close();
-        return amountProducts;
+        return (int) DatabaseUtils.queryNumEntries(db,TABLE_MAKEUP);
     }
 }
 

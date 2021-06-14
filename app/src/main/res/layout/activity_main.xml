@@ -44,25 +44,23 @@
                 android:foregroundGravity="center_vertical|center|center_horizontal"
                 app:srcCompat="@drawable/makeup" />
 
-            <EditText
+            <com.example.maquiagem.model.CustomEditText
                 android:id="@+id/edit_type"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:autofillHints=""
+                android:layout_height="match_parent"
+                android:layout_marginTop="15dp"
                 android:ems="10"
                 android:hint="@string/edit_type"
-                android:inputType="textPersonName" />
+                android:inputType="text" />
 
-            <EditText
+            <com.example.maquiagem.model.CustomEditText
                 android:id="@+id/edit_brand"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="15dp"
-                android:autofillHints=""
                 android:ems="10"
                 android:hint="@string/edit_marca"
-                android:inputType="textPersonName" />
+                android:inputType="text" />
 
             <Button
                 android:id="@+id/btn_search"
