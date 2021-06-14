@@ -37,14 +37,15 @@ public class CustomEditText extends AppCompatEditText {
     }
 
     // Define o Drawable = Icon (X)
-    Drawable mClearButtonImage;
-
+    Drawable clearButtonOff, clearButton;
 
     // Metodo para criar o componente
     private void init() {
 
-        // Obtem um Drawable para ser utilizado
-        mClearButtonImage = ResourcesCompat.getDrawable(getResources(),
+        // Cria os Drawables que serão utilizado
+        clearButton = ResourcesCompat.getDrawable(getResources(),
+                R.drawable.ic_clear, null);
+        clearButtonOff = ResourcesCompat.getDrawable(getResources(),
                 R.drawable.ic_clear_off, null);
 
         // Metodo chamado ao clicar no Botão
@@ -66,7 +67,7 @@ public class CustomEditText extends AppCompatEditText {
 
                     // Calcula a Posição do Drawable
                     clearButtonStart = (getWidth() - getPaddingEnd()
-                            - mClearButtonImage.getIntrinsicWidth());
+                            - clearButton.getIntrinsicWidth());
 
                     // Caso o clique no botão seja logo depois da criação dele
                     if (event.getX() > clearButtonStart) {
@@ -77,32 +78,25 @@ public class CustomEditText extends AppCompatEditText {
                     // Recupera o valor do AtomicBoolean = True
                     if (isClearButtonClicked.get()) {
 
-                        // Recupera o Valor do Toque do Usuario (MotionEvent.____)
-                        // ACTION_DOWN = Ação de Voltar para a Posição Incial
-                        // Quando o usuario clica fora do EditText
-                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                            // Atr
-                            mClearButtonImage =
-                                    ResourcesCompat.getDrawable(getResources(),
-                                            R.drawable.ic_clear, null);
-                            showClearButton();
+                        switch (event.getAction()){
+                            case MotionEvent.ACTION_DOWN:
+                            /* ACTION_DOWN = Voltar para a Posição Incial = Clique fora do EditText.
+                               Instancia o metodo showClearButton com valor do Icon */
+                                showClearButton(clearButtonOff);
+                                return false;
+
+                            case MotionEvent.ACTION_UP:
+                                // ACTION_UP = Fim do clique no Botão = Apagar (Desativa o Botão)
+                                // Limpa o Texto do EditText
+                                getText().clear();
+                                // Não mostra nenhum botão
+                                showClearButton(null);
+                                return true;
+
+                            default:
+                                return false;
                         }
-                        // Verifica o  ACTION_UP.
-                        if (event.getAction() == MotionEvent.ACTION_UP) {
-                            // ACTION_UP = Fim do pressionar do Botão (Clique) ---> Apagar
-                            // Desativa o Botão
-                            // Caso insira algum Texto ---> Mostra o Botão Opaco na Tela
-                            mClearButtonImage =
-                                    ResourcesCompat.getDrawable(getResources(),
-                                            R.drawable.ic_clear_off, null);
-                            // limpa o texto
-                             getText().clear();
-                            //esconde o botão
-                            hideClearButton();
-                            return true;
-                        } else {
-                            return false;
-                        }
+
                     } else {
                         // Caso o valor do AtomicButton = False
                         return false;
@@ -126,29 +120,28 @@ public class CustomEditText extends AppCompatEditText {
             @Override
             public void onTextChanged(CharSequence s,
                                       int start, int before, int count) {
-                showClearButton();
+                showClearButton(clearButton);
             }
 
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
             @Override
             public void afterTextChanged(Editable s) {
+                // Depois do Texto alterado, caso não tenha nada escrito ---> Tira o Icon
                 if (s.length() == 0){
-                    mClearButtonImage =
-                            ResourcesCompat.getDrawable(getResources(),
-                                    R.drawable.ic_clear_off, null);
-                    hideClearButton();
+                    // Coloca nehum botão no Final
+                    showClearButton(null);
                 }
             }
         });
     }
 
     // Mostra o Botão no Layout ---> Final do Layout (End)
-    private void showClearButton() {
+    private void showClearButton(Drawable buttonShow) {
         // Validação da Versão minima da API do dispotivo Android
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             // Coloca o Icone do Botão no Fim do Layout
             setCompoundDrawablesRelativeWithIntrinsicBounds
-                    (null,null, mClearButtonImage,null);
+                    (null,null, buttonShow,null);
         }
     }
 
