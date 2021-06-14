@@ -6,6 +6,7 @@ import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -16,6 +17,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.example.maquiagem.R;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CustomEditText extends AppCompatEditText {
@@ -60,45 +62,34 @@ public class CustomEditText extends AppCompatEditText {
                 // Caso o drawable estja no final do texto = [2]
                 if ((getCompoundDrawablesRelative()[2] != null)) {
 
-                    float clearButtonStart; // Linguagens LTR
+                    float areaEditTextWithoutButton;
 
-                    // Tipo Booleano que pode ser atualizado automaticamente
-                    AtomicBoolean isClearButtonClicked = new AtomicBoolean(false);
-
-                    // Calcula a Posição do Drawable
-                    clearButtonStart = (getWidth() - getPaddingEnd()
+                    // Calcula a area do EditText sem o Botão
+                    areaEditTextWithoutButton = (getWidth() - getPaddingEnd()
                             - clearButton.getIntrinsicWidth());
 
-                    // Caso o clique no botão seja logo depois da criação dele
-                    if (event.getX() > clearButtonStart) {
-                        // Alteraa Variavel do Botaõ de Limpar
-                        isClearButtonClicked.set(true);
-                    }
-
-                    // Recupera o valor do AtomicBoolean = True
-                    if (isClearButtonClicked.get()) {
-
+                    // Caso o clique (evento recebido) seja no Botão
+                    if (event.getX() > areaEditTextWithoutButton) {
                         switch (event.getAction()){
                             case MotionEvent.ACTION_DOWN:
-                            /* ACTION_DOWN = Voltar para a Posição Incial = Clique fora do EditText.
-                               Instancia o metodo showClearButton com valor do Icon */
+                              /* ACTION_DOWN = Voltar para a Posição Incial = Clique fora do
+                                   EditText. Instancia o metodo showClearButton com valor do Icon */
                                 showClearButton(clearButtonOff);
                                 return false;
 
                             case MotionEvent.ACTION_UP:
                                 // ACTION_UP = Fim do clique no Botão = Apagar (Desativa o Botão)
-                                // Limpa o Texto do EditText
-                                getText().clear();
-                                // Não mostra nenhum botão
+                                // Limpa o Texto e tira o Botão do EditText
+                                setText("");
                                 showClearButton(null);
                                 return true;
 
                             default:
+                                showClearButton(null);
                                 return false;
                         }
-
                     } else {
-                        // Caso o valor do AtomicButton = False
+                        // Clique Fora do Botão
                         return false;
                     }
                 } else {
@@ -114,7 +105,6 @@ public class CustomEditText extends AppCompatEditText {
             @Override
             public void beforeTextChanged(CharSequence s,
                                           int start, int count, int after) {
-                // Metodo Vazio
             }
 
             @Override
