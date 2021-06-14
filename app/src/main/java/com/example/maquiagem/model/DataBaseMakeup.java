@@ -88,6 +88,8 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         int amountRecords = (int) DatabaseUtils.queryNumEntries(database,TABLE_MAKEUP,
                 TYPE + "='" + type + "' AND " + BRAND + "='" + brand+ "'");
 
+        database.close();
+
         // Caso tenha 1 ou mais registros ---> True
         if (amountRecords >= 1){
             return true;
@@ -134,6 +136,7 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
                 " WHERE " + TYPE + "='" + type +
                 "' AND " + BRAND +  "='" + brand + "'",
                 null );
+        db.close();
         return cursor;
     }
 
@@ -146,8 +149,11 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         String correct = "correct_position";
 
         // Retorna a quantidade do select com a palavra acima
-        return (int) DatabaseUtils.queryNumEntries(db, TABLE_LOCATION,
+        int amountCorrect = (int) DatabaseUtils.queryNumEntries(db, TABLE_LOCATION,
                 LOCATION + "='" + correct + "'");
+
+        db.close();
+        return amountCorrect;
     }
 
     // Recupera a quantidade de posições erradas
@@ -155,15 +161,28 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String wrong = "wrong_position";
 
-        return (int) DatabaseUtils.queryNumEntries(db, TABLE_LOCATION,
+        int amountWrong = (int) DatabaseUtils.queryNumEntries(db, TABLE_LOCATION,
                 LOCATION + "='" + wrong + "'");
+
+        db.close();
+        return amountWrong;
     }
 
-    public int getBrandSearch(){
+    public int getAmountLocation(){
+        SQLiteDatabase database = this.getReadableDatabase();
+        int amountLocation = (int) DatabaseUtils.queryNumEntries(database,TABLE_LOCATION);
+
+        database.close();
+        return amountLocation;
+    }
+
+    public int getProductsSearch(){
         SQLiteDatabase db = this.getReadableDatabase();
-        return (int) DatabaseUtils.queryNumEntries(db,TABLE_MAKEUP);
-    }
+        int amountProducts = (int) DatabaseUtils.queryNumEntries(db,TABLE_MAKEUP);
 
+        db.close();
+        return amountProducts;
+    }
 }
 
 

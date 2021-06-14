@@ -67,28 +67,32 @@ public class WidgetApp extends AppWidgetProvider {
         int correct = database.getCorrectLocation();
         int wrong = database.getWrongLocation();
 
-
         // Mostra o ID do Widget
         views.setTextViewText(R.id.appwidget_id, Integer.toString(appWidgetId));
 
         // Icon do ImageButton
         views.setImageViewResource(R.id.imgBtn_update, R.drawable.ic_autorenew);
 
-        // Buscas de Maquiagem
-        views.setTextViewText(R.id.txtWidget_search,
-                context.getResources().
-                        getString( R.string.txt_brandTypeFormat,
-                                Integer.toString(database.getBrandSearch())
-                        )
-        );
-
         // Mostra a Hora e a quantidade das Atualizações
         views.setTextViewText(R.id.appwidget_update,  context.getResources().getString(
                 R.string.txt_formatDateCount, counter, dateString));
 
+        // Buscas de Maquiagem
+        views.setTextViewText(R.id.txtWidget_search,
+                context.getResources().
+                        getString( R.string.txt_brandTypeFormat,
+                                Integer.toString(database.getProductsSearch())
+                        )
+        );
+
+        // Mostra todas as posições Pesquisadas
+        views.setTextViewText(R.id.txtWidget_resultLocation,Integer.
+                toString(database.getAmountLocation()));
+
         // Mostra as Posições Certas e Erradas na Tela
         views.setTextViewText(R.id.txtWidget_correctResult, Integer.toString(correct));
         views.setTextViewText(R.id.txtWidget_wrongResult, Integer.toString(wrong));
+
 
         // Armazena a contagem/numero em um SharedPreferences
         SharedPreferences.Editor preferencesEditor = preferences.edit();

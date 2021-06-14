@@ -133,35 +133,12 @@
                 android:text="@string/txt_makeupSearch" />
 
             <TextView
-                android:id="@+id/txtWidget_resultMakeup"
+                android:id="@+id/txtWidget_search"
                 style="@style/AppWidgetText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:gravity="end" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/section_statisticsMakeup"
-            style="@style/AppWidgetSection"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="0dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginEnd="0dp"
-            android:background="@color/white_light"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/txtWidget_search"
-                style="@style/AppWidgetText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="@string/txt_brandTypeFormat" />
 
         </LinearLayout>
 
