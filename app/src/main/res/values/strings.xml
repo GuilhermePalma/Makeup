@@ -20,7 +20,7 @@
     <string name="clear_bd">Limpar Dados Salvos</string>
     <string name="change_theme">Alterar Tema</string>
     <string name="location_now">Localização Atual</string>
-    <string name="description_location">Ver Localização Atual</string>
+    <string name="sensor_menu">Sensor de Luminosidade</string>
 
     <!-- Activity Result-->
     <string name="title_result">Resultados da Busca</string>
@@ -52,11 +52,12 @@
     <string name="txt_idWidget">Numero Widget</string>
     <string name="txt_lastUpdate">Ultima Atualização</string>
     <string name="txt_formatDateCount">%1$d - %2$s</string>
-
     <string name="txt_makeupSearch">Buscas de Maquiagens</string>
     <string name="txt_locationSearch">Localizações Buscadas</string>
     <string name="txt_brandTypeFormat">%1$s</string>
     <string name="txt_divider">/</string>
     <string name="description_imageButton">Atualizar Widget</string>
 
+    <!-- Layout Sensor -->
+    <string name="txt_errorSensor">Sensor de Proximidade não Disponivel no Dispostivo</string>
 </resources>

@@ -80,7 +80,7 @@ public class CustomEditText extends AppCompatEditText {
                             case MotionEvent.ACTION_UP:
                                 // ACTION_UP = Fim do clique no Botão = Apagar (Desativa o Botão)
                                 // Limpa o Texto e tira o Botão do EditText
-                                setText("");
+                                getText().clear();
                                 showClearButton(null);
                                 return true;
 
@@ -110,7 +110,7 @@ public class CustomEditText extends AppCompatEditText {
             @Override
             public void onTextChanged(CharSequence s,
                                       int start, int before, int count) {
-                //showClearButton(clearButton);
+                showClearButton(clearButton);
             }
 
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)

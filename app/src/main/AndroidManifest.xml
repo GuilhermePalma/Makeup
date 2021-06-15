@@ -13,6 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Maquiagem">
+        <activity android:name=".view.activity.SensorActivity"></activity>
+
         <receiver android:name=".view.WidgetApp">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -25,7 +27,7 @@
 
         <activity
             android:name=".view.activity.LocationActivity"
-            android:parentActivityName=".view.activity.MainActivity"/>
+            android:parentActivityName=".view.activity.MainActivity" />
         <activity android:name=".view.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

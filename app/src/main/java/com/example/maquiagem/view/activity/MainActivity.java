@@ -129,8 +129,12 @@ public class  MainActivity extends AppCompatActivity implements LoaderManager.Lo
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 }
                 break;
+            case (R.id.sensor_menu):
+                Intent sensor = new Intent(this,SensorActivity.class);
+                startActivity(sensor);
+                break;
             default:
-                return  false;
+                return false;
         }
         return super.onOptionsItemSelected(item);
     }
