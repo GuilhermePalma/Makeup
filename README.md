@@ -114,7 +114,8 @@ Este projeto é divido em três partes:
 ### Pré-requisitos
 
 Antes de começar, você vai precisar ter instalado em sua máquina:
-[Git](https://git-scm.com) e um editor para trabalhar com o código como o [Android Studio](https://developer.android.com/studio/)
+- [Git](https://git-scm.com) → Atualizações e Versionamento no Codigo 
+- [Android Studio](https://developer.android.com/studio/) → Editor da Google voltado ao Desenvolvimento Android
 
 
 #### 📥 Baixando o Projeto
@@ -150,7 +151,7 @@ As seguintes ferramentas foram usadas na construção do projeto:
 -   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extenção:  **[Widget](https://developer.android.com/guide/topics/appwidgets/overview)**
 -   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extenção:  **[AlertDialog](https://developer.android.com/guide/topics/ui/dialogs?hl=pt-br)**
 -   Teste de API:  **[Swagger](https://editor.swagger.io/)**
--   Biblioteca Picasso:  **[Docimetnação Picasso](https://square.github.io/picasso/)** 
+-   Biblioteca Picasso:  **[Documentação Picasso](https://square.github.io/picasso/)** 
 	> Conversão de URLs para Imagens
 ---
 
