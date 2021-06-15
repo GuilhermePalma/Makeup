@@ -26,7 +26,6 @@ import com.example.maquiagem.view.AlertDialogs;
 import com.example.maquiagem.view.FeedbackLocation;
 import com.example.maquiagem.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

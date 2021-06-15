@@ -19,7 +19,7 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/clearDb"
+        android:id="@+id/clearData"
         android:title="@string/clear_bd"
         app:showAsAction="never"/>
 

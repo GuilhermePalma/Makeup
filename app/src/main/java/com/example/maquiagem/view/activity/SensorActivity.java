@@ -1,6 +1,8 @@
 package com.example.maquiagem.view.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -19,7 +21,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     Sensor sensorProximity;
 
     TextView txt_dataSensor;
-    LinearLayout layoutSensor;
+    ConstraintLayout layoutSensor;
 
     Boolean sensorAvailable;
 
@@ -27,6 +29,16 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
+
+        // Criação da ToolBar e Criação da seta de voltar
+        Toolbar toolbar = findViewById(R.id.toolBar);
+        toolbar.setTitle(R.string.app_name);
+        setSupportActionBar(toolbar);
+        // Icon de voltar para a Tela Home
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_return_home);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
 
         txt_dataSensor = findViewById(R.id.txt_distance);
         layoutSensor = findViewById(R.id.layout_sensor);

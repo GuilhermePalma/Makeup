@@ -2,6 +2,7 @@ package com.example.maquiagem.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -19,7 +20,6 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -115,7 +115,7 @@ public class  MainActivity extends AppCompatActivity implements LoaderManager.Lo
                 Intent location = new Intent(this, LocationActivity.class);
                 startActivity(location);
                 break;
-            case (R.id.clearDb):
+            case (R.id.clearData):
                 // Limpa o Banco de Dados
                 dataBaseHelper.clearTableMakeup();
                 dataBaseHelper.clearTableLocation();
@@ -150,13 +150,8 @@ public class  MainActivity extends AppCompatActivity implements LoaderManager.Lo
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void clearWindow(){
         // Limpa o Array MakeList(P/ reiniciar o RecycleView) e apaga o Texto de Resultado
-        /*editType.setText(R.string.string_empty);
-        editBrand.setText(R.string.string_empty);*/
-
-/*        // TODO IMPLEMENTAR LIMPAR OS INPUTS
-        CustomEditText customEditText = new CustomEditText(editBrand.getContext());
-//        customEditText.clickedClearButton.set(false);
-        customEditText.hideClearButton();*/
+        editType.setText(R.string.string_empty);
+        editBrand.setText(R.string.string_empty);
 
         layoutResult.setVisibility(View.GONE);
 

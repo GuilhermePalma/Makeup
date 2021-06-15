@@ -63,6 +63,7 @@ public class CustomEditText extends AppCompatEditText {
                 if ((getCompoundDrawablesRelative()[2] != null)) {
 
                     float areaEditTextWithoutButton;
+                    AtomicBoolean clickInButton = new AtomicBoolean();
 
                     // Calcula a area do EditText sem o Botão
                     areaEditTextWithoutButton = (getWidth() - getPaddingEnd()
@@ -70,23 +71,25 @@ public class CustomEditText extends AppCompatEditText {
 
                     // Caso o clique (evento recebido) seja no Botão
                     if (event.getX() > areaEditTextWithoutButton) {
-                        switch (event.getAction()){
-                            case MotionEvent.ACTION_DOWN:
-                              /* ACTION_DOWN = Voltar para a Posição Incial = Clique fora do
+                        clickInButton.set(true);
+                    }
+
+                    // True se o usuario clicou no Botão
+                    if (clickInButton.get()){
+                        if (event.getAction() == MotionEvent.ACTION_DOWN){
+                            /* ACTION_DOWN = Voltar para a Posição Incial = Clique fora do
                                    EditText. Instancia o metodo showClearButton com valor do Icon */
-                                showClearButton(clearButtonOff);
-                                return false;
+                            showClearButton(clearButtonOff);
+                        }
 
-                            case MotionEvent.ACTION_UP:
-                                // ACTION_UP = Fim do clique no Botão = Apagar (Desativa o Botão)
-                                // Limpa o Texto e tira o Botão do EditText
-                                getText().clear();
-                                showClearButton(null);
-                                return true;
-
-                            default:
-                                showClearButton(null);
-                                return false;
+                        if (event.getAction() == MotionEvent.ACTION_UP){
+                            // ACTION_UP = Fim do clique no Botão = Apagar (Desativa o Botão)
+                            // Limpa o Texto e tira o Botão do EditText
+                            getText().clear();
+                            showClearButton(null);
+                            return true;
+                        } else{
+                            return false;
                         }
                     } else {
                         // Clique Fora do Botão
