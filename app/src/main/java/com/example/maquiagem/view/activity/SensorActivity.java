@@ -39,7 +39,6 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-
         txt_dataSensor = findViewById(R.id.txt_distance);
         layoutSensor = findViewById(R.id.layout_sensor);
 
@@ -63,6 +62,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         if (sensorAvailable) {
             txt_dataSensor.setText("Distancia: " + event.values[0] + " cm");
             if (event.values[0] <= 0) {
+                // Caso a distancia seja igual ou = 0 ---> Tela Vermelha
                 layoutSensor.setBackgroundColor(getResources().getColor(R.color.red));
             } else{
                 layoutSensor.setBackgroundColor(getResources().getColor(R.color.green));
@@ -72,7 +72,6 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 
     // Disponibiliza o Sensor para ser usado durante a Execução da Activity

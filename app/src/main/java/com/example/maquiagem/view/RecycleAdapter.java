@@ -20,7 +20,7 @@ import java.util.List;
 // Classe Responsavel pelo controle do RecyclerView
 public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleViewHolder> {
 
-    // Context e List/Array
+    // Context e List/Array --> Usados p/ mostar/armazenar os dados
     Context context;
     private List<Makeup> makeupList;
 
@@ -75,6 +75,8 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
         holder.currency_price.setText(makeup.getCurrency() + " " + makeup.getPrice());
         holder.type_brand.setText(makeup.getType() + " - " + makeup.getBrand());
         holder.description.setText(makeup.getDescription());
+
+        // Biblioteca Picasso (Converte URL da IMG ---> IMG)
         Picasso.with(holder.image.getContext()).load(makeup.getUrlImage())
                 .error(R.drawable.makeup_no_image)
                 .into(holder.image);

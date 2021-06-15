@@ -84,11 +84,7 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
                 TYPE + "='" + type + "' AND " + BRAND + "='" + brand+ "'");
 
         // Caso tenha 1 ou mais registros ---> True
-        if (amountRecords == 0){
-            return false;
-        } else {
-            return true;
-        }
+        return amountRecords != 0;
     }
 
     // Insere se a busca da Localização deu certa ou não

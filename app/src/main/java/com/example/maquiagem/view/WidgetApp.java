@@ -14,12 +14,9 @@ import com.example.maquiagem.model.DataBaseMakeup;
 import java.text.DateFormat;
 import java.util.Date;
 
-/**
- * Implementation of App Widget functionality.
- */
 public class WidgetApp extends AppWidgetProvider {
 
-    // Name of shared preferences file & key
+    // Nome do Arquivo e Key p/ o SharedPreferences
     private static final String SHARED_PREFERENCES_FILE = "com.example.android.appapimakeup";
     private static final String COUNT_UPDATE_KEY = "contadorWidget";
 
@@ -109,9 +106,9 @@ public class WidgetApp extends AppWidgetProvider {
         int[] idArray = new int[]{appWidgetId};
         intentUpdate.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, idArray);
 
-        // Envolve em um PendingIntent para enviar um Broadcast.
-        // Usa o ID do WidgetApp p/ que cada Intent seja unico.
-        // Ultimo Parametro = Recoloca os ExtraData Alterados
+        /* Envolve em um PendingIntent para enviar um Broadcast.
+           Usa o ID do WidgetApp p/ que cada Intent seja unico.
+           Ultimo Parametro = Recoloca os ExtraData Alterados */
         PendingIntent pendingUpdate = PendingIntent.getBroadcast(context,
                 appWidgetId, intentUpdate, PendingIntent.FLAG_UPDATE_CURRENT);
 

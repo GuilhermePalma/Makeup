@@ -12,12 +12,11 @@ import java.net.URL;
 
 
 public class SearchMakeupApi {
+
     // Nome do LOG
     private static final String LOG_TAG = "LOG_MAKEUP";
-
     // URL da API
     private static final String MAKEUP_URL = "http://makeup-api.herokuapp.com/api/v1/products.json?";
-
     // Constantes de Parametros da string da Busca
     private static final String TYPE_PARAMETERS = "product_type";
     private static final String BRAND_PARAMETERS = "brand";

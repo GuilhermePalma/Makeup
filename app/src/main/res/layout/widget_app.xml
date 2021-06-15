@@ -6,28 +6,7 @@
     android:padding="@dimen/widget_margin"
     android:theme="@style/ThemeOverlay.Maquiagem.AppWidgetContainer">
 
-    <!--<TextView
-        android:id="@+id/appwidget_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:background="?attr/appWidgetBackgroundColor"
-        android:contentDescription="@string/appwidget_text"
-        android:text="@string/appwidget_text"
-        android:textColor="?attr/appWidgetTextColor"
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />-->
-
-    <!-- Panel for Widget ID -->
-
-    <!-- Panel for widget update date and number of updates -->
-
-    <!-- Update widget button -->
-
-
-
+    <!-- Numero do Widget -->
     <LinearLayout
         android:id="@+id/section_number"
         style="@style/AppWidgetSection"
@@ -70,6 +49,7 @@
 
     </LinearLayout>
 
+    <!-- Numero da Atualização do Widget -->
     <LinearLayout
         android:id="@+id/section_update"
         style="@style/AppWidgetSection"
@@ -99,6 +79,7 @@
     </LinearLayout>
 
 
+    <!-- N° de Buscas e Localizações (Total,Certas e Erradas) -->
     <LinearLayout
         android:id="@+id/section_dataApp"
         style="@style/AppWidgetSection"
@@ -215,14 +196,5 @@
         </LinearLayout>
 
     </LinearLayout>
-
-    <!--<Button
-        android:id="@+id/btn_update"
-        style="@style/AppWidgetButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/section_dataApp"
-        android:layout_centerHorizontal="true"
-        android:text="@string/widget_button_update" />-->
 
 </RelativeLayout>

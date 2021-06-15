@@ -33,7 +33,7 @@ public class FeedbackLocation extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Cria uma view para o Fragment
+        // Cria uma view para o Fragment (Obtem o Layout)
         View view = inflater.inflate(R.layout.fragment_feedback_location, container, false);
 
         // Recebe os valores dos Botões do Fragment

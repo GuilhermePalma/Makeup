@@ -159,7 +159,6 @@ public class  MainActivity extends AppCompatActivity implements LoaderManager.Lo
         makeupListRecycler.clear();
         // Reinicia o RecyclerView sem nenhuma informação no Listarray
         recyclerView.setAdapter(recycleAdapter);
-
     }
 
 
@@ -324,8 +323,8 @@ public class  MainActivity extends AppCompatActivity implements LoaderManager.Lo
                     // Instancia a Classe com os Dados
                     Makeup classMakeup = new Makeup(id, brand, name, type, price,
                             currency, description, urlImage);
-                    // Insere os dados da Classe Makeup no SQLite
 
+                    // Insere os dados da Classe Makeup no SQLite
                     dataBaseHelper.insertMakeup(classMakeup);
 
                 } catch (Exception e) {

@@ -64,6 +64,7 @@ public class LocationActivity extends AppCompatActivity {
         btnFragment = findViewById(R.id.btn_showFragment);
         btnFragment.setImageResource(R.drawable.ic_keyboard_arrow_down);
 
+        // Valida os Pré-Requisitos pra a Localização (GPS, WIFI)
         if (requiredForLocation()) {
             getLastLocationUser();
         }
@@ -83,7 +84,7 @@ public class LocationActivity extends AppCompatActivity {
     // Metodo que valida se há conexão e GPS ativos
     public boolean requiredForLocation(){
 
-        // Controla os serviços de Localziação
+        // Gerencia os serviços de Localziação
         LocationManager service = (LocationManager)
                 getSystemService(LOCATION_SERVICE);
 
@@ -185,7 +186,7 @@ public class LocationActivity extends AppCompatActivity {
                         }
                         finally {
                             Log.d("FINAL LOCATION", "\nLocalização Final" + addresses.toString());
-                            if(addresses.isEmpty()){
+                            if(addresses.isEmpty() || addresses == null){
                                 showAddress.setText(R.string.error_searchLocation);
                             }
                             else{
@@ -203,6 +204,9 @@ public class LocationActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e("TAG", "\nonFailure: ", e);
+                        dialogs.message(LocationActivity.this,
+                                "Não encontramos a Localização",
+                                getString(R.string.error_location)).show();
                     }
                 }
             );
@@ -211,7 +215,7 @@ public class LocationActivity extends AppCompatActivity {
 
     // Mostra o Fragment na Tela
     public void showFragment(){
-        // Instancia a classe do Fragment
+        // Instancia a classe do Fragment ---> Envia um Context p/ acessar o Banco de Dados
         FeedbackLocation feedbackLocation = FeedbackLocation.newInstance(getApplicationContext());
 
         // Dá suporte ao Fragment
