@@ -1,4 +1,4 @@
-<h1 align="center">💄 API - Maquiagem</h1>
+<h1 align="center" id="title">💄 API - Maquiagem</h1>
 
 
 <h3 align="center">
@@ -21,6 +21,26 @@
 	🚧   Em Construção 🚀 🚧
 </h4>
 
+<p align="center">
+  <img alt="Imagem da Tela Principal" title="Inicio" src="./printscreen/LightMode/Index.jpeg" width="200px">
+	
+  <img alt="Imagem do Menu de Opções" title="Menu" src="./printscreen/LightMode/MenuOptions.jpeg" width="200px">
+	
+  <img alt="Imagem da Tela com Dados de Pesquisa" title="CustomView" src="./printscreen/LightMode/CustomView.jpeg" width="200px">
+	
+  <img alt="Imagem da Tela de Resultados" title="ResultadosAPI" src="./printscreen/LightMode/ResultApi.jpeg" width="200px">
+	
+  <img alt="Imagem da Tela Localização Atual" title="Localizacao" src="./printscreen/LightMode/Location.jpeg" width="200px">
+	
+  <img alt="Imagem do Feedback da Localização" title="FeedbackLocalizacao" src="./printscreen/LightMode/LocationWithFragment.jpeg" width="200px">
+	
+  <img alt="Imagem do Sensor de Proximidade Longe" title="SensorLonge" src="./printscreen/LightMode/SensorProximity.jpeg" width="200px">
+	
+  <img alt="Imagem do Sensor de Proximidade Perto" title="SensorPerto" src="./printscreen/LightMode/SensorProximityOff.jpeg" width="200px">
+</p>
+
+
+
 Tabela de conteúdos
 =================
 <!--ts-->
@@ -38,10 +58,11 @@ Tabela de conteúdos
 
 # 💻 Sobre o projeto
 
-💄 Makeup - é um aplicativo que busca em uma API dados sobre maquiagem, listando Nome, Preço, Tipo, Marca e Descrição de cada Produto
+💄 **Makeup** - Projeto desenvolvido durante a materia Programação e Algoritimos Mobile II - ETEC 2021, coordenado pela Professora [Aline F. Brito](https://github.com/alinefbrito). 
 
+:books: Esse aplicativo busca dados em uma API de Maquiagem, Listando Imagem, Nome, Preço, Tipo, Marca e Descrição de cada Produto
 
-O Projeto consumiu a API Makeup, para ver sua documentação, acesse [API Makeup](http://makeup-api.herokuapp.com/)
+O Projeto utilizou a API Makeup. Para ver sua documentação, acesse [API Makeup](http://makeup-api.herokuapp.com/)
 
 ---
 
@@ -53,6 +74,7 @@ O Projeto consumiu a API Makeup, para ver sua documentação, acesse [API Makeup
   - [x] Tipo
 
 - [x] A Aplicação ira exibir:
+  - [X] **Imagem** 
   - [x] Nome
   - [x] Preço
   - [x] Marca
@@ -64,7 +86,7 @@ O Projeto consumiu a API Makeup, para ver sua documentação, acesse [API Makeup
 
 ## 🎨 Layout
 
-O layout da aplicação está disponível no [Whimsical](https://whimsical.com/mobile-UmVv4wcQh1YZLBppfhptCm):
+O Layout da Aplicação está Disponível no [Whimsical](https://whimsical.com/mobile-UmVv4wcQh1YZLBppfhptCm):
 
 <a href="https://whimsical.com/mobile-UmVv4wcQh1YZLBppfhptCm">
   <img alt="Made by Guilherme Palma e Guilherme Callegari" src="https://img.shields.io/badge/Acessar%20Layout-Whimsical-green">
@@ -72,29 +94,27 @@ O layout da aplicação está disponível no [Whimsical](https://whimsical.com/m
 
 ### Mobile
 
-Video Mostrando o Funcionamento do APP: [API - Makeup](./app/src/main/res/drawable/Makeup%20-%20API.mp4)  
+**Imagens** das Telas do APP - [Tema Normal](printscreen/LightMode) e [Tema Escuro](printscreen/DarkMode)
+
+**Video** Mostrando o Funcionamento do APP - [API - Makeup](./app/src/main/res/drawable/Makeup%20-%20API.mp4)  
     
-<p align="center">
-  <img alt="Imagem da Tela Principal" title="#home" src="./printscreen/Screen (1).png" width="200px">
-  <img alt="Imagem da Parte de Resultados" title="#results" src="./printscreen/Screen (2).png" width="200px">
-</p>
-
-
-
 
 ## 🚀 Como executar o projeto
 
 Este projeto é divido em três partes:
-1. [Layout](app/src/main/res/layout/) (Parte Grafica)
-2. [Funções do Sistema](app/src/main/java/com/example/maquiagem/)
-3. [Classe](app/src/main/java/com/example/maquiagem/Model/)
+1. [Layout das Telas](app/src/main/res/layout/)
+2. [Configurações das Telas](app/src/main/java/com/example/maquiagem/view/activity)
+3. [Elementos das Telas](app/src/main/java/com/example/maquiagem/view)
+4. [Funções do Sistema](app/src/main/java/com/example/maquiagem/model)
+5. [Layout Widget](app/src/main/res/layout/widget_app.xml)
+6. [Configurações do Widget](app/src/main/java/com/example/maquiagem/view/WidgetApp.java)
 
 
 
 ### Pré-requisitos
 
 Antes de começar, você vai precisar ter instalado em sua máquina:
-[Git](https://git-scm.com) e um editor para trabalhar com o código como [Android Studio](https://developer.android.com/studio/)
+[Git](https://git-scm.com) e um editor para trabalhar com o código como o [Android Studio](https://developer.android.com/studio/)
 
 
 #### 📥 Baixando o Projeto
@@ -109,7 +129,6 @@ $ cd Maquiagem
 
 ```
 
-
 ---
 
 
@@ -121,12 +140,18 @@ As seguintes ferramentas foram usadas na construção do projeto:
 
 #### **Utilitários**
 
--   Protótipo:  **[Winsic](https://whimsical.com/)**  →  **[Protótipo (Maquiagem)](https://whimsical.com/mobile-UmVv4wcQh1YZLBppfhptCm)**
+-   Protótipo:  **[Winsical](https://whimsical.com/)**  →  **[Protótipo (Maquiagem)](https://whimsical.com/mobile-UmVv4wcQh1YZLBppfhptCm)**
 -   API:  **[API Makeup](http://makeup-api.herokuapp.com/)**  →  **[API de Tipos](makeup-api.herokuapp.com/api/v1/products.json?product_type=)**,  **[API de Marcas](http://makeup-api.herokuapp.com/api/v1/products.json?brand=)**
--   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extensions:  **[SQLite](https://developer.android.com/training/data-storage/sqlite?hl=pt-br)**
+-   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extenção:  **[ToolBar](https://developer.android.com/reference/android/widget/Toolbar)**
+-   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extenção:  **[Tarefas Assincronas](https://developer.android.com/reference/android/os/AsyncTask)**
+-   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extenção:  **[SQLite](https://developer.android.com/training/data-storage/sqlite?hl=pt-br)**
+-   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extenção:  **[Localização](https://developer.android.com/training/location/retrieve-current?hl=pt-br)**
+-   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extenção:  **[Sensores](https://developer.android.com/guide/topics/sensors/sensors_overview?hl=pt-br)**
+-   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extenção:  **[Widget](https://developer.android.com/guide/topics/appwidgets/overview)**
+-   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extenção:  **[AlertDialog](https://developer.android.com/guide/topics/ui/dialogs?hl=pt-br)**
 -   Teste de API:  **[Swagger](https://editor.swagger.io/)**
-
-
+-   Biblioteca Picasso:  **[Docimetnação Picasso](https://square.github.io/picasso/)** 
+	> Conversão de URLs para Imagens
 ---
 
 
