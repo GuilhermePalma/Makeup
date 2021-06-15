@@ -1,7 +1,7 @@
 <h1 align="center" id="title">💄 API - Maquiagem</h1>
 
 
-<h3 align="center">Tema Escuro</h3>
+<h3 align="center">Tema Claro/Normal</h3>
 
 
 <p align="center">
