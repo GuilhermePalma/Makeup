@@ -96,12 +96,12 @@ O Layout da Aplicação está Disponível no [Whimsical](https://whimsical.com/m
 
 **Imagens** das Telas do APP - [Tema Normal](printscreen/LightMode) e [Tema Escuro](printscreen/DarkMode)
 
-**Video** Mostrando o Funcionamento do APP - [API - Makeup](./app/src/main/res/drawable/Makeup%20-%20API.mp4)  
+**Video** Mostrando o Funcionamento do APP - [API - Makeup (Youtube)](https://youtu.be/WB9kvWjh3_g) ou [API - Makeup (Arquivo)](printscreen/API%20-%202BIM.mp4)
     
 
 ## 🚀 Como executar o projeto
 
-Este projeto é divido em três partes:
+Este projeto é divido em seis principais partes:
 1. [Layout das Telas](app/src/main/res/layout/)
 2. [Configurações das Telas](app/src/main/java/com/example/maquiagem/view/activity)
 3. [Elementos das Telas](app/src/main/java/com/example/maquiagem/view)
