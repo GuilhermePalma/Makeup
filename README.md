@@ -80,6 +80,11 @@ O Projeto utilizou a API Makeup. Para ver sua documentação, acesse [API Makeup
   - [x] Marca
   - [x] Tipo
   - [x] Descrição
+ 
+- [x] Outros Recuros:
+  - [x] Sensor de Proximidade
+  - [X] Localização
+  - [x] Tema Escuro
 
 ---
 
