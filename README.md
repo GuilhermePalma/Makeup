@@ -5,16 +5,22 @@
     💄 Busca de Maquiagens dentro da <a href="http://makeup-api.herokuapp.com" tagert="_blank">API - Makeup</a>
 </h3>
 
-<p align="center">
-  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/GuilhermeCallegari/Maquiagem?color=2304D361">
-
-  <img alt="Repository size" src="https://img.shields.io/github/repo-size/GuilhermeCallegari/Maquiagem">
-  
+<p align="center" id="icons">
+  <a href="#icons">
+    <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/GuilhermeCallegari/Maquiagem?color=2304D361">
+  </a>
+	
+  <a href="https://github.com/GuilhermeCallegari/Maquiagem">
+    <img alt="Repository size" src="https://img.shields.io/github/repo-size/GuilhermeCallegari/Maquiagem">
+  </a>
+	
   <a href="https://github.com/GuilhermeCallegari/Maquiagem/commits/main">
     <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/GuilhermeCallegari/Maquiagem">
   </a>
-    
+	
+  <a href="LICENSE">
    <img alt="License" src="https://img.shields.io/github/license/GuilhermeCallegari/Maquiagem">
+  </a>
 </p>
 
 <h4 align="center">
