@@ -2,6 +2,7 @@ package com.example.maquiagem.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -76,9 +77,22 @@ public class  MainActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case (R.id.location):
-                Intent location = new Intent(this, LocationActivity.class);
-                startActivity(location);
+                // Possui Conexão
+                if (connectionAvailable()){
+                    // GPS ativo
+                    if (gpsAvailable()){
+                        Intent location = new Intent(this, LocationActivity.class);
+                        startActivity(location);
+                    } else {
+                        dialogs.message(this,"Sem GPS",
+                                getString(R.string.error_noGps)).show();
+                    }
+                } else {
+                    dialogs.message(this,"Sem Internet",
+                            getString(R.string.error_connection)).show();
+                }
                 break;
+
             case (R.id.clearData):
                 // Limpa o Banco de Dados
                 dataBaseHelper.clearTableMakeup();
@@ -104,13 +118,6 @@ public class  MainActivity extends AppCompatActivity{
     }
 
 
-    public void returnInputs(View view){
-        // Limpa a Tela e o Banco de Dados
-        clearWindow();
-        layoutInputs.setVisibility(View.VISIBLE);
-    }
-
-
     public void clearWindow(){
         // Limpa os Campos
         editType.setText(R.string.string_empty);
@@ -119,7 +126,7 @@ public class  MainActivity extends AppCompatActivity{
 
 
     // Metodo do Botão Pesquisar
-    public void LoadResult(View view) {
+    public void BtnSearch(View view) {
 
         String infoType, infoBrand;
 
@@ -185,6 +192,17 @@ public class  MainActivity extends AppCompatActivity{
                     "\nConexão: " + networkInfo);
             return false;
         }
+    }
+
+    private boolean gpsAvailable(){
+        // Gerencia os serviços de Localziação
+        LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        // Verifica se o GPS está ativo e se possui conexão com a Internet
+        boolean gpsIsEnabled = false;
+        gpsIsEnabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        return gpsIsEnabled;
     }
 
 }

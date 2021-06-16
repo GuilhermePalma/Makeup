@@ -58,8 +58,8 @@ public class WidgetApp extends AppWidgetProvider {
         // Instancia o HelperDatabase
         DataBaseMakeup database = new DataBaseMakeup(context);
 
-        int correct = database.getCorrectLocation();
-        int wrong = database.getWrongLocation();
+        int correct = database.amountCorrectLocation();
+        int wrong = database.amountWrongLocation();
 
         // Mostra o ID do Widget
         views.setTextViewText(R.id.appwidget_id, Integer.toString(appWidgetId));
@@ -75,13 +75,13 @@ public class WidgetApp extends AppWidgetProvider {
         views.setTextViewText(R.id.txtWidget_search,
                 context.getResources().
                         getString( R.string.txt_brandTypeFormat,
-                                Integer.toString(database.getProductsSearch())
+                                Integer.toString(database.amountMakeupSearch())
                         )
         );
 
         // Mostra todas as posições Pesquisadas
         views.setTextViewText(R.id.txtWidget_resultLocation,Integer.
-                toString(database.getAmountLocation()));
+                toString(database.amountLocation()));
 
         // Mostra as Posições Certas e Erradas na Tela
         views.setTextViewText(R.id.txtWidget_correctResult, Integer.toString(correct));

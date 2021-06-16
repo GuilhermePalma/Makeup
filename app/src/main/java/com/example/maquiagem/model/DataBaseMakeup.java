@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class DataBaseMakeup extends SQLiteOpenHelper {
 
@@ -25,7 +24,7 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
 
     private static final String TABLE_LOCATION = "location";
     private static final String ID_LOCATION = "id";
-    private static final String LOCATION = "return_location";
+    private static final String RETURN_LOCATION = "return_location";
 
     public DataBaseMakeup(Context context){
         super(context, BD, null, VERSION);
@@ -49,7 +48,7 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         db.execSQL(
                 "create table " + TABLE_LOCATION + " (" +
                         ID_LOCATION + " integer PRIMARY KEY AUTOINCREMENT, " +
-                        LOCATION + " text)"
+                        RETURN_LOCATION + " text)"
         );
     }
 
@@ -76,7 +75,7 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
     }
 
     // Verifica se ja existe os produtos buscados
-    public boolean existsRecords(String type, String brand){
+    public boolean existsInMakeup(String type, String brand){
         SQLiteDatabase database = this.getReadableDatabase();
 
         // Conta cada item com as variavesis recebidas
@@ -87,16 +86,33 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         return amountRecords != 0;
     }
 
+    public boolean existsInLocation(int id){
+        SQLiteDatabase database = this.getReadableDatabase();
+        int amountRecords = (int) DatabaseUtils.queryNumEntries(database, TABLE_LOCATION,
+                ID_LOCATION + "='" + id + "'");
+        // Caso tenha 1 ou mais registros ---> True
+        return amountRecords != 0;
+    }
+
+
+    public void insertLocation(int id){
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ID_LOCATION, id);
+        database.insert(TABLE_LOCATION, null, values);
+    }
+
+
     // Insere se a busca da Localização deu certa ou não
-    public void insertLocation(boolean returnLocation){
+    public void insertTypeLocation(int idLocation, boolean returnLocation){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         if (returnLocation) {
-            values.put(LOCATION, "correct_position");
+            values.put(RETURN_LOCATION, "correct_position");
         } else {
-            values.put(LOCATION, "wrong_position");
+            values.put(RETURN_LOCATION, "wrong_position");
         }
-        db.insert(TABLE_LOCATION, null, values);
+        db.update(TABLE_LOCATION, values, ID_LOCATION + "='" + idLocation + "'", null );
     }
 
 
@@ -125,9 +141,13 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public int amountLocation(){
+        SQLiteDatabase database = this.getReadableDatabase();
+        return (int) DatabaseUtils.queryNumEntries(database,TABLE_LOCATION);
+    }
 
     // Recupera a quantidade de posições certas
-    public int getCorrectLocation(){
+    public int amountCorrectLocation(){
         // Abre uma conexão com o Banco de Dados para Leitura (Select)
         SQLiteDatabase db = this.getReadableDatabase();
         // Resultado Pesquisado
@@ -135,23 +155,19 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
 
         // Retorna a quantidade do select com a palavra acima
         return (int) DatabaseUtils.queryNumEntries(db, TABLE_LOCATION,
-                LOCATION + "='" + correct + "'");
+                RETURN_LOCATION + "='" + correct + "'");
     }
 
     // Recupera a quantidade de posições erradas
-    public int getWrongLocation(){
+    public int amountWrongLocation(){
         SQLiteDatabase db = this.getReadableDatabase();
         String wrong = "wrong_position";
         return (int) DatabaseUtils.queryNumEntries(db, TABLE_LOCATION,
-                LOCATION + "='" + wrong + "'");
+                RETURN_LOCATION + "='" + wrong + "'");
     }
 
-    public int getAmountLocation(){
-        SQLiteDatabase database = this.getReadableDatabase();
-        return (int) DatabaseUtils.queryNumEntries(database,TABLE_LOCATION);
-    }
 
-    public int getProductsSearch(){
+    public int amountMakeupSearch(){
         SQLiteDatabase db = this.getReadableDatabase();
         return (int) DatabaseUtils.queryNumEntries(db,TABLE_MAKEUP);
     }

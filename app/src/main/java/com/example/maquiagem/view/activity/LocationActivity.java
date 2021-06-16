@@ -8,20 +8,17 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.maquiagem.model.DataBaseMakeup;
 import com.example.maquiagem.view.AlertDialogs;
 import com.example.maquiagem.view.FeedbackLocation;
 import com.example.maquiagem.R;
@@ -46,6 +43,8 @@ public class LocationActivity extends AppCompatActivity {
     static final String STATE_FRAGMENT = "STATE FRAGMENT";
 
     AlertDialogs dialogs = new AlertDialogs();
+    private DataBaseMakeup dataBaseMakeup;
+    private int lastIdLocation, actualId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,13 +60,21 @@ public class LocationActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        // Obtem os valores dos itens e Banco de Dados
         btnFragment = findViewById(R.id.btn_showFragment);
         btnFragment.setImageResource(R.drawable.ic_keyboard_arrow_down);
+        dataBaseMakeup = new DataBaseMakeup(this);
 
-        // Valida os Pré-Requisitos pra a Localização (GPS, WIFI)
-        if (requiredForLocation()) {
+        // Obtem a ultima localização inserida
+        lastIdLocation = dataBaseMakeup.amountLocation();
+        actualId = lastIdLocation + 1;
+
+        if (dataBaseMakeup.existsInLocation(actualId)){
+            actualId++;
+        } else{
             getLastLocationUser();
         }
+
     }
 
     // Metodo ao clicar no ImageButton ---> Setinha em baixo da Localização
@@ -80,44 +87,6 @@ public class LocationActivity extends AppCompatActivity {
         }
     }
 
-
-    // Metodo que valida se há conexão e GPS ativos
-    public boolean requiredForLocation(){
-
-        // Gerencia os serviços de Localziação
-        LocationManager service = (LocationManager)
-                getSystemService(LOCATION_SERVICE);
-
-
-        // Verifica se o GPS está ativo e se possui conexão com a Internet
-        boolean gpsIsEnabled = false;
-        gpsIsEnabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        //Valida a conexão com Internet
-        ConnectivityManager connectionManager = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = null;
-        if (connectionManager != null) {
-            // Obteve os serviços de conexão
-            networkInfo = connectionManager.getActiveNetworkInfo();
-        }
-
-        // Caso o Conection Manager não tenha sido Inciado (Defalult = Null)
-        if (networkInfo == null){
-            dialogs.message(LocationActivity.this,"Sem Internet",
-                    getString(R.string.error_connection)).show();
-
-            return false;
-        } else if (!gpsIsEnabled){
-            dialogs.message(LocationActivity.this,"Sem GPS",
-                    getString(R.string.error_noGps)).show();
-            return false;
-
-        } else{
-            // Pega a localização do Usuario
-            return true;
-        }
-    }
 
     // Metodo que recupera a Ultima Localização Conhecida
     public void getLastLocationUser() {
@@ -171,7 +140,6 @@ public class LocationActivity extends AppCompatActivity {
                             // Imprime o resultado da List de Endereços (ArrayList)
                             Log.i("LIST ENDEREÇO","\n" + addresses.get(0).toString()
                                     + "\n" + addresses.get(0).getAddressLine(0));
-                            // Caso não retorne nenhum endereço
 
                         } catch (IOException e) {
                             // Tratamento de Erro da Localização ---> Erro no Processo
@@ -190,7 +158,8 @@ public class LocationActivity extends AppCompatActivity {
                                 showAddress.setText(R.string.error_searchLocation);
                             }
                             else{
-                                // Exibe o Endereço
+                                // Insere a Localização no BD e Exibe o Endereço
+                                dataBaseMakeup.insertLocation(actualId);
                                 showAddress.setText(addresses.get(0).getAddressLine(0));
                             }
 

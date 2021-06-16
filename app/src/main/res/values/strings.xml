@@ -38,7 +38,7 @@
 
     <!-- Activity Location -->
     <string name="txt_titleLocation"><b>Localização Atual</b></string>
-    <string name="txt_waitSearch">Estamos buscando sua Localização…</string>
+    <string name="txt_noSearch">Não encontramos sua Localização. Tente Novamente</string>
     <string name="error_searchLocation">Erro na busca do Endereço</string>
     <string name="error_location">Erro ao recuperar a ultima localização</string>
     <string name="error_noGps">Sem conexão com o GPS</string>

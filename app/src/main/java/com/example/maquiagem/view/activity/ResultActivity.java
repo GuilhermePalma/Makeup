@@ -56,7 +56,7 @@ public class ResultActivity extends AppCompatActivity implements LoaderManager.L
             infoBrand = querryBundle.getString("brand");
 
             // Caso já exista produtos no Banco de Dados com a Marca e Tipo inserida no DB
-            if (dataBaseHelper.existsRecords(infoType, infoBrand)) {
+            if (dataBaseHelper.existsInMakeup(infoType, infoBrand)) {
                 dataBaseHelper.close();
                 showWindow();
             } else{
@@ -66,7 +66,6 @@ public class ResultActivity extends AppCompatActivity implements LoaderManager.L
         } else{
             dialogs.message(this, "Sem Dados",
                     getString(R.string.error_recoveryData));
-
             // Volta para a MainActivity
             super.onBackPressed();
         }

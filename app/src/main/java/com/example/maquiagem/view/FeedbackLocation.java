@@ -35,7 +35,6 @@ public class FeedbackLocation extends Fragment {
                              Bundle savedInstanceState) {
         // Cria uma view para o Fragment (Obtem o Layout)
         View view = inflater.inflate(R.layout.fragment_feedback_location, container, false);
-
         // Recebe os valores dos Botões do Fragment
         Button btn_insertDb = view.findViewById(R.id.btn_sendData);
         RadioButton rbtn_correct = view.findViewById(R.id.rbtn_trueLocation);
@@ -47,8 +46,9 @@ public class FeedbackLocation extends Fragment {
                 // Desativa o Botão apos o Clique
                 btn_insertDb.setEnabled(false);
 
+                int lastIdLocation = helperDatabase.amountLocation();
                 // Caso a posição seja correta, insere no Banco de Dados 'True', se não = 'False'
-                helperDatabase.insertLocation(rbtn_correct.isChecked());
+                helperDatabase.insertTypeLocation(lastIdLocation, rbtn_correct.isChecked());
             }
         });
 
