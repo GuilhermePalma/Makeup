@@ -1,5 +1,6 @@
 package com.example.maquiagem.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,7 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
     private List<Makeup> makeupList;
 
     // Contrutor da Calsse
-    public RecycleAdapter(Context context, List<Makeup> list, MainActivity mainActivity) {
+    public RecycleAdapter(Context context, List<Makeup> list, Activity activity) {
         this.context = context;
         this.makeupList = list;
     }

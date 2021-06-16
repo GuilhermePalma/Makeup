@@ -8,6 +8,10 @@
     <string name="tip_image">Imagem de Maquiagem</string>
     <string name="btn_search">Pesquisar</string>
     <string name="string_empty"> </string>
+    <string name="value_required">Campo Obrigatorio</string>
+
+    <!-- Activity Result -->
+    <string name="error_recoveryData">Nenhum dado foi informado para a Busca</string>
 
     <!-- Mensagens de Erro -->
     <string name="error_input">Preencha os Campos</string>
@@ -22,7 +26,7 @@
     <string name="location_now">Localização Atual</string>
     <string name="sensor_menu">Sensor de Luminosidade</string>
 
-    <!-- Activity Result-->
+    <!-- Layout Result-->
     <string name="title_result">Resultados da Busca</string>
     <string name="return_search">Fazer outra Busca</string>
     <string name="name_product">Nome do Produto</string>

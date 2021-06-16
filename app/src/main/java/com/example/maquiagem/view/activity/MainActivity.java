@@ -2,11 +2,8 @@ package com.example.maquiagem.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -18,31 +15,22 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.view.AlertDialogs;
 import com.example.maquiagem.view.RecycleAdapter;
 import com.example.maquiagem.model.DataBaseMakeup;
-import com.example.maquiagem.model.AsyncMakeup;
 import com.example.maquiagem.model.Makeup;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class  MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
+public class  MainActivity extends AppCompatActivity{
 
     private EditText editType;
     private EditText editBrand;
@@ -56,7 +44,6 @@ public class  MainActivity extends AppCompatActivity implements LoaderManager.Lo
     private List<Makeup> makeupListRecycler = new ArrayList<>();
 
     private final DataBaseMakeup dataBaseHelper = new DataBaseMakeup(this);
-    private String infoType, infoBrand;
 
     AlertDialogs dialogs = new AlertDialogs();
 
@@ -71,32 +58,10 @@ public class  MainActivity extends AppCompatActivity implements LoaderManager.Lo
         toolbar.setTitle(R.string.app_name);
         setSupportActionBar(toolbar);
 
+        // Define os EditText
         editType = findViewById(R.id.edit_type);
         editBrand = findViewById(R.id.edit_brand);
-        layoutInputs = findViewById(R.id.layoutInputs);
-        layoutResult = findViewById(R.id.layoutResult);
-
-        // Inicia e Configura o RecyclerView
-        setRecyclerView();
-
-        //Inicia o Loader junto com a Activity
-        if (getSupportLoaderManager().getLoader(0) != null) {
-            getSupportLoaderManager().initLoader(0, null, this);
-        }
     }
-
-    // Configura o RecyclerView
-    public void setRecyclerView(){
-        // Instancia o RecyclerView
-        recyclerView =  findViewById(R.id.recyclerView);
-        layoutManagerRecycler = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManagerRecycler);
-
-        // Informa o Context, ListArray utilizado e a Activity que será usada
-        recycleAdapter = new RecycleAdapter(this, makeupListRecycler, this);
-        recyclerView.setAdapter(recycleAdapter);
-    }
-
 
     // Cria o menu na ToolBar
     @Override
@@ -105,7 +70,6 @@ public class  MainActivity extends AppCompatActivity implements LoaderManager.Lo
         inflater.inflate(R.menu.menu_main, menu);
         return true;
     }
-
 
     // Trata os cliques no Menu da TollBar
     @Override
@@ -140,41 +104,34 @@ public class  MainActivity extends AppCompatActivity implements LoaderManager.Lo
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void returnInputs(View view){
         // Limpa a Tela e o Banco de Dados
         clearWindow();
         layoutInputs.setVisibility(View.VISIBLE);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+
     public void clearWindow(){
-        // Limpa o Array MakeList(P/ reiniciar o RecycleView) e apaga o Texto de Resultado
+        // Limpa os Campos
         editType.setText(R.string.string_empty);
         editBrand.setText(R.string.string_empty);
-
-        layoutResult.setVisibility(View.GONE);
-
-        // Limpa o Array
-        makeupListRecycler.clear();
-        // Reinicia o RecyclerView sem nenhuma informação no Listarray
-        recyclerView.setAdapter(recycleAdapter);
     }
 
 
     // Metodo do Botão Pesquisar
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void LoadResult(View view) {
+
+        String infoType, infoBrand;
 
         // Recupera os valores inseridos pelo Usario
         infoType = editType.getText().toString();
         infoBrand = editBrand.getText().toString();
 
         if (infoType.equals("")){
-            editType.setError("Campo Obrigatorio !");
+            editType.setError(getString(R.string.value_required));
             return;
         }  else if(infoBrand.equals("")){
-            editBrand.setError("Campo Obrigatorio !");
+            editBrand.setError(getString(R.string.value_required));
             return;
         }
 
@@ -187,218 +144,47 @@ public class  MainActivity extends AppCompatActivity implements LoaderManager.Lo
                     InputMethodManager.HIDE_NOT_ALWAYS);
         }
 
-        //Valida se possui conexão com a Internet
+        //Validação da Conexão Ativa
+        if (connectionAvailable()){
+            // Limpa os valores da Tela Inteira
+            clearWindow();
+
+            // Inicia a ActivityResult passando os Dados
+            Intent activityResult = new Intent(this, ResultActivity.class);
+            activityResult.putExtra("product_type", infoType);
+            activityResult.putExtra("brand", infoBrand);
+            startActivity(activityResult);
+
+        } else{
+            dialogs.message(MainActivity.this,"Sem Internet",
+                     getString(R.string.error_connection)).show();
+        }
+    }
+
+
+    private boolean connectionAvailable(){
+        //Valida se o serviço de Internet está ativo
         ConnectivityManager connectionManager = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = null;
 
         if (connectionManager != null) {
             networkInfo = connectionManager.getActiveNetworkInfo();
+        } else{
+            Log.e("NO SERVICE", "\n Erro no serviço de Internet" +
+                    "\nServiço: " + connectionManager);
+            return false;
         }
 
-        //Validação da Conexão Ativa
-        if (networkInfo != null && networkInfo.isConnected()) {
-
-            // Caso já exista produtos no Banco de Dados com a Marca e Tipo inserida
-            if (dataBaseHelper.existsRecords(infoType, infoBrand)) {
-                dataBaseHelper.close();
-                showWindow();
-                return;
-            }
-
-            // Fecha a Conexão com o Banco de Dados
-            dataBaseHelper.close();
-
-            // Insere no bundle, o id(como sera chamado) e o dado/variavel
-            Bundle queryBundle = new Bundle();
-            queryBundle.putString("product_type", infoType);
-            queryBundle.putString("brand", infoBrand);
-
-            // Limpa os valores da Tela Inteira
-            clearWindow();
-
-            //Reinicia e Inicia a Atividade Assincrona
-            getSupportLoaderManager().restartLoader(0, queryBundle, this);
+        // Validação da Conexão Ativa
+        if (networkInfo != null && networkInfo.isConnected()){
+            return true;
         } else{
             // Erro na Conexão
             Log.e("NO CONECTED", "\n Erro na conexão com a Internet" +
                     "\nConexão: " + networkInfo);
-
-            dialogs.message(MainActivity.this,"Sem Internet",
-                     getString(R.string.error_connection)).show();
-
+            return false;
         }
-    }
-
-
-
-    //Criação da Atividade Assincrona
-    @NonNull
-    @Override
-    public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
-
-        String queryType, queryBrand;
-
-        // Caso exista, atribui os Valores atraves da Keys (Chave do Bundle)
-        if (args != null) {
-            queryType = args.getString("product_type");
-            queryBrand = args.getString("brand");
-
-            return new AsyncMakeup(getApplicationContext(), queryType, queryBrand);
-        }
-        else{
-            // Caso não apresente dados no Bundle ---> Sem dados inseridos pelo Usuario
-            return null;
-        }
-    }
-
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<String> loader) {
-        //Metodo Vazio com Implementação Obrigatoria
-    }
-
-
-    // Quando Finaliza a Atividade Assincrona
-    // Recebe uma String do metodo chamado no loadInBackground (SearchMakeupApi.searchMakeup())
-    @Override
-    public void onLoadFinished(@NonNull Loader<String> loader, String data) {
-        try {
-            // Utiliza JSONArray das Makeup
-            JSONArray itemsArray = new JSONArray(data);
-
-            int numberProducts, maxResult, id;
-            String name, type , brand, price, currency, description, urlImage;
-
-            //Recebe o valor do Tamanho da List com os Produtos
-            numberProducts = itemsArray.length();
-            if(numberProducts == 0){
-                //Array Vazio
-                dialogs.message(MainActivity.this,"Produto/Marca não encontrado",
-                        getString(R.string.no_exists)).show();
-                return;
-            }
-            else if(numberProducts < 19){
-                //Caso retorne menos que 5 Itens
-                maxResult = numberProducts;
-            }
-            else{
-                //Limite Maximo de 5 Resultados por Marca/Tipo
-                maxResult = 20;
-            }
-
-            // Laço de Repetição que consulta os resultados nos itens do Array(JSON)
-            for (int i = 0; i < maxResult; i++) {
-
-                // Pega um objeto de acordo com a Posição (Posição = Item/Produto)
-                JSONObject jsonObject = new JSONObject(itemsArray.getString(i));
-
-                //Tenta Obter as Informações e Converte-las para seus devidos tipos
-                try {
-                    id = Integer.parseInt(jsonObject.getString("id"));
-                    brand = jsonObject.getString("brand");
-                    name = jsonObject.getString("name");
-                    price = jsonObject.getString("price");
-                    currency = jsonObject.getString("currency");
-                    type = jsonObject.getString("product_type");
-                    description = jsonObject.getString("description").
-                            replaceAll("\n", "");
-                    urlImage = jsonObject.getString("image_link");
-
-                    //Caso não tenha dados inseridos
-
-                    if (name.equals("null") || name.equals("")){
-                        name = "Erro ao procurar o nome do Produto.";
-                    }
-                    if(currency.equals("null") || currency.equals("")){
-                        currency = "";
-                    }
-                    if (description.equals("null") || description.equals("")){
-                        description = "Esse Produto não possui Descrição Cadastrada.";
-                    }
-                    if (price.equals("null") || price.equals("")){
-                        price = "Não possui Preço Cadastrado";
-                    }
-
-                    // Instancia a Classe com os Dados
-                    Makeup classMakeup = new Makeup(id, brand, name, type, price,
-                            currency, description, urlImage);
-
-                    // Insere os dados da Classe Makeup no SQLite
-                    dataBaseHelper.insertMakeup(classMakeup);
-
-                } catch (Exception e) {
-                    Log.e("RECOVERY ARRAY", "\nErro ao recuperar os valores do Array" +
-                            "dos Produtos\n" + e);
-                    e.printStackTrace();
-                } finally {
-                    dataBaseHelper.close();
-                }
-            }
-
-            // Metodo que Exibe os dados do SQLite (Mostra no RecycleView)
-            showWindow();
-
-        } catch (Exception e) {
-            //Caso não receba uma String Valida ou tenha algum problema na criação Array
-            dialogs.message(MainActivity.this,"Erro na leitura",
-                    getString(R.string.error_json)).show();
-
-            Log.e("NOT VALID ARRAY",
-                    "\nErro no Array ou no Recebimento da String\n" + e);
-
-            e.printStackTrace();
-        }
-    }
-
-
-    // Mostra os Dados na Tela
-    public void showWindow(){
-
-        // Busca os Valores no BD
-        // Utiliza os valores inseridos pelo usuario e usados pela atividade assicrona
-        Cursor cursor = dataBaseHelper.getDataMakeup(infoType, infoBrand);
-
-        // Caso haja posição para o Cursor
-        if(cursor.moveToFirst()){
-            String brand, name, price, currency, type, description, urlImage;
-
-            // Esconde o Layout de Pesquisa e mostra o Layout de Resultados
-            layoutInputs.setVisibility(View.GONE);
-            layoutResult.setVisibility(View.VISIBLE);
-
-
-            // Pega os dados enquanto o Cursor tiver proxima posição
-            do{
-                brand = cursor.getString(1);
-                name = cursor.getString(2);
-                type = cursor.getString(3);
-                price = cursor.getString(4);
-                currency = cursor.getString(5);
-                description = cursor.getString(6);
-                urlImage = cursor.getString(7);
-
-                Makeup makeup = new Makeup(brand, name, type, price, currency, description,urlImage);
-
-                // Atualiza o RecyclerView
-                makeupListRecycler.add(makeup);
-
-                // Notifica ao adpter que houve mudança
-                recycleAdapter.notifyDataSetChanged();
-            } while (cursor.moveToNext());
-
-        } else{
-
-            // Não possui dados na Tabela
-            Log.e("EMPTY DATABASE", "\nNão foi encontrado nenhum " +
-                    "dado no Banco de Dados\n" + cursor.toString());
-            dialogs.message(MainActivity.this,"Sem Dados",
-                    getString(R.string.table_empty)).show();
-
-
-        }
-        cursor.close();
-        dataBaseHelper.close();
     }
 
 }
