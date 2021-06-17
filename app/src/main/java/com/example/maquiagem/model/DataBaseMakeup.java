@@ -25,6 +25,13 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
     private static final String TABLE_LOCATION = "location";
     private static final String ID_LOCATION = "id";
     private static final String RETURN_LOCATION = "return_location";
+    private static final String ENDERECO = "address";
+    private static final String BAIRRO = "bairro";
+    private static final String CITY = "city";
+    private static final String NUMBER = "number_address";
+    private static final String POSTAL_CODE = "postal_code";
+    private static final String COUNTY = "country";
+    private static final String COUNTRY_CODE = "country_code";
 
     public DataBaseMakeup(Context context){
         super(context, BD, null, VERSION);
@@ -48,6 +55,13 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         db.execSQL(
                 "create table " + TABLE_LOCATION + " (" +
                         ID_LOCATION + " integer PRIMARY KEY AUTOINCREMENT, " +
+                        ENDERECO + " text, " +
+                        BAIRRO + " text, " +
+                        CITY + " text, " +
+                        NUMBER + " text, " +
+                        POSTAL_CODE + " text, " +
+                        COUNTY + " text, " +
+                        COUNTRY_CODE + " text, " +
                         RETURN_LOCATION + " text)"
         );
     }
@@ -58,87 +72,9 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         this.onCreate(db);
     }
 
-
-    // Inserção de Dados no Banco de Dados ---> Usa a classe MakeupClass
-    public void insertMakeup(Makeup makeup) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(BRAND, makeup.getBrand());
-        values.put(NAME, makeup.getName());
-        values.put(TYPE, makeup.getType());
-        values.put(PRICE, makeup.getPrice());
-        values.put(CURRENCY, makeup.getCurrency());
-        values.put(DESCRIPTION, makeup.getDescription());
-        values.put(IMAGE, makeup.getUrlImage());
-
-        db.insert(TABLE_MAKEUP, null, values);
-    }
-
-    // Verifica se ja existe os produtos buscados
-    public boolean existsInMakeup(String type, String brand){
-        SQLiteDatabase database = this.getReadableDatabase();
-
-        // Conta cada item com as variavesis recebidas
-        int amountRecords = (int) DatabaseUtils.queryNumEntries(database,TABLE_MAKEUP,
-                TYPE + "='" + type + "' AND " + BRAND + "='" + brand+ "'");
-
-        // Caso tenha 1 ou mais registros ---> True
-        return amountRecords != 0;
-    }
-
-    public boolean existsInLocation(int id){
-        SQLiteDatabase database = this.getReadableDatabase();
-        int amountRecords = (int) DatabaseUtils.queryNumEntries(database, TABLE_LOCATION,
-                ID_LOCATION + "='" + id + "'");
-        // Caso tenha 1 ou mais registros ---> True
-        return amountRecords != 0;
-    }
-
-
-    public void insertLocation(int id){
-        SQLiteDatabase database = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(ID_LOCATION, id);
-        database.insert(TABLE_LOCATION, null, values);
-    }
-
-
-    // Insere se a busca da Localização deu certa ou não
-    public void insertTypeLocation(int idLocation, boolean returnLocation){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        if (returnLocation) {
-            values.put(RETURN_LOCATION, "correct_position");
-        } else {
-            values.put(RETURN_LOCATION, "wrong_position");
-        }
-        db.update(TABLE_LOCATION, values, ID_LOCATION + "='" + idLocation + "'", null );
-    }
-
-
-    // Limpa toda a Tabela do Banco de Dados
-    public void clearTableMakeup() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLE_MAKEUP);
-    }
-
-    // Apaga todos os dados da Tabela Localização
-    public void clearTableLocation(){
-        SQLiteDatabase database = this.getWritableDatabase();
-        database.execSQL("DELETE FROM " + TABLE_LOCATION);
-    }
-
-
-    // Seleciona um Produto do Banco de Dados
-    public Cursor getDataMakeup(String type, String brand) {
+    public int amountMakeupSearch(){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor;
-        // Cria um cursor com cada Produto
-        cursor =  db.rawQuery( "SELECT * FROM " + TABLE_MAKEUP +
-                " WHERE " + TYPE + "='" + type +
-                "' AND " + BRAND +  "='" + brand + "'",
-                null );
-        return cursor;
+        return (int) DatabaseUtils.queryNumEntries(db,TABLE_MAKEUP);
     }
 
     public int amountLocation(){
@@ -167,9 +103,85 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
     }
 
 
-    public int amountMakeupSearch(){
+    // Inserção de Dados no Banco de Dados ---> Usa a classe model/Makeup
+    public void insertMakeup(Makeup makeup) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(BRAND, makeup.getBrand());
+        values.put(NAME, makeup.getName());
+        values.put(TYPE, makeup.getType());
+        values.put(PRICE, makeup.getPrice());
+        values.put(CURRENCY, makeup.getCurrency());
+        values.put(DESCRIPTION, makeup.getDescription());
+        values.put(IMAGE, makeup.getUrlImage());
+
+        db.insert(TABLE_MAKEUP, null, values);
+    }
+
+    // Inserção de Dados no Banco de Dados ---> Usa a classe model/Location
+    public void insertLocation(Location location){
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ID_LOCATION, location.getLastId());
+        values.put(ENDERECO, location.getAddress());
+        values.put(BAIRRO, location.getBairro());
+        values.put(CITY, location.getCity());
+        values.put(NUMBER, location.getNumber());
+        values.put(POSTAL_CODE, location.getPostalCode());
+        values.put(COUNTY, location.getCountryName());
+        values.put(COUNTRY_CODE, location.getCountryCode());
+        database.insert(TABLE_LOCATION, null, values);
+    }
+
+    // Insere se a busca da Localização deu certa ou não
+    public void insertTypeLocation(int idLocation, boolean returnLocation){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        if (returnLocation) {
+            values.put(RETURN_LOCATION, "correct_position");
+        } else {
+            values.put(RETURN_LOCATION, "wrong_position");
+        }
+        db.update(TABLE_LOCATION, values, ID_LOCATION + "='" + idLocation + "'", null );
+    }
+
+
+    // Verifica se ja existe os produtos buscados
+    public boolean existsInMakeup(String type, String brand){
+        SQLiteDatabase database = this.getReadableDatabase();
+
+        // Conta cada item com as variavesis recebidas
+        int amountRecords = (int) DatabaseUtils.queryNumEntries(database,TABLE_MAKEUP,
+                TYPE + "='" + type + "' AND " + BRAND + "='" + brand+ "'");
+
+        // Caso tenha 1 ou mais registros ---> True
+        return amountRecords != 0;
+    }
+
+
+    // Seleciona um Produto do Banco de Dados
+    public Cursor getDataMakeup(String type, String brand) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return (int) DatabaseUtils.queryNumEntries(db,TABLE_MAKEUP);
+        Cursor cursor;
+        // Cria um cursor com cada Produto
+        cursor =  db.rawQuery( "SELECT * FROM " + TABLE_MAKEUP +
+                " WHERE " + TYPE + "='" + type +
+                "' AND " + BRAND +  "='" + brand + "'",
+                null );
+        return cursor;
+    }
+
+
+    // Limpa toda a Tabela do Banco de Dados
+    public void clearTableMakeup() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_MAKEUP);
+    }
+
+    // Apaga todos os dados da Tabela Localização
+    public void clearTableLocation(){
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.execSQL("DELETE FROM " + TABLE_LOCATION);
     }
 }
 

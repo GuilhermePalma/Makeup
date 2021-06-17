@@ -43,6 +43,7 @@ public class LocationActivity extends AppCompatActivity {
     static final String STATE_FRAGMENT = "STATE FRAGMENT";
 
     AlertDialogs dialogs = new AlertDialogs();
+    com.example.maquiagem.model.Location classLocation = new com.example.maquiagem.model.Location();
     private DataBaseMakeup dataBaseMakeup;
     private int lastIdLocation, actualId;
 
@@ -69,11 +70,7 @@ public class LocationActivity extends AppCompatActivity {
         lastIdLocation = dataBaseMakeup.amountLocation();
         actualId = lastIdLocation + 1;
 
-        if (dataBaseMakeup.existsInLocation(actualId)){
-            actualId++;
-        } else{
-            getLastLocationUser();
-        }
+        getLastLocation();
 
     }
 
@@ -89,7 +86,7 @@ public class LocationActivity extends AppCompatActivity {
 
 
     // Metodo que recupera a Ultima Localização Conhecida
-    public void getLastLocationUser() {
+    public void getLastLocation() {
 
         showAddress = findViewById(R.id.txt_location);
 
@@ -135,7 +132,6 @@ public class LocationActivity extends AppCompatActivity {
                             longitude = location.getLongitude();
 
                             // Geolocalização Reversa (Longitude + Latidude = Endereço)
-                            // Limita a somente 1 Resultado
                             addresses = geocoder.getFromLocation(latitude, longitude, 1);
                             // Imprime o resultado da List de Endereços (ArrayList)
                             Log.i("LIST ENDEREÇO","\n" + addresses.get(0).toString()
@@ -153,13 +149,26 @@ public class LocationActivity extends AppCompatActivity {
                                     location.getLongitude(), illegalArgumentException);
                         }
                         finally {
-                            Log.d("FINAL LOCATION", "\nLocalização Final" + addresses.toString());
+                            Log.d("FINAL LOCATION", "\nLocalização Final: " + addresses.toString());
                             if(addresses.isEmpty() || addresses == null){
                                 showAddress.setText(R.string.error_searchLocation);
                             }
                             else{
+
+                                // Instancia a classe de Localização
+                                classLocation = new com.example.maquiagem.model.Location(
+                                        actualId,
+                                        addresses.get(0).getThoroughfare(),
+                                        addresses.get(0).getFeatureName(),
+                                        addresses.get(0).getAdminArea(),
+                                        addresses.get(0).getSubAdminArea(),
+                                        addresses.get(0).getSubThoroughfare(),
+                                        addresses.get(0).getPostalCode(),
+                                        addresses.get(0).getCountryName(),
+                                        addresses.get(0).getCountryCode());
+
                                 // Insere a Localização no BD e Exibe o Endereço
-                                dataBaseMakeup.insertLocation(actualId);
+                                dataBaseMakeup.insertLocation(classLocation);
                                 showAddress.setText(addresses.get(0).getAddressLine(0));
                             }
 
