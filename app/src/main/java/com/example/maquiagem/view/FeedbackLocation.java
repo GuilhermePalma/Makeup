@@ -1,10 +1,12 @@
 package com.example.maquiagem.view;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,17 +40,20 @@ public class FeedbackLocation extends Fragment {
         // Recebe os valores dos Botões do Fragment
         Button btn_insertDb = view.findViewById(R.id.btn_sendData);
         RadioButton rbtn_correct = view.findViewById(R.id.rbtn_trueLocation);
+        RadioButton rbtn_wrong = view.findViewById(R.id.rbtn_wrongLocation);
 
-        btn_insertDb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+        btn_insertDb.setOnClickListener(v -> {
+            if (rbtn_correct.isChecked() || rbtn_wrong.isChecked()){
                 // Desativa o Botão apos o Clique
                 btn_insertDb.setEnabled(false);
-
                 int lastIdLocation = helperDatabase.amountLocation();
+
                 // Caso a posição seja correta, insere no Banco de Dados 'True', se não = 'False'
                 helperDatabase.insertTypeLocation(lastIdLocation, rbtn_correct.isChecked());
+            } else {
+                AlertDialogs alertDialogs = new AlertDialogs();
+                alertDialogs.message(view.getContext(), getString(R.string.title_invalidData),
+                        Html.fromHtml(getString(R.string.error_selected)).toString()).show();
             }
         });
 

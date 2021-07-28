@@ -4,8 +4,8 @@ public class Location {
 
     public int lastId;
     public String address;
-    public String bairro;
-    public String estado;
+    public String district;
+    public String state;
     public String city;
     public String number;
     public String postalCode;
@@ -17,11 +17,12 @@ public class Location {
         // Metodo sem contrutor
     }
 
-    public Location(int lastId,String address, String bairro, String estado, String city, String number, String postalCode, String countryName, String countryCode) {
+    public Location(int lastId,String address, String district, String state, String city,
+                    String number, String postalCode, String countryName, String countryCode) {
         this.lastId = lastId;
         this.address = address;
-        this.bairro = bairro;
-        this.estado = estado;
+        this.district = district;
+        this.state = state;
         this.city = city;
         this.number = number;
         this.postalCode = postalCode;
@@ -31,8 +32,8 @@ public class Location {
 
     public int getLastId() {return lastId;}
     public String getAddress() {return  address;}
-    public String getBairro() {return bairro;}
-    public String getEstado() {return estado;}
+    public String getDistrict() {return district;}
+    public String getState() {return state;}
     public String getCity() {return city;}
     public String getNumber() {return number;}
     public String getPostalCode() {return postalCode;}

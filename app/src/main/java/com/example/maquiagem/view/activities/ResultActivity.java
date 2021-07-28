@@ -127,7 +127,7 @@ public class ResultActivity extends AppCompatActivity {
 
                 if (!insertInDataBase(jsonMakeup)) {
                     dialogs.message(ResultActivity.this,
-                            getString(R.string.title_errorJson), getString(R.string.error_json))
+                            getString(R.string.title_invalidData), getString(R.string.error_json))
                             .show();
                 } else {
                     showWindow(type, brand);
@@ -181,7 +181,7 @@ public class ResultActivity extends AppCompatActivity {
 
         } catch (JSONException e) {
             //Caso dê Algum Problema durante a criação do Array
-            dialogs.message(ResultActivity.this, getString(R.string.title_errorJson),
+            dialogs.message(ResultActivity.this, getString(R.string.title_invalidData),
                     getString(R.string.error_json)).show();
             Log.e("NOT VALID ARRAY", "Erro no Array ou no Recebimento da String\n" + e);
             e.printStackTrace();

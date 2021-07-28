@@ -13,18 +13,19 @@
     <!-- Mensagens de Erro -->
     <string name="table_empty">A Tabela não Possuem nenhum Dado</string>
     <string name="title_noConnection">Sem Internet</string>
-    <string name="title_errorJson">Dados Invalidos</string>
+    <string name="title_invalidData">Dados Invalidos</string>
     <string name="title_noGps">Sem GPS</string>
     <string name="title_noExist">Produto e/ou Marca não Encontrado</string>
+    <string name="title_noLocation">Sem Localização</string>
     <string name="error_input">Preencha os Campos</string>
     <string name="error_noExists">Não existe nenhum Produto Cadastrado com esse Tipo e Marca</string>
     <string name="error_connection">Sem Conexão com a Internet</string>
     <string name="error_json">Erro na Leitura dos Dados, Tente Novamente</string>
     <string name="error_noGps">Sem conexão com o GPS</string>
-    <string name="error_searchLocation">Erro na busca do Endereço</string>
-    <string name="error_location">Erro ao recuperar a ultima localização</string>
+    <string name="error_location">Erro ao Recuperar a Ultima Localização</string>
     <string name="error_recoveryData">Nenhum dado foi informado para a Busca</string>
     <string name="error_sensor">Sensor de Proximidade não Disponivel no Dispostivo</string>
+    <string name="error_selected">Nenhuma Opção foi Selecionada.&lt;br />Tente Novamente</string>
 
     <!-- Strings do Menu -->
     <string name="clear_bd">Limpar Dados Salvos</string>
@@ -42,11 +43,17 @@
     <string name="fill_text">Informações da API</string>
     <string name="description_imageProduct">Imagem do Produto</string>
 
-    <!-- Activity Location -->
+    <!-- Activity Location (&lt; = '<' em HTML)-->
     <string name="txt_titleLocation"><b>Localização Atual</b></string>
-    <string name="txt_noSearch">Não encontramos sua Localização. Tente Novamente</string>
+    <string name="txt_noSearch">Não encontramos sua Localização.&lt;br /> Tente Novamente</string>
     <string name="txt_probablyError">Essa é uma localização baseada na ultima localização
         registrada. Pode representar um <b>enderço não exato</b></string>
+    <string name="button_reset">Tentar Novamente</string>
+    <string name="txt_wait">Aguarde enquanto Buscamos os Dados…</string>
+    <string name="txt_country">&lt;b>País&lt;/b>: %1$s - %2$s</string>
+    <string name="txt_city">&lt;b>Cidade&lt;/b>: %1$s - %2$s</string>
+    <string name="txt_address">&lt;b>Endereço&lt;/b>: %1$s - %2$s, %3$s</string>
+    <string name="txt_cep">&lt;b>CEP&lt;/b>: %s</string>
 
     <!-- Fragment FeedbackLocation -->
     <string name="rbtn_wrongLocation">Localização Incorreta</string>

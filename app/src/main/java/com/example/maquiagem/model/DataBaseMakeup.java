@@ -25,8 +25,9 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
     private static final String TABLE_LOCATION = "location";
     private static final String ID_LOCATION = "id";
     private static final String RETURN_LOCATION = "return_location";
-    private static final String ENDERECO = "address";
-    private static final String BAIRRO = "bairro";
+    private static final String ADDRESS = "address";
+    private static final String DISTRICT = "bairro";
+    private static final String STATE = "state";
     private static final String CITY = "city";
     private static final String NUMBER = "number_address";
     private static final String POSTAL_CODE = "postal_code";
@@ -55,9 +56,10 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         db.execSQL(
                 "create table " + TABLE_LOCATION + " (" +
                         ID_LOCATION + " integer PRIMARY KEY AUTOINCREMENT, " +
-                        ENDERECO + " text, " +
-                        BAIRRO + " text, " +
+                        ADDRESS + " text, " +
+                        DISTRICT + " text, " +
                         CITY + " text, " +
+                        STATE + " text, " +
                         NUMBER + " text, " +
                         POSTAL_CODE + " text, " +
                         COUNTY + " text, " +
@@ -123,9 +125,10 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(ID_LOCATION, location.getLastId());
-        values.put(ENDERECO, location.getAddress());
-        values.put(BAIRRO, location.getBairro());
+        values.put(ADDRESS, location.getAddress());
+        values.put(DISTRICT, location.getDistrict());
         values.put(CITY, location.getCity());
+        values.put(STATE, location.getState());
         values.put(NUMBER, location.getNumber());
         values.put(POSTAL_CODE, location.getPostalCode());
         values.put(COUNTY, location.getCountryName());
