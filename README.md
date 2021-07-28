@@ -164,6 +164,7 @@ As seguintes ferramentas foram usadas na construção do projeto:
 -   Teste de API:  **[Swagger](https://editor.swagger.io/)**
 -   Biblioteca Picasso:  **[Documentação Picasso](https://square.github.io/picasso/)** 
 	> Conversão de URLs para Imagens
+-   Icone: **[Freepik](https://www.freepik.com)**  → Retirado de: [FlatIcon](href="https://www.flaticon.com/br/)
 ---
 
 
