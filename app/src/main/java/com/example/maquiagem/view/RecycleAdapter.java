@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.view.activity.MainActivity;
 import com.example.maquiagem.model.Makeup;
 import com.squareup.picasso.Picasso;
 
@@ -73,8 +72,8 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
 
         Makeup makeup = makeupList.get(position);
         holder.name.setText(makeup.getName());
-        holder.currency_price.setText(makeup.getCurrency() + " " + makeup.getPrice());
-        holder.type_brand.setText(makeup.getType() + " - " + makeup.getBrand());
+        holder.currency_price.setText(String.format("%s %s", makeup.getCurrency(), makeup.getPrice()));
+        holder.type_brand.setText(String.format("%s - %s", makeup.getType(), makeup.getBrand()));
         holder.description.setText(makeup.getDescription());
 
         // Biblioteca Picasso (Converte URL da IMG ---> IMG)

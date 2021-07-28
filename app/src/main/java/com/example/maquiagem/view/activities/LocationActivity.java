@@ -1,4 +1,4 @@
-package com.example.maquiagem.view.activity;
+package com.example.maquiagem.view.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -109,9 +109,7 @@ public class LocationActivity extends AppCompatActivity {
         // Recupera a Ultima Localização
         fusedLocationClient.getLastLocation().
             addOnSuccessListener(this,
-                new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
+                    location -> {
 
                         List<Address> addresses = new ArrayList<>();
                         Geocoder geocoder = new Geocoder(getApplicationContext(),
@@ -173,20 +171,16 @@ public class LocationActivity extends AppCompatActivity {
                             }
 
                         }
-                    }
-            })
+                    })
 
             // Caso não consiga obter a ultima Localização ---> Erro
             .addOnFailureListener(
-                new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                    e -> {
                         Log.e("TAG", "\nonFailure: ", e);
                         dialogs.message(LocationActivity.this,
                                 "Não encontramos a Localização",
                                 getString(R.string.error_location)).show();
                     }
-                }
             );
     }
 

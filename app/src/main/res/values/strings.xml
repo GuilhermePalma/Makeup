@@ -16,8 +16,10 @@
     <!-- Mensagens de Erro -->
     <string name="error_input">Preencha os Campos</string>
     <string name="error_connection">Sem Conexão com a Internet</string>
-    <string name="error_json">Erro na Leitura dos Dados</string>
+    <string name="title_errorJson">Dados Invalidos</string>
+    <string name="error_json">Erro na Leitura dos Dados, Tente Novamente</string>
     <string name="table_empty">A Tabela não Possuem nenhum Dado</string>
+    <string name="title_noExist">Produto e/ou Marca não Encontrado</string>
     <string name="no_exists">Não existe nenhum Produto Cadastrado com esse Tipo e Marca</string>
 
     <!-- Strings do Menu -->

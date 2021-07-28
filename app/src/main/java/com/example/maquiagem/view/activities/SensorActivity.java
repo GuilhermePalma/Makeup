@@ -1,4 +1,4 @@
-package com.example.maquiagem.view.activity;
+package com.example.maquiagem.view.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -10,7 +10,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.maquiagem.R;
@@ -60,7 +59,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (sensorAvailable) {
-            txt_dataSensor.setText("Distancia: " + event.values[0] + " cm");
+            txt_dataSensor.setText(String.format("Distancia: %s cm", event.values[0]));
             if (event.values[0] <= 0) {
                 // Caso a distancia seja igual ou = 0 ---> Tela Vermelha
                 layoutSensor.setBackgroundColor(getResources().getColor(R.color.red));

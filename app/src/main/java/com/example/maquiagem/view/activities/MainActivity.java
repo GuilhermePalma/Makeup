@@ -1,4 +1,4 @@
-package com.example.maquiagem.view.activity;
+package com.example.maquiagem.view.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -198,11 +198,15 @@ public class  MainActivity extends AppCompatActivity{
         // Gerencia os serviços de Localziação
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        // Verifica se o GPS está ativo e se possui conexão com a Internet
-        boolean gpsIsEnabled = false;
-        gpsIsEnabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        return gpsIsEnabled;
+        // Verifica se o GPS está ativo e Habilitado para Usar
+        try {
+            return service.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (IllegalArgumentException exception){
+            Log.e("ERROR SERVICE GPS", "Não foi foi possivel obter o " +
+                    "Serviço de GPS\n" + exception);
+            exception.printStackTrace();
+            return false;
+        }
     }
 
 }

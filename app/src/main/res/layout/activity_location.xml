@@ -5,7 +5,7 @@
     android:id="@+id/layout_location"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.activity.LocationActivity">
+    tools:context=".view.activities.LocationActivity">
 
     <include
         android:id="@+id/toolBar"
