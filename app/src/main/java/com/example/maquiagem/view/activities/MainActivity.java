@@ -13,41 +13,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.view.AlertDialogs;
-import com.example.maquiagem.view.RecycleAdapter;
 import com.example.maquiagem.model.DataBaseMakeup;
-import com.example.maquiagem.model.Makeup;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.maquiagem.view.AlertDialogs;
 
 
 public class  MainActivity extends AppCompatActivity{
 
     private EditText editType;
     private EditText editBrand;
-    private LinearLayout layoutInputs;
-    private LinearLayout layoutResult;
 
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManagerRecycler;
-    private RecycleAdapter recycleAdapter;
-
-    private List<Makeup> makeupListRecycler = new ArrayList<>();
-
-    private final DataBaseMakeup dataBaseHelper = new DataBaseMakeup(this);
-
-    AlertDialogs dialogs = new AlertDialogs();
-
+    private AlertDialogs dialogs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +44,8 @@ public class  MainActivity extends AppCompatActivity{
         // Define os EditText
         editType = findViewById(R.id.edit_type);
         editBrand = findViewById(R.id.edit_brand);
+
+        dialogs = new AlertDialogs();
     }
 
     // Cria o menu na ToolBar
@@ -81,20 +65,20 @@ public class  MainActivity extends AppCompatActivity{
                 if (connectionAvailable()){
                     // GPS ativo
                     if (gpsAvailable()){
-                        Intent location = new Intent(this, LocationActivity.class);
-                        startActivity(location);
+                        startActivity(new Intent(this, LocationActivity.class));
                     } else {
-                        dialogs.message(this,"Sem GPS",
+                        dialogs.message(this,getString(R.string.title_noGps),
                                 getString(R.string.error_noGps)).show();
                     }
                 } else {
-                    dialogs.message(this,"Sem Internet",
+                    dialogs.message(this,getString(R.string.title_noConnection),
                             getString(R.string.error_connection)).show();
                 }
                 break;
 
             case (R.id.clearData):
                 // Limpa o Banco de Dados
+                DataBaseMakeup dataBaseHelper = new DataBaseMakeup(this);
                 dataBaseHelper.clearTableMakeup();
                 dataBaseHelper.clearTableLocation();
                 dataBaseHelper.close();
@@ -117,42 +101,36 @@ public class  MainActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-
+    // Limpa os Dados da Tela
     public void clearWindow(){
         // Limpa os Campos
         editType.setText(R.string.string_empty);
         editBrand.setText(R.string.string_empty);
     }
 
-
     // Metodo do Botão Pesquisar
     public void BtnSearch(View view) {
 
-        String infoType, infoBrand;
-
         // Recupera os valores inseridos pelo Usario
-        infoType = editType.getText().toString();
-        infoBrand = editBrand.getText().toString();
+        String infoType = editType.getText().toString();
+        String infoBrand = editBrand.getText().toString();
 
         if (infoType.equals("")){
             editType.setError(getString(R.string.value_required));
+            editBrand.requestFocus();
             return;
         }  else if(infoBrand.equals("")){
             editBrand.setError(getString(R.string.value_required));
+            editBrand.requestFocus();
             return;
         }
 
-        //Esconde o Teclado
-        InputMethodManager keyboardManager = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-        // Ao clicar no botão, caso o teclado esteja ativo ele é fechado
-        if (keyboardManager != null) {
-            keyboardManager.hideSoftInputFromWindow(view.getWindowToken(),
-                    InputMethodManager.HIDE_NOT_ALWAYS);
-        }
+        // Fecha o Teclado
+        closeKeyboard(view);
 
         //Validação da Conexão Ativa
         if (connectionAvailable()){
+
             // Limpa os valores da Tela Inteira
             clearWindow();
 
@@ -163,35 +141,38 @@ public class  MainActivity extends AppCompatActivity{
             startActivity(activityResult);
 
         } else{
-            dialogs.message(MainActivity.this,"Sem Internet",
+            dialogs.message(MainActivity.this, getString(R.string.title_noConnection),
                      getString(R.string.error_connection)).show();
         }
     }
 
 
     private boolean connectionAvailable(){
-        //Valida se o serviço de Internet está ativo
+
         ConnectivityManager connectionManager = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = null;
+        NetworkInfo networkInfo;
 
+        // Valida se o serviço de Internet está ativo
         if (connectionManager != null) {
             networkInfo = connectionManager.getActiveNetworkInfo();
+
+            // Valida se existe conexão ativa
+            if (networkInfo != null && networkInfo.isConnected()){
+                return true;
+            } else{
+                // Erro na Conexão
+                Log.e("NO CONECTED", "\n Erro na conexão com a Internet" +
+                        "\nConexão: " + networkInfo);
+                return false;
+            }
+
         } else{
             Log.e("NO SERVICE", "\n Erro no serviço de Internet" +
                     "\nServiço: " + connectionManager);
             return false;
         }
 
-        // Validação da Conexão Ativa
-        if (networkInfo != null && networkInfo.isConnected()){
-            return true;
-        } else{
-            // Erro na Conexão
-            Log.e("NO CONECTED", "\n Erro na conexão com a Internet" +
-                    "\nConexão: " + networkInfo);
-            return false;
-        }
     }
 
     private boolean gpsAvailable(){
@@ -206,6 +187,17 @@ public class  MainActivity extends AppCompatActivity{
                     "Serviço de GPS\n" + exception);
             exception.printStackTrace();
             return false;
+        }
+    }
+
+    private void closeKeyboard(View view){
+        InputMethodManager keyboardManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // Caso o Serviço do Teclado esteja disponivel
+        if (keyboardManager != null) {
+            keyboardManager.hideSoftInputFromWindow(view.getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
 

@@ -46,7 +46,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
         // Tenta Obter o Sensor de Proximidade
         if(sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) == null){
-            txt_dataSensor.setText(R.string.txt_errorSensor);
+            txt_dataSensor.setText(R.string.error_sensor);
             sensorAvailable = false;
         } else {
             sensorProximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
