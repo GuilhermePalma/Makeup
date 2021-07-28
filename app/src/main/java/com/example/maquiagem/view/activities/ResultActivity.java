@@ -118,7 +118,7 @@ public class ResultActivity extends AppCompatActivity {
 
             if (jsonMakeup.equals("")) {
                 handler.post(() -> dialogs.message(ResultActivity.this,
-                        getString(R.string.title_noExist), getString(R.string.no_exists)).show());
+                        getString(R.string.title_noExist), getString(R.string.error_noExists)).show());
                 return;
             }
 
@@ -238,7 +238,7 @@ public class ResultActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             dialogs.message(ResultActivity.this, getString(R.string.title_noExist),
-                    getString(R.string.no_exists)).show();
+                    getString(R.string.error_noExists)).show();
             Log.e("RECOVERY ARRAY", "Erro ao recuperar os valores do Array " +
                     "dos Produtos\n" + e);
             e.printStackTrace();
