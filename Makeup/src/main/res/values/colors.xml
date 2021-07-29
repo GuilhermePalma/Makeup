@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Paleta de cores do App-->
+    <color name="royal_blue">#FF196F8C</color>
+    <color name="cerise">#FFE63561</color>
+    <color name="blue_crayola">#FF1CA9D9</color>
+    <color name="green">#FF91F03B</color>
+    <color name="red">#FFF12332</color>
+
+    <!-- Cores Base-->
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+
+
+    <!-- Variantes das Cores-->
+    <color name="white_light">#FFF8F8F8</color>
+    <color name="grey">#FF212121</color>
+    <color name="light_grey">#FFD3D3D3</color>
+    <color name="cerise_dark">#FFA62646</color>
+
+    <!-- Widget -->
+    <color name="light_blue_50">#FFE1F5FE</color>
+    <color name="light_blue_200">#FF81D4FA</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+</resources>

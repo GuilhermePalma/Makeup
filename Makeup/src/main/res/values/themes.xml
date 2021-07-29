@@ -1,0 +1,40 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="Theme.Maquiagem" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/royal_blue</item>
+        <item name="colorPrimaryVariant">@color/cerise</item>
+        <item name="colorOnPrimary">@color/white_light</item>
+
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/cerise</item>
+        <item name="colorSecondaryVariant">@color/royal_blue</item>
+        <item name="colorOnSecondary">@color/white_light</item>
+
+        <!-- Implementação do Light Theme. Definição do Background e Texto -->
+        <item name="android:windowBackground">@color/white_light</item>
+        <item name="android:textColorPrimary">@color/black</item>
+
+        <!-- Torna o Icone de Menu Branco -->
+        <item name="android:actionOverflowButtonStyle">@style/IconMenu_OverFlow</item>
+
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <!-- Desativa a ActionBar -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Cor do Icon Menu -->
+    <style name="IconMenu_OverFlow" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="tintMode">@color/white</item>
+    </style>
+
+    <style name="ThemeOverlay.Maquiagem.AppWidgetContainer" parent="">
+        <item name="appWidgetBackgroundColor">@color/light_blue_600</item>
+        <item name="appWidgetTextColor">@color/light_blue_50</item>
+    </style>
+
+</resources>
