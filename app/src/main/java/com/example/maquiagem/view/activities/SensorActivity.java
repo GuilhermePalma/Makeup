@@ -14,29 +14,24 @@ import android.widget.TextView;
 
 import com.example.maquiagem.R;
 
+import java.util.Objects;
+
 public class SensorActivity extends AppCompatActivity implements SensorEventListener {
 
-    SensorManager sensorManager;
-    Sensor sensorProximity;
+    private SensorManager sensorManager;
+    private Sensor sensorProximity;
 
-    TextView txt_dataSensor;
-    ConstraintLayout layoutSensor;
+    private TextView txt_dataSensor;
+    private ConstraintLayout layoutSensor;
 
-    Boolean sensorAvailable;
+    private Boolean sensorAvailable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
 
-        // Criação da ToolBar e Criação da seta de voltar
-        Toolbar toolbar = findViewById(R.id.toolBar);
-        toolbar.setTitle(R.string.app_name);
-        setSupportActionBar(toolbar);
-        // Icon de voltar para a Tela Home
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_return_home);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        setupToolbar();
 
         txt_dataSensor = findViewById(R.id.txt_distance);
         layoutSensor = findViewById(R.id.layout_sensor);
@@ -54,6 +49,19 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         }
 
     }
+
+    private void setupToolbar() {
+        // Criação da ToolBar e Criação da seta de voltar
+        Toolbar toolbar = findViewById(R.id.toolBar);
+        toolbar.setTitle(R.string.app_name);
+        setSupportActionBar(toolbar);
+        // Icon de voltar para a Tela Home
+        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_return_home);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+    }
+
 
     // Metodo acionado quando ocorre mudança no Sensor
     @Override
@@ -91,6 +99,5 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
             sensorManager.unregisterListener(this);
         }
     }
-
 
 }

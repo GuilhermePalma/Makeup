@@ -1,17 +1,15 @@
 package com.example.maquiagem.view;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioButton;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.model.DataBaseMakeup;
@@ -56,6 +54,9 @@ public class FeedbackLocation extends Fragment {
                         Html.fromHtml(getString(R.string.error_selected)).toString()).show();
             }
         });
+
+        rbtn_correct.setOnClickListener(v -> btn_insertDb.setEnabled(true));
+        rbtn_wrong.setOnClickListener(v -> btn_insertDb.setEnabled(true));
 
         // Retorna a view do Fragment
         return view;

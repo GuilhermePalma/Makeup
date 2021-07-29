@@ -1,17 +1,18 @@
 package com.example.maquiagem.view.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.model.DataBaseMakeup;
@@ -43,7 +44,7 @@ public class ResultActivity extends AppCompatActivity {
     private String jsonMakeup = "";
     int numberProducts, maxResult;
 
-    AlertDialogs dialogs = new AlertDialogs();
+    AlertDialogs dialogs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,7 @@ public class ResultActivity extends AppCompatActivity {
         setContentView(R.layout.activity_result);
 
         dataBaseHelper = new DataBaseMakeup(this);
+        dialogs = new AlertDialogs();
 
         // Inicia e Configura o RecyclerView
         setRecyclerView();
@@ -87,9 +89,8 @@ public class ResultActivity extends AppCompatActivity {
 
     }
 
-
+    // Limpa o Array e o RecyclerView
     public void returnMain(View view){
-        // Limpa o Array e o RecyclerView
         makeupListRecycler.clear();
         recycleAdapter.notifyDataSetChanged();
         super.onBackPressed();
@@ -107,25 +108,32 @@ public class ResultActivity extends AppCompatActivity {
         recyclerView.setAdapter(recycleAdapter);
     }
 
-
+    // Busca Assincrona ---> Consulta API e exibe os dados
     private void asyncTask(String type, String brand) {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
-
         executorService.execute(() -> {
             jsonMakeup = getMakeup(type, brand);
 
-            if (jsonMakeup.equals("")) {
-                handler.post(() -> dialogs.message(ResultActivity.this,
-                        getString(R.string.title_noExist), getString(R.string.error_noExists)).show());
-                return;
-            }
-
             handler.post(() -> {
-                // Serializa e Insere os Dados no Banco de Dados
 
-                if (!insertInDataBase(jsonMakeup)) {
+                if (jsonMakeup.equals("")) {
+                    handler.post(() -> dialogs.message(ResultActivity.this,
+                            getString(R.string.title_noExist), getString(R.string.error_noExists)).show());
+                    return;
+                }
+
+                // Serializa e Insere os Dados no Banco de Dados
+                List<Makeup> makeupList = serializationDataMakeup(jsonMakeup);
+
+                if (makeupList != null && makeupList.size() == 0) {
+                    // Caso a List seja igual à vazia ou nula
+                    dialogs.message(ResultActivity.this,
+                            getString(R.string.title_invalidData), getString(R.string.error_json))
+                            .show();
+                } else if (!insertInDataBase(makeupList)) {
+                    // Caso o metodo do BD retorne false
                     dialogs.message(ResultActivity.this,
                             getString(R.string.title_invalidData), getString(R.string.error_json))
                             .show();
@@ -134,9 +142,7 @@ public class ResultActivity extends AppCompatActivity {
                 }
 
             });
-
         });
-
     }
 
     // Cria uma URI e inicializa o Metodo SearchInternet
@@ -153,7 +159,30 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     // Usa a Serilização e Insere os Dados no DataBase
-    private boolean insertInDataBase(String json) {
+    private boolean insertInDataBase(List<Makeup> makeups) {
+        if (makeups != null && !makeups.isEmpty()){
+            // Verifica se o Array é null ou Vazio = Evita Exceptions
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                // Insere cada item do Array no DB
+                makeups.forEach(makeup -> dataBaseHelper.insertMakeup(makeup));
+            } else {
+                for (int i= 0; i < makeups.size(); i++){
+                    dataBaseHelper.insertMakeup(makeups.get(i));
+                }
+            }
+            dataBaseHelper.close();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Faz o Tratamento dos Dados Recebidoss
+    private List<Makeup> serializationDataMakeup(String json) {
+
+        String name, type, brand, price, currency, description, urlImage;
+        int id;
+        List<Makeup> makeups = new ArrayList<>();
 
         JSONArray itemsArray;
 
@@ -169,78 +198,64 @@ public class ResultActivity extends AppCompatActivity {
                 // Pega um objeto de acordo com a Posição (Posição = Item/Produto)
                 JSONObject jsonObject = new JSONObject(itemsArray.getString(i));
 
-                Makeup makeup = serializationDataMakeup(jsonObject);
+                try {
+                    id = Integer.parseInt(jsonObject.getString("id"));
+                    brand = jsonObject.getString("brand");
+                    name = jsonObject.getString("name");
+                    price = jsonObject.getString("price").
+                            replaceAll("[^0-9^,.]", "");
+                    currency = jsonObject.getString("currency");
+                    type = jsonObject.getString("product_type");
+                    description = jsonObject.getString("description").
+                            replaceAll("\n", "");
+                    urlImage = jsonObject.getString("image_link");
 
-                if (makeup != null) {
+                    // Normalizando as Strings Recebidas (HTML Tags ---> String)
+                    brand = Html.fromHtml(brand).toString();
+                    name = Html.fromHtml(name).toString();
+                    currency = Html.fromHtml(currency).toString();
+                    type = Html.fromHtml(type).toString();
+                    description = Html.fromHtml(description).toString();
+
+                    //Caso não tenha dados inseridos
+                    if (name.equals("null") || name.equals("")) {
+                        name = getString(R.string.empty_name);
+                    }
+                    if (price.equals("null") || price.equals("")) {
+                        price = getString(R.string.empty_price);
+                    }
+                    if (currency.equals("null") || currency.equals("")) {
+                        currency = "";
+                    }
+                    if (description.equals("null") || description.equals("")) {
+                        description = getString(R.string.empty_description);
+                    }
+                    if (urlImage.equals("null") || urlImage.equals("")) {
+                        urlImage = URL_NO_IMAGE;
+                    }
+
                     // Intancia a Classe e Insere no Banco de Dados
-                    dataBaseHelper.insertMakeup(makeup);
-                } else return false;
+                    makeups.add(new Makeup(id, brand, name, type, price,
+                            currency, description, urlImage));
+
+
+                } catch (Exception e) {
+                    dialogs.message(ResultActivity.this, getString(R.string.title_noExist),
+                            getString(R.string.error_noExists)).show();
+                    Log.e("RECOVERY ARRAY", "Erro ao recuperar os valores do Array " +
+                            "dos Produtos\n" + e);
+                    e.printStackTrace();
+                    return null;
+                }
             }
 
-            return true;
+            return makeups.isEmpty() ? null : makeups;
 
         } catch (JSONException e) {
             //Caso dê Algum Problema durante a criação do Array
             dialogs.message(ResultActivity.this, getString(R.string.title_invalidData),
                     getString(R.string.error_json)).show();
             Log.e("NOT VALID ARRAY", "Erro no Array ou no Recebimento da String\n" + e);
-            e.printStackTrace();
-            return false;
-        } finally {
-            dataBaseHelper.close();
-        }
-    }
-
-    // Faz o Tratamento dos Dados Recebidoss
-    private Makeup serializationDataMakeup(JSONObject jsonObject) {
-
-        String name, type, brand, price, currency, description, urlImage;
-        int id;
-
-        try {
-            id = Integer.parseInt(jsonObject.getString("id"));
-            brand = jsonObject.getString("brand");
-            name = jsonObject.getString("name");
-            price = jsonObject.getString("price").
-                    replaceAll("[^0-9^,.]", "");
-            currency = jsonObject.getString("currency");
-            type = jsonObject.getString("product_type");
-            description = jsonObject.getString("description").
-                    replaceAll("\n", "");
-            urlImage = jsonObject.getString("image_link");
-
-            // Normalizando as Strings Recebidas (HTML Tags ---> String)
-            brand = Html.fromHtml(brand).toString();
-            name = Html.fromHtml(name).toString();
-            currency = Html.fromHtml(currency).toString();
-            type = Html.fromHtml(type).toString();
-            description = Html.fromHtml(description).toString();
-
-            //Caso não tenha dados inseridos
-            if (name.equals("null") || name.equals("")) {
-                name = "Produto sem Nome";
-            }
-            if (price.equals("null") || price.equals("")) {
-                price = "Preço não Encontrado";
-            }
-            if (currency.equals("null") || currency.equals("")) {
-                currency = "";
-            }
-            if (description.equals("null") || description.equals("")) {
-                description = "Produto sem Descrição";
-            }
-            if (urlImage.equals("null") || urlImage.equals("")) {
-                urlImage = URL_NO_IMAGE;
-            }
-
-            // Intancia a Classe e Insere no Banco de Dados
-            return new Makeup(id, brand, name, type, price, currency, description, urlImage);
-
-        } catch (Exception e) {
-            dialogs.message(ResultActivity.this, getString(R.string.title_noExist),
-                    getString(R.string.error_noExists)).show();
-            Log.e("RECOVERY ARRAY", "Erro ao recuperar os valores do Array " +
-                    "dos Produtos\n" + e);
             e.printStackTrace();
             return null;
         }

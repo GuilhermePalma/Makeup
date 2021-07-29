@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.text.Html;
 import android.widget.RemoteViews;
 
 import com.example.maquiagem.R;
@@ -62,14 +63,19 @@ public class WidgetApp extends AppWidgetProvider {
         int wrong = database.amountWrongLocation();
 
         // Mostra o ID do Widget
-        views.setTextViewText(R.id.appwidget_id, Integer.toString(appWidgetId));
-
-        // Icon do ImageButton
-        views.setImageViewResource(R.id.imgBtn_update, R.drawable.ic_autorenew);
+        views.setTextViewText(R.id.appwidget_id_label, Html.fromHtml(
+                String.format(context.getString(R.string.txt_idWidget), appWidgetId)));
 
         // Mostra a Hora e a quantidade das Atualizações
-        views.setTextViewText(R.id.appwidget_update,  context.getResources().getString(
-                R.string.txt_formatDateCount, counter, dateString));
+        views.setTextViewText(R.id.appwidget_updateTime_label, Html.fromHtml(
+                String.format(context.getString(R.string.txt_updateTime), dateString)));
+
+        // Mostra a Hora e a quantidade das Atualizações
+        views.setTextViewText(R.id.appwidget_updateNumber_label, Html.fromHtml(
+                String.format(context.getString(R.string.txt_lastUpdate), counter)));
+
+        // Icon do ImageButton
+        views.setImageViewResource(R.id.btn_update, R.drawable.ic_autorenew);
 
         // Buscas de Maquiagem
         views.setTextViewText(R.id.txtWidget_search,
@@ -113,7 +119,7 @@ public class WidgetApp extends AppWidgetProvider {
                 appWidgetId, intentUpdate, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Associa o clique no Botão com o PendingUpdate criado acima
-        views.setOnClickPendingIntent(R.id.imgBtn_update, pendingUpdate);
+        views.setOnClickPendingIntent(R.id.btn_update, pendingUpdate);
 
         // Atualiza o Widget usando o ID e a RemoteView
         appWidgetManager.updateAppWidget(appWidgetId, views);
