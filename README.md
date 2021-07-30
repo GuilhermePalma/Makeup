@@ -165,6 +165,8 @@ As seguintes ferramentas foram usadas na construção do projeto:
 -   Biblioteca Picasso:  **[Documentação Picasso](https://square.github.io/picasso/)** 
 	> Conversão de URLs para Imagens
 -   Icone: **[Freepik](https://www.freepik.com)**  → Retirado de: [FlatIcon](href="https://www.flaticon.com/br/)
+-   Imagens View Pager (Tela com Deslizamento Lateral): [Fundo Branco com Quadrados](https://br.freepik.com/coolvector), [Maquiagens](https://www.flaticon.com/authors/photo3idea-studio), [Icone Idiomas](https://www.freepik.com), [Icone Backup](https://www.freepik.com)
+
 ---
 
 
