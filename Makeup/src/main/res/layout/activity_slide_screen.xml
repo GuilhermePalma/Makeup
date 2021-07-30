@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_pageview"
+    android:orientation="vertical"
+    tools:context=".view.activities.SlideScreen">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager_initial"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_back"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:text="@string/btn_back" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/txt_dotOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dot_code"
+                android:textSize="35sp" />
+
+            <TextView
+                android:id="@+id/txt_dotTwo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                android:text="@string/dot_code"
+                android:textSize="35sp" />
+
+            <TextView
+                android:id="@+id/txt_dotThree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dot_code"
+                android:textSize="35sp" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_next"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:text="@string/btn_skip" />
+    </LinearLayout>
+
+</LinearLayout>
