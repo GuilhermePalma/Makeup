@@ -13,7 +13,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Maquiagem">
-        <activity android:name=".view.activities.ResultActivity"/>
+        <activity android:name=".view.activities.SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.activities.SlideScreen" />
+        <activity android:name=".view.activities.ResultActivity" />
         <activity
             android:name=".view.activities.SensorActivity"
             android:parentActivityName=".view.activities.MainActivity" />
@@ -31,13 +39,11 @@
         <activity
             android:name=".view.activities.LocationActivity"
             android:parentActivityName=".view.activities.MainActivity" />
-        <activity android:name=".view.activities.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".view.activities.MainActivity" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

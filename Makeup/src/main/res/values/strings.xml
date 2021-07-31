@@ -2,6 +2,27 @@
 
     <string name="app_name">API - Maquiagem</string>
 
+    <!--Splash Screen-->
+    <string name="logo_description">Logo Maquiagem</string>
+
+    <!--Slide Screen-->
+    <string name="dot_code">&#8226;</string>
+    <string name="btn_skip">Pular</string>
+    <string name="btn_next">Proxima</string>
+    <string name="btn_back">Anterior</string>
+    <string name="title_api">Maquiagens Ilimitadas</string>
+    <string name="descriptionImg_api">Imagem de Cosmeticos</string>
+    <string name="description_api">Buscas em um Banco de Dados, filtrando com diversas
+        Caracteristicas</string>
+    <string name="title_idioms">Varios Idiomas</string>
+    <string name="descriptionImg_idioms">Imagem de Caracter Chines e outro Ocidental</string>
+    <string name="description_idioms">4 Idiomas Disponiveis: Espanhol, Francês, Ingles e
+        Português (BR)</string>
+    <string name="title_backup">Tudo Salvo !</string>
+    <string name="descriptionImg_backup">Imagem de uma Nuvem</string>
+    <string name="description_backup">Os Dados do Usuario e Produtos Favoritados salvos
+        online</string>
+
     <!-- Activity MainActivity-->
     <string name="edit_type">Tipo</string>
     <string name="edit_marca">Marca</string>
