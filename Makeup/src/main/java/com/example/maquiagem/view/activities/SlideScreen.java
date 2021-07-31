@@ -27,7 +27,7 @@ public class SlideScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slide_screen);
 
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getApplicationContext());
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SlideScreen.this);
 
         viewPager = findViewById(R.id.viewPager_initial);
         viewPager.setAdapter(viewPagerAdapter);
