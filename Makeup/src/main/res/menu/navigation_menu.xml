@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item
+        android:id="@+id/option_profile"
+        android:title="@string/option_profile" />
+    <item
+        android:id="@+id/option_favoriteMakeup"
+        android:title="@string/option_favoriteMakeup" />
+
+
+    <!--Cria um menu com o Titulo desativado-->
+    <item android:title="@string/option_titleMakeup">
+        <menu>
+            <item
+                android:id="@+id/option_searchMakeup"
+                android:title="@string/option_searchMakeup" />
+
+            <item
+                android:id="@+id/option_popularMakeup"
+                android:title="@string/option_popularMakeup" />
+            <item
+                android:id="@+id/option_allMakeup"
+                android:title="@string/option_allMakeup" />
+        </menu>
+    </item>
+
+    <item android:title="@string/option_titleLocation">
+        <menu>
+            <item
+                android:id="@+id/option_location"
+                android:title="@string/option_location" />
+        </menu>
+    </item>
+
+    <item android:title="@string/option_titleResources">
+        <menu>
+            <item
+                android:id="@+id/option_sensor"
+                android:title="@string/option_sensorProximity" />
+        </menu>
+    </item>
+
+    <item android:title="@string/option_titleConfig">
+        <menu>
+            <item
+                android:id="@+id/option_config"
+                android:title="@string/option_config" />
+            <item
+                android:id="@+id/option_dataUsed"
+                android:title="@string/option_dataUse" />
+            <item
+                android:id="@+id/option_exit"
+                android:title="@string/option_exit" />
+        </menu>
+    </item>
+
+</menu>
