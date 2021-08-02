@@ -108,4 +108,13 @@
     <string name="txt_divider">/</string>
     <string name="description_imageButton">Atualizar Widget</string>
 
+    <!--Configuration Activity-->
+    <string name="toolbar_configuration">Configurações</string>
+
+    <!--Data Aplication Activity-->
+    <string name="toolbar_dataApplication">Dados do Uso</string>
+
+    <!--Profile Activity-->
+    <string name="toolbar_profile">Perfil</string>
+
 </resources>

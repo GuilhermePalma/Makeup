@@ -6,7 +6,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,8 +23,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.maquiagem.R;
 import com.example.maquiagem.model.DataBaseMakeup;
 import com.example.maquiagem.model.Location;
-import com.example.maquiagem.view.AlertDialogs;
-import com.example.maquiagem.view.FeedbackLocation;
+import com.example.maquiagem.view.fragments.FeedbackLocation;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
@@ -33,8 +31,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import static android.text.Html.FROM_HTML_MODE_LEGACY;
 
 public class LocationActivity extends AppCompatActivity {
 
