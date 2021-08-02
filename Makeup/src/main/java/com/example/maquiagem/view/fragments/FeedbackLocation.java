@@ -1,4 +1,4 @@
-package com.example.maquiagem.view;
+package com.example.maquiagem.view.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.model.DataBaseMakeup;
+import com.example.maquiagem.view.AlertDialogs;
 
 public class FeedbackLocation extends Fragment {
 
