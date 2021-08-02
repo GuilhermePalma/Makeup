@@ -27,6 +27,7 @@
         <item name="windowNoTitle">true</item>
 
         <item name="fontFamily">@font/ubuntu_regular</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
     </style>
 
     <!-- Cor do Icon Menu -->

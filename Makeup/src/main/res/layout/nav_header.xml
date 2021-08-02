@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?><!--Tamanho que será exibido no Header será +- 176dp -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/purple_background"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!--Strings Usadas na Forma de Texto somente p/ visualizar o Design-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/ubuntu_bold"
+        android:text="Nome do Usuario"
+        android:textColor="@color/snow"
+        android:textSize="16sp"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="5dp"
+        android:text="\@nickname"
+        android:textColor="@color/snow"
+        tools:ignore="HardcodedText" />
+
+</LinearLayout>

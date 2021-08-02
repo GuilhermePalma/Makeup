@@ -1,36 +1,42 @@
 package com.example.maquiagem.view.activities;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.model.DataBaseMakeup;
 import com.example.maquiagem.view.AlertDialogs;
+import com.example.maquiagem.view.fragments.ListMakeup;
+import com.example.maquiagem.view.fragments.SearchMakeup;
+import com.google.android.material.navigation.NavigationView;
 
+public class MainActivity extends AppCompatActivity {
 
-public class  MainActivity extends AppCompatActivity{
+    private static final int id_profile = R.id.option_profile;
+    private static final int id_config = R.id.option_config;
+    private static final int id_dataUsed = R.id.option_dataUsed;
+    private static final int id_exit = R.id.option_exit;
+    private static final int id_searchMakeup = R.id.option_searchMakeup;
+    private static final int id_allMakeup = R.id.option_allMakeup;
+    private static final int id_favoriteMakeups = R.id.option_favoriteMakeup;
+    private static final int id_popularMakeup = R.id.option_popularMakeup;
+    private static final int id_location = R.id.option_location;
+    private static final int id_sensor = R.id.option_sensor;
 
-    private EditText editType;
-    private EditText editBrand;
+    private Toolbar toolbar;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
+    private ListMakeup listMakeup;
 
     private AlertDialogs dialogs;
 
@@ -39,119 +45,122 @@ public class  MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dialogs = new AlertDialogs();
+        toolbar = findViewById(R.id.toolBar);
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigation_view);
+
         // Criação da ToolBar
-        Toolbar toolbar = findViewById(R.id.toolBar);
         toolbar.setTitle(R.string.app_name);
         setSupportActionBar(toolbar);
 
-        // Define os EditText
-        editType = findViewById(R.id.edit_type);
-        editBrand = findViewById(R.id.edit_brand);
+        setUpDrawer();
+        listenerNavigation();
 
-        dialogs = new AlertDialogs();
+        if (savedInstanceState == null) {
+            // Define o Background da Main Activity
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
+                    new SearchMakeup()).commit();
+            navigationView.setCheckedItem(R.id.option_searchMakeup);
+        }
     }
 
-    // Cria o menu na ToolBar
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        return true;
+    // Configuração do Menu Lateral
+    private void setUpDrawer() {
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawer,
+                toolbar, R.string.open_menu, R.string.close_menu);
+        drawer.addDrawerListener(drawerToggle);
+
+        // Sincroniza o Estado do Icone
+        drawerToggle.syncState();
     }
 
-    // Trata os cliques no Menu da TollBar
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case (R.id.location):
-                // Possui Conexão
-                if (connectionAvailable()){
-                    // GPS ativo
-                    if (gpsAvailable()){
-                        startActivity(new Intent(this, LocationActivity.class));
+    private void listenerNavigation() {
+        // Trata o Clique nos Itens
+        navigationView.setNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case id_profile:
+                    startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                    break;
+
+                case id_favoriteMakeups:
+                    listMakeup = ListMakeup.newInstance("Maquiagens Favoritas");
+                    getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
+                            listMakeup).commit();
+                    break;
+
+                case id_searchMakeup:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
+                            new SearchMakeup()).commit();
+                    break;
+
+                case id_popularMakeup:
+                    listMakeup = ListMakeup.newInstance("Maquiagens mais Buscadas");
+                    getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
+                            listMakeup).commit();
+                    break;
+
+                case id_allMakeup:
+                    listMakeup = ListMakeup.newInstance("Todas as Maquiagens");
+                    getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
+                            listMakeup).commit();
+                    break;
+
+                case id_location:
+                    // Possui Conexão
+                    if (connectionAvailable()) {
+                        // GPS ativo
+                        if (gpsAvailable()) {
+                            startActivity(new Intent(this, LocationActivity.class));
+                        } else {
+                            dialogs.message(this, getString(R.string.title_noGps),
+                                    getString(R.string.error_noGps)).show();
+                        }
                     } else {
-                        dialogs.message(this,getString(R.string.title_noGps),
-                                getString(R.string.error_noGps)).show();
+                        dialogs.message(this, getString(R.string.title_noConnection),
+                                getString(R.string.error_connection)).show();
                     }
-                } else {
-                    dialogs.message(this,getString(R.string.title_noConnection),
-                            getString(R.string.error_connection)).show();
-                }
-                break;
+                    break;
 
-            case (R.id.clearData):
-                // Limpa o Banco de Dados
-                DataBaseMakeup dataBaseHelper = new DataBaseMakeup(this);
-                dataBaseHelper.clearTableMakeup();
-                dataBaseHelper.clearTableLocation();
-                dataBaseHelper.close();
-                break;
-            case (R.id.alter_theme):
-                if(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES){
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                }
-                else{
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                }
-                break;
-            case (R.id.sensor_menu):
-                Intent sensor = new Intent(this,SensorActivity.class);
-                startActivity(sensor);
-                break;
-            default:
-                return false;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+                case id_sensor:
+                    startActivity(new Intent(MainActivity.this,
+                            SensorActivity.class));
+                    break;
 
-    // Limpa os Dados da Tela
-    public void clearWindow(){
-        // Limpa os Campos
-        editType.setText(R.string.string_empty);
-        editBrand.setText(R.string.string_empty);
-    }
+                case id_config:
+                    startActivity(new Intent(MainActivity.this,
+                            ConfigurationActivity.class));
+                    break;
 
-    // Metodo do Botão Pesquisar
-    public void BtnSearch(View view) {
+                case id_dataUsed:
+                    startActivity(new Intent(MainActivity.this,
+                            DataApplicationActivity.class));
+                    break;
 
-        // Recupera os valores inseridos pelo Usario
-        String infoType = editType.getText().toString();
-        String infoBrand = editBrand.getText().toString();
+                case id_exit:
+                    // todo: deslogar ---> Implementar depois do Cadastro/Login
+                    break;
 
-        if (infoType.equals("")){
-            editType.setError(getString(R.string.value_required));
-            editBrand.requestFocus();
-            return;
-        }  else if(infoBrand.equals("")){
-            editBrand.setError(getString(R.string.value_required));
-            editBrand.requestFocus();
-            return;
-        }
-
-        // Fecha o Teclado
-        closeKeyboard(view);
-
-        //Validação da Conexão Ativa
-        if (connectionAvailable()){
-
-            // Limpa os valores da Tela Inteira
-            clearWindow();
-
-            // Inicia a ActivityResult passando os Dados
-            Intent activityResult = new Intent(this, ResultActivity.class);
-            activityResult.putExtra("product_type", infoType);
-            activityResult.putExtra("brand", infoBrand);
-            startActivity(activityResult);
-
-        } else{
-            dialogs.message(MainActivity.this, getString(R.string.title_noConnection),
-                     getString(R.string.error_connection)).show();
-        }
+                default:
+                    return true;
+            }
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+        });
     }
 
 
-    private boolean connectionAvailable(){
+    // Caso clique no botão voltar
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
 
+    private boolean connectionAvailable() {
         ConnectivityManager connectionManager = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo;
@@ -161,46 +170,34 @@ public class  MainActivity extends AppCompatActivity{
             networkInfo = connectionManager.getActiveNetworkInfo();
 
             // Valida se existe conexão ativa
-            if (networkInfo != null && networkInfo.isConnected()){
+            if (networkInfo != null && networkInfo.isConnected()) {
                 return true;
-            } else{
+            } else {
                 // Erro na Conexão
                 Log.e("NO CONECTED", "\n Erro na conexão com a Internet" +
                         "\nConexão: " + networkInfo);
                 return false;
             }
 
-        } else{
+        } else {
             Log.e("NO SERVICE", "\n Erro no serviço de Internet" +
                     "\nServiço: " + connectionManager);
             return false;
         }
-
     }
 
-    private boolean gpsAvailable(){
+    private boolean gpsAvailable() {
         // Gerencia os serviços de Localziação
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         // Verifica se o GPS está ativo e Habilitado para Usar
         try {
             return service.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (IllegalArgumentException exception){
+        } catch (IllegalArgumentException exception) {
             Log.e("ERROR SERVICE GPS", "Não foi foi possivel obter o " +
                     "Serviço de GPS\n" + exception);
             exception.printStackTrace();
             return false;
-        }
-    }
-
-    private void closeKeyboard(View view){
-        InputMethodManager keyboardManager = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        // Caso o Serviço do Teclado esteja disponivel
-        if (keyboardManager != null) {
-            keyboardManager.hideSoftInputFromWindow(view.getWindowToken(),
-                    InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
 
