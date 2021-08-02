@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/viewIndex"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Layout de Busca -->
+    <LinearLayout
+        android:id="@+id/layoutInputs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/toolBar">
+
+        <TextView
+            android:id="@+id/txt_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@string/app_name"
+            android:textSize="25sp" />
+
+        <ImageView
+            android:id="@+id/image_makeup"
+            android:layout_width="290dp"
+            android:layout_height="186dp"
+            android:layout_marginTop="30dp"
+            android:contentDescription="@string/tip_image"
+            android:foregroundGravity="center_vertical|center|center_horizontal"
+            app:srcCompat="@drawable/makeup" />
+
+        <com.example.maquiagem.model.CustomEditText
+            android:id="@+id/edit_type"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="15dp"
+            android:ems="10"
+            android:hint="@string/edit_type"
+            android:inputType="text" />
+
+        <com.example.maquiagem.model.CustomEditText
+            android:id="@+id/edit_brand"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="15dp"
+            android:ems="10"
+            android:hint="@string/edit_marca"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/btn_search"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="25dp"
+            android:text="@string/btn_search"
+            android:textColorHighlight="#FFFFFF" />
+    </LinearLayout>
+
+</ScrollView>

@@ -167,6 +167,7 @@ As seguintes ferramentas foram usadas na construção do projeto:
 	> Conversão de URLs para Imagens
 -   Icone: **[Freepik](https://www.freepik.com)**  → Retirado de: [FlatIcon](href="https://www.flaticon.com/br/)
 -   Imagens View Pager (Tela com Deslizamento Lateral): [Fundo Branco com Quadrados](https://br.freepik.com/coolvector), [Maquiagens](https://www.flaticon.com/authors/photo3idea-studio), [Icone Idiomas](https://www.freepik.com), [Icone Backup](https://www.freepik.com)
+-   Imagem de Fundo do Navigation Drawer: [Fundo abstrato](https://www.pexels.com/pt-br/foto/arte-abstrata-roxa-3109807/?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels)
 
 ---
 

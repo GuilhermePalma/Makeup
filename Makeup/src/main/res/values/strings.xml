@@ -23,6 +23,24 @@
     <string name="description_backup">Os Dados do Usuario e Produtos Favoritados salvos
         online</string>
 
+    <!--Strings do Menu Lateral-->
+    <string name="option_profile">Seu Perfil</string>
+    <string name="option_exit">Sair</string>
+    <string name="option_titleMakeup">Maquiagens</string>
+    <string name="option_searchMakeup">Pesquisar Maquiagem</string>
+    <string name="option_allMakeup">Historico de Buscas</string>
+    <string name="option_favoriteMakeup">Minhas Favoritas</string>
+    <string name="option_popularMakeup">Maquiagens mais Buscadas</string>
+    <string name="option_titleLocation">Localização</string>
+    <string name="option_location">Localização Atual</string>
+    <string name="option_titleResources">Recursos</string>
+    <string name="option_sensorProximity">Sensor de Proximidade</string>
+    <string name="option_titleConfig">Dados e Pesonalização</string>
+    <string name="option_config">Configurações</string>
+    <string name="option_dataUse">Dados de Uso</string>
+    <string name="open_menu">Abrir o Menu Lateral</string>
+    <string name="close_menu">Fechar o Menu Lateral</string>
+
     <!-- Activity MainActivity-->
     <string name="edit_type">Tipo</string>
     <string name="edit_marca">Marca</string>
@@ -47,12 +65,6 @@
     <string name="error_recoveryData">Nenhum dado foi informado para a Busca</string>
     <string name="error_sensor">Sensor de Proximidade não Disponivel no Dispostivo</string>
     <string name="error_selected">Nenhuma Opção foi Selecionada.&lt;br />Tente Novamente</string>
-
-    <!-- Strings do Menu -->
-    <string name="clear_bd">Limpar Dados Salvos</string>
-    <string name="change_theme">Alterar Tema</string>
-    <string name="location_now">Localização Atual</string>
-    <string name="sensor_menu">Sensor de Luminosidade</string>
 
     <!-- Layout Result-->
     <string name="title_result">Resultados da Busca</string>
@@ -95,5 +107,14 @@
     <string name="txt_brandTypeFormat">%1$s</string>
     <string name="txt_divider">/</string>
     <string name="description_imageButton">Atualizar Widget</string>
+
+    <!--Configuration Activity-->
+    <string name="toolbar_configuration">Configurações</string>
+
+    <!--Data Aplication Activity-->
+    <string name="toolbar_dataApplication">Dados do Uso</string>
+
+    <!--Profile Activity-->
+    <string name="toolbar_profile">Perfil</string>
 
 </resources>

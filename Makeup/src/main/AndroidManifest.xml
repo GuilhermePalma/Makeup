@@ -21,9 +21,22 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.activities.SlideScreen" />
+        <activity android:name=".view.activities.MainActivity" />
+        <activity
+            android:name=".view.activities.LocationActivity"
+            android:parentActivityName=".view.activities.MainActivity" />
         <activity android:name=".view.activities.ResultActivity" />
         <activity
+            android:name=".view.activities.ProfileActivity"
+            android:parentActivityName=".view.activities.MainActivity" />
+        <activity
             android:name=".view.activities.SensorActivity"
+            android:parentActivityName=".view.activities.MainActivity" />
+        <activity
+            android:name=".view.activities.DataApplicationActivity"
+            android:parentActivityName=".view.activities.MainActivity" />
+        <activity
+            android:name=".view.activities.ConfigurationActivity"
             android:parentActivityName=".view.activities.MainActivity" />
 
         <receiver android:name=".view.WidgetApp">
@@ -35,11 +48,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_app_info" />
         </receiver>
-
-        <activity
-            android:name=".view.activities.LocationActivity"
-            android:parentActivityName=".view.activities.MainActivity" />
-        <activity android:name=".view.activities.MainActivity" />
 
         <meta-data
             android:name="preloaded_fonts"

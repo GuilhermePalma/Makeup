@@ -1,83 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/viewIndex"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".view.activities.MainActivity"
+    tools:openDrawer="start">
 
-    <!-- Layout de Busca -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintIndex"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="-178dp"
-        tools:layout_editor_absoluteY="-59dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <include
             android:id="@+id/toolBar"
             layout="@layout/tool_bar" />
 
-        <LinearLayout
-            android:id="@+id/layoutInputs"
+        <FrameLayout
+            android:id="@+id/frame_forFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@+id/toolBar">
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/txt_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="@string/app_name"
-                android:textSize="25sp" />
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:itemTextAppearance="@style/NavigationItemAppearance"
+        app:menu="@menu/navigation_menu" />
 
-            <ImageView
-                android:id="@+id/image_makeup"
-                android:layout_width="290dp"
-                android:layout_height="186dp"
-                android:layout_marginTop="30dp"
-                android:contentDescription="@string/tip_image"
-                android:foregroundGravity="center_vertical|center|center_horizontal"
-                app:srcCompat="@drawable/makeup" />
-
-            <com.example.maquiagem.model.CustomEditText
-                android:id="@+id/edit_type"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginTop="15dp"
-                android:ems="10"
-                android:hint="@string/edit_type"
-                android:inputType="text" />
-
-            <com.example.maquiagem.model.CustomEditText
-                android:id="@+id/edit_brand"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginTop="15dp"
-                android:ems="10"
-                android:hint="@string/edit_marca"
-                android:inputType="text" />
-
-            <Button
-                android:id="@+id/btn_search"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="25dp"
-                android:onClick="BtnSearch"
-                android:text="@string/btn_search"
-                android:textColorHighlight="#FFFFFF" />
-        </LinearLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>
+</androidx.drawerlayout.widget.DrawerLayout>
