@@ -50,11 +50,11 @@ public class SearchMakeup extends Fragment {
             String infoBrand = editBrand.getText().toString();
 
             if (infoType.equals("")) {
-                editType.setError(getString(R.string.value_required));
+                editType.setError(getString(R.string.error_valueRequired));
                 editBrand.requestFocus();
                 return;
             } else if (infoBrand.equals("")) {
-                editBrand.setError(getString(R.string.value_required));
+                editBrand.setError(getString(R.string.error_valueRequired));
                 editBrand.requestFocus();
                 return;
             }

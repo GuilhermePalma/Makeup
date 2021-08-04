@@ -46,8 +46,7 @@ public class SlideScreen extends AppCompatActivity {
     private void listenerSkip() {
         next.setOnClickListener( v -> {
             finish();
-            // todo: alterar pela pag. de cadastro
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            startActivity(new Intent(getApplicationContext(), SingUpActivity.class));
         });
     }
 
