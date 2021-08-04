@@ -23,6 +23,32 @@
     <string name="description_backup">Os Dados do Usuario e Produtos Favoritados salvos
         online</string>
 
+    <!--Login Activity-->
+    <string name="description_login">Olá, Tudo Bem ? Entre para aproveitar as diversas Maquiagens !</string>
+    <string name="hint_nickname">Nome de Usuario</string>
+    <string name="hint_password">Senha</string>
+    <string name="remember_user">Lembrar Usuario e Senha</string>
+    <string name="btn_login">Entrar</string>
+    <string name="btn_goSingUp">Cadastro</string>
+
+    <!--SingUp Activity-->
+    <string name="title_singup">Olá, Tudo bem ?</string>
+    <string name="description_singup">Faça seu Cadastro para Acessar o Sistema</string>
+    <string name="btn_goLogin">Já Possuo Cadastro</string>
+    <string name="label_personal"><u>Sobre o Usuario</u></string>
+    <string name="hint_name">Nome e Sobrenome</string>
+    <string name="hint_idioms">Idioma</string>
+    <string name="label_access"><u>Dados de Acesso</u></string>
+    <string name="hint_email">Email</string>
+    <string name="hint_confirmPassword">Confirmar Senha</string>
+    <string name="btn_singup">Cadastrar</string>
+    <string-array name="array_idioms">
+        <item>Português (BR)</item>
+        <item>Ingles</item>
+        <item>Espanhol</item>
+        <item>Frances</item>
+    </string-array>
+
     <!--Strings do Menu Lateral-->
     <string name="option_profile">Seu Perfil</string>
     <string name="option_exit">Sair</string>
@@ -47,7 +73,6 @@
     <string name="tip_image">Imagem de Maquiagem</string>
     <string name="btn_search">Pesquisar</string>
     <string name="string_empty"> </string>
-    <string name="value_required">Campo Obrigatorio</string>
 
     <!-- Mensagens de Erro -->
     <string name="table_empty">A Tabela não Possuem nenhum Dado</string>
@@ -56,6 +81,9 @@
     <string name="title_noGps">Sem GPS</string>
     <string name="title_noExist">Produto e/ou Marca não Encontrado</string>
     <string name="title_noLocation">Sem Localização</string>
+    <string name="title_existUser">Usuario já Existente</string>
+    <string name="title_noExistUser">Usuario não Encontrado</string>
+    <string name="title_errorAPI">Operação Não Relizada</string>
     <string name="error_input">Preencha os Campos</string>
     <string name="error_noExists">Não existe nenhum Produto Cadastrado com esse Tipo e Marca</string>
     <string name="error_connection">Sem Conexão com a Internet</string>
@@ -65,6 +93,13 @@
     <string name="error_recoveryData">Nenhum dado foi informado para a Busca</string>
     <string name="error_sensor">Sensor de Proximidade não Disponivel no Dispostivo</string>
     <string name="error_selected">Nenhuma Opção foi Selecionada.&lt;br />Tente Novamente</string>
+    <string name="error_lenght">O Campo %1$s aceita somente %2$s Caracteres</string>
+    <string name="error_wrongInput">Campo %s Invalido</string>
+    <string name="error_valueRequired">Campo Obrigatorio</string>
+    <string name="error_noMatchPassword">As Senhas não são Iguais</string>
+    <string name="error_existUser">O Usuario %s já existe no Sistema. Realize o Login !</string>
+    <string name="error_noExistUser">O Usuario %s não existe no Sistema. Realize o Cadastro !</string>
+    <string name="error_api">Houve um erro na execução da solicitação. Tente Novamente</string>
 
     <!-- Layout Result-->
     <string name="title_result">Resultados da Busca</string>
