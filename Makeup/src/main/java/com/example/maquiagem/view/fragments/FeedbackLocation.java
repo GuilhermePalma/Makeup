@@ -12,16 +12,16 @@ import android.widget.RadioButton;
 import androidx.fragment.app.Fragment;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.model.DataBaseMakeup;
+import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.view.AlertDialogs;
 
 public class FeedbackLocation extends Fragment {
 
-    private final DataBaseMakeup helperDatabase;
+    private final DataBaseHelper helperDatabase;
 
     // Construtor que recebe context p/ usar no BD
     public FeedbackLocation(Context context) {
-        helperDatabase = new DataBaseMakeup(context);
+        helperDatabase = new DataBaseHelper(context);
     }
 
 

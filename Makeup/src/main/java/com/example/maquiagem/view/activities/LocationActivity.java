@@ -21,7 +21,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.model.DataBaseMakeup;
+import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.model.Location;
 import com.example.maquiagem.view.fragments.FeedbackLocation;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -55,7 +55,7 @@ public class LocationActivity extends AppCompatActivity {
     static final String STATE_FRAGMENT = "STATE FRAGMENT";
 
     private com.example.maquiagem.model.Location classLocation;
-    private DataBaseMakeup dataBaseMakeup;
+    private DataBaseHelper dataBaseHelper;
     private int actualId;
 
     @Override
@@ -67,13 +67,13 @@ public class LocationActivity extends AppCompatActivity {
         recoveryId();
 
         classLocation = new com.example.maquiagem.model.Location();
-        dataBaseMakeup = new DataBaseMakeup(this);
+        dataBaseHelper = new DataBaseHelper(this);
 
         loading_location.setMax(10);
         loading_location.setProgress(0);
 
         // Obtem a ultima localização inserida
-        int lastIdLocation = dataBaseMakeup.amountLocation();
+        int lastIdLocation = dataBaseHelper.amountLocation();
         actualId = lastIdLocation + 1;
 
         getLastLocation();
@@ -188,7 +188,7 @@ public class LocationActivity extends AppCompatActivity {
                             );
 
                             // Insere a Localização no BD e Exibe o Endereço
-                            dataBaseMakeup.insertLocation(classLocation);
+                            dataBaseHelper.insertLocation(classLocation);
 
                         } catch (IOException e) {
                             // Tratamento de Erro da Localização ---> Erro no Processo

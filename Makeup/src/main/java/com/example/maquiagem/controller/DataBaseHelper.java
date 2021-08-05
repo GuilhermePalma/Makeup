@@ -1,4 +1,4 @@
-package com.example.maquiagem.model;
+package com.example.maquiagem.controller;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,11 +7,15 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class DataBaseMakeup extends SQLiteOpenHelper {
+import com.example.maquiagem.model.Location;
+import com.example.maquiagem.model.Makeup;
+import com.example.maquiagem.model.User;
+
+public class DataBaseHelper extends SQLiteOpenHelper {
 
     //Definição das Constantes usadas
     private static final String BD = "makeupDB";
-    private static int VERSION = 1;
+    private static final int VERSION = 1;
     private static final String TABLE_MAKEUP = "products";
     private static final String ID_MAKEUP = "id";
     private static final String BRAND = "brand";
@@ -34,24 +38,29 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
     private static final String COUNTY = "country";
     private static final String COUNTRY_CODE = "country_code";
 
-    public DataBaseMakeup(Context context){
+    private static final String TABLE_USER = "user";
+    private static final String NAME_USER = "name";
+    private static final String NICKNAME_USER = "nickname";
+    private static final String PASSWORD_USER = "password";
+    private static final String EMAIL_USER = "email";
+
+    public DataBaseHelper(Context context) {
         super(context, BD, null, VERSION);
     }
 
-
     // Crição do Banco de Dados
     @Override
-    public void onCreate(SQLiteDatabase db){
+    public void onCreate(SQLiteDatabase db) {
         db.execSQL(
-            "create table " + TABLE_MAKEUP + " (" +
-                    ID_MAKEUP + " integer PRIMARY KEY AUTOINCREMENT, " +
-                    BRAND + " text, " +
-                    NAME + " text, " +
-                    TYPE + " text, " +
-                    PRICE + " text, " +
-                    CURRENCY + " varchar(5), " +
-                    DESCRIPTION + " text, " +
-                    IMAGE + " text)"
+                "create table " + TABLE_MAKEUP + " (" +
+                        ID_MAKEUP + " integer PRIMARY KEY AUTOINCREMENT, " +
+                        BRAND + " text, " +
+                        NAME + " text, " +
+                        TYPE + " text, " +
+                        PRICE + " text, " +
+                        CURRENCY + " varchar(5), " +
+                        DESCRIPTION + " text, " +
+                        IMAGE + " text)"
         );
         db.execSQL(
                 "create table " + TABLE_LOCATION + " (" +
@@ -66,26 +75,37 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
                         COUNTRY_CODE + " text, " +
                         RETURN_LOCATION + " text)"
         );
+        db.execSQL(
+                "create table " + TABLE_USER + " (" +
+                        NICKNAME_USER + " text, " +
+                        PASSWORD_USER + " text, " +
+                        NAME_USER + " text, " +
+                        EMAIL_USER + " text)"
+        );
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int newI) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MAKEUP);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOCATION);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         this.onCreate(db);
     }
 
-    public int amountMakeupSearch(){
+    // Recupera o Total de Maquiagens do Banco de Dados
+    public int amountMakeupSearch() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return (int) DatabaseUtils.queryNumEntries(db,TABLE_MAKEUP);
+        return (int) DatabaseUtils.queryNumEntries(db, TABLE_MAKEUP);
     }
 
-    public int amountLocation(){
+    // Recupera o Total de Posições do Banco de Dados
+    public int amountLocation() {
         SQLiteDatabase database = this.getReadableDatabase();
-        return (int) DatabaseUtils.queryNumEntries(database,TABLE_LOCATION);
+        return (int) DatabaseUtils.queryNumEntries(database, TABLE_LOCATION);
     }
 
     // Recupera a quantidade de posições certas
-    public int amountCorrectLocation(){
+    public int amountCorrectLocation() {
         // Abre uma conexão com o Banco de Dados para Leitura (Select)
         SQLiteDatabase db = this.getReadableDatabase();
         // Resultado Pesquisado
@@ -97,7 +117,7 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
     }
 
     // Recupera a quantidade de posições erradas
-    public int amountWrongLocation(){
+    public int amountWrongLocation() {
         SQLiteDatabase db = this.getReadableDatabase();
         String wrong = "wrong_position";
         return (int) DatabaseUtils.queryNumEntries(db, TABLE_LOCATION,
@@ -121,7 +141,7 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
     }
 
     // Inserção de Dados no Banco de Dados ---> Usa a classe model/Location
-    public void insertLocation(Location location){
+    public void insertLocation(Location location) {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(ID_LOCATION, location.getLastId());
@@ -137,7 +157,7 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
     }
 
     // Insere se a busca da Localização deu certa ou não
-    public void insertTypeLocation(int idLocation, boolean returnLocation){
+    public void insertTypeLocation(int idLocation, boolean returnLocation) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         if (returnLocation) {
@@ -145,46 +165,60 @@ public class DataBaseMakeup extends SQLiteOpenHelper {
         } else {
             values.put(RETURN_LOCATION, "wrong_position");
         }
-        db.update(TABLE_LOCATION, values, ID_LOCATION + "='" + idLocation + "'", null );
+        db.update(TABLE_LOCATION, values, ID_LOCATION + "='" + idLocation + "'", null);
     }
 
+    // Insere um Usuario no Banco de Dados
+    public void insertUser(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(NICKNAME_USER, user.getNickname());
+        values.put(PASSWORD_USER, user.getPassword());
+        values.put(NAME_USER, user.getName());
+        values.put(EMAIL_USER, user.getEmail());
 
-    // Verifica se ja existe os produtos buscados
-    public boolean existsInMakeup(String type, String brand){
+        db.insert(TABLE_USER, null, values);
+    }
+
+    // Verifica se existe o Produto buscados
+    public boolean existsInMakeup(String type, String brand) {
         SQLiteDatabase database = this.getReadableDatabase();
 
         // Conta cada item com as variavesis recebidas
-        int amountRecords = (int) DatabaseUtils.queryNumEntries(database,TABLE_MAKEUP,
-                TYPE + "='" + type + "' AND " + BRAND + "='" + brand+ "'");
+        int amountRecords = (int) DatabaseUtils.queryNumEntries(database, TABLE_MAKEUP,
+                TYPE + "='" + type + "' AND " + BRAND + "='" + brand + "'");
 
         // Caso tenha 1 ou mais registros ---> True
         return amountRecords != 0;
     }
 
+    // Verifica se ja existe o Usuario Informado
+    public boolean existsInUser(User user) {
+        SQLiteDatabase database = this.getReadableDatabase();
+
+        int amountRecords = (int) DatabaseUtils.queryNumEntries(database, TABLE_USER,
+                NICKNAME_USER + "='" + user.getNickname() + "' AND " +
+                        PASSWORD_USER + "='" + user.getPassword() + "'");
+
+        // Se tiver 1 unico registro = Retorna true
+        return amountRecords == 1;
+    }
 
     // Seleciona um Produto do Banco de Dados
     public Cursor getDataMakeup(String type, String brand) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor;
         // Cria um cursor com cada Produto
-        cursor =  db.rawQuery( "SELECT * FROM " + TABLE_MAKEUP +
-                " WHERE " + TYPE + "='" + type +
-                "' AND " + BRAND +  "='" + brand + "'",
-                null );
+        cursor = db.rawQuery("SELECT * FROM " + TABLE_MAKEUP +
+                        " WHERE " + TYPE + "='" + type +
+                        "' AND " + BRAND + "='" + brand + "'",
+                null);
         return cursor;
     }
 
-
-    // Limpa toda a Tabela do Banco de Dados
-    public void clearTableMakeup() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLE_MAKEUP);
-    }
-
-    // Apaga todos os dados da Tabela Localização
-    public void clearTableLocation(){
+    public void deleteAllUser() {
         SQLiteDatabase database = this.getWritableDatabase();
-        database.execSQL("DELETE FROM " + TABLE_LOCATION);
+        database.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
     }
 }
 
