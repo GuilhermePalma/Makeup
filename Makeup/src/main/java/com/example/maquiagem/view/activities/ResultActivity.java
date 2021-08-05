@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.model.DataBaseMakeup;
+import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.model.Makeup;
 import com.example.maquiagem.model.SearchInternet;
 import com.example.maquiagem.view.AlertDialogs;
@@ -40,7 +40,7 @@ public class ResultActivity extends AppCompatActivity {
     private RecycleAdapter recycleAdapter;
     private final List<Makeup> makeupListRecycler = new ArrayList<>();
 
-    private DataBaseMakeup dataBaseHelper;
+    private DataBaseHelper dataBaseHelper;
     private String jsonMakeup = "";
     int numberProducts, maxResult;
 
@@ -51,7 +51,7 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        dataBaseHelper = new DataBaseMakeup(this);
+        dataBaseHelper = new DataBaseHelper(this);
         dialogs = new AlertDialogs();
 
         // Inicia e Configura o RecyclerView

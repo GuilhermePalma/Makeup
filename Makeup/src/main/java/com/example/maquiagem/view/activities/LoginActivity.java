@@ -8,7 +8,9 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.maquiagem.R;
+import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.controller.ManagerKeyboard;
+import com.example.maquiagem.model.User;
 import com.example.maquiagem.view.AlertDialogs;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.textfield.TextInputEditText;
@@ -19,12 +21,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextInputEditText edit_nickname;
     private TextInputEditText edit_password;
-    private MaterialCheckBox checkBox_remberUser;
+    private MaterialCheckBox checkBox_rememberUser;
     private Button btn_singUp;
     private Button btn_login;
 
     private String nickname, password;
 
+    private DataBaseHelper database;
     private ManagerKeyboard managerKeyboard;
     private SharedPreferences preferences;
     private AlertDialogs dialog;
@@ -52,10 +55,11 @@ public class LoginActivity extends AppCompatActivity {
     private void instanceItens() {
         edit_nickname = findViewById(R.id.editText_loginNickname);
         edit_password = findViewById(R.id.editText_loginPassword);
-        checkBox_remberUser = findViewById(R.id.checkbox_rememberUser);
+        checkBox_rememberUser = findViewById(R.id.checkbox_rememberUser);
         btn_singUp = findViewById(R.id.btn_goSingUp);
         btn_login = findViewById(R.id.btn_login);
 
+        database = new DataBaseHelper(getApplicationContext());
         managerKeyboard = new ManagerKeyboard(LoginActivity.this);
         preferences = getSharedPreferences(FILE_PREFERENCE, 0);
         dialog = new AlertDialogs();
@@ -65,20 +69,23 @@ public class LoginActivity extends AppCompatActivity {
 
         getValuesInputs();
         if (filledInputs() && lengthInputs()) {
-            if (existUserApi()) {
+            User user = new User(nickname, password);
+            if (existUserApi(user)) {
+
+                // todo: alterar p/ a passagem do Json recebido da API
+                syncSqlite(user);
 
                 preferences.edit().putBoolean(FIRST_LOGIN, false).apply();
                 // Define nas Preferences se o Usuario terá ou não que fazer Login a cada Acesso
                 preferences.edit().putBoolean(LOGIN_NOT_REMEMBER,
-                        checkBox_remberUser.isChecked()).apply();
+                        checkBox_rememberUser.isChecked()).apply();
 
-                // todo: implementar SQLite para Salvar o Login
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 finish();
             } else {
                 // Usuario não Existe na API
                 dialog.message(LoginActivity.this, getString(R.string.title_noExistUser),
-                        getString(R.string.error_noExistUser, nickname)).show();
+                        getString(R.string.error_noExistUser, user.getNickname())).show();
             }
         }
     }
@@ -102,12 +109,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean lengthInputs() {
         if (nickname.length() > 35) {
-            errorInput(edit_nickname, String.format(
-                    getString(R.string.error_wrongInput), "Nome de Usuario"));
+            errorInput(edit_nickname,
+                    getString(R.string.error_wrongInput, "Nome de Usuario"));
             return false;
         } else if (password.length() > 40) {
-            errorInput(edit_password, String.format(
-                    getString(R.string.error_wrongInput), "Senha"));
+            errorInput(edit_password, getString(R.string.error_wrongInput, "Senha"));
             return false;
         } else {
             return true;
@@ -115,9 +121,16 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // todo: implementar metodo da API
-    private boolean existUserApi() {
+    private boolean existUserApi(User user) {
         // Caso exista na API retorna TRUE e permite o login
         return true;
+    }
+
+    private void syncSqlite(User user) {
+        if (!database.existsInUser(user)) {
+            database.deleteAllUser();
+            database.insertUser(user);
+        }
     }
 
     private void errorInput(TextInputEditText inputEditText, String error) {

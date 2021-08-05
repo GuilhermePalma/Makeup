@@ -10,7 +10,9 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.maquiagem.R;
+import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.controller.ManagerKeyboard;
+import com.example.maquiagem.model.User;
 import com.example.maquiagem.view.AlertDialogs;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.textfield.TextInputEditText;
@@ -33,12 +35,11 @@ public class SingUpActivity extends AppCompatActivity {
     private ManagerKeyboard managerKeyboard;
     private SharedPreferences preferences;
     private AlertDialogs dialog;
+    private DataBaseHelper database;
+
     private final String FILE_PREFERENCE = "login_user";
     private final String FIRST_LOGIN = "first_login";
     private final String LOGIN_NOT_REMEMBER = "not_remember_login";
-
-    private final String EXIST_LOGIN = "exist_login";
-    private final String EXIST_PASSWORD = "exist_password";
 
     private String name, nickname, email, password, confirmPassword, idioms;
     private String[] array_idioms;
@@ -77,6 +78,7 @@ public class SingUpActivity extends AppCompatActivity {
         preferences = getSharedPreferences(FILE_PREFERENCE, 0);
         managerKeyboard = new ManagerKeyboard(SingUpActivity.this);
         dialog = new AlertDialogs();
+        database = new DataBaseHelper(getApplicationContext());
 
         idioms = "";
     }
@@ -97,13 +99,19 @@ public class SingUpActivity extends AppCompatActivity {
         getValuesInputs();
 
         if (filledInputs() && lengthInputs() && passwordEquals()) {
-            if (!existUserApi()) {
-                if (inserInApi()) {
+
+            User user = new User(name, nickname, email, password);
+
+            if (!existUserApi(user)) {
+                if (insertInApi()) {
+
+                    // todo: inserir idioma em uma preferences
+                    database.insertUser(user);
 
                     preferences.edit().putBoolean(FIRST_LOGIN, false).apply();
                     preferences.edit().putBoolean(LOGIN_NOT_REMEMBER, checkBox_remember.isChecked())
                             .apply();
-                    // todo: inserir no sqlite os dados do usuario
+
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
                 } else {
@@ -114,7 +122,7 @@ public class SingUpActivity extends AppCompatActivity {
             } else {
                 // Usuario já cadastrado
                 dialog.message(getApplicationContext(), getString(R.string.title_existUser),
-                        getString(R.string.error_existUser, nickname)).show();
+                        getString(R.string.error_existUser, user.getName())).show();
             }
         }
     }
@@ -188,13 +196,13 @@ public class SingUpActivity extends AppCompatActivity {
     }
 
     // todo: implementar busca na API se o usuario já existe
-    private boolean existUserApi() {
-        // Caso exista na API retorna TRUE e impede o novo cadastro do Usuario
+    private boolean existUserApi(User user) {
+        // Implementar: Caso exista na API retorna TRUE e impede o novo cadastro do Usuario
         return false;
     }
 
     // todo: insert User in API
-    private boolean inserInApi() {
+    private boolean insertInApi() {
         return true;
     }
 
