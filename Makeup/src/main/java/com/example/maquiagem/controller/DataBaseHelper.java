@@ -198,7 +198,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         int amountRecords = (int) DatabaseUtils.queryNumEntries(database, TABLE_USER,
                 NICKNAME_USER + "='" + user.getNickname() + "' AND " +
-                        PASSWORD_USER + "='" + user.getPassword() + "'");
+                        PASSWORD_USER + "='" + user.getPassword() + "' AND " +
+                        EMAIL_USER + "='" + user.getEmail() + "' AND " +
+                        NAME_USER + "='" + user.getName() + "'");
 
         // Se tiver 1 unico registro = Retorna true
         return amountRecords == 1;
@@ -216,10 +218,20 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public void deleteAllUser() {
+    // Apaga todos os Usuarios
+    public void deleteAllUsers() {
         SQLiteDatabase database = this.getWritableDatabase();
-        database.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
+        database.delete(TABLE_USER, "1", null);
     }
+
+    // Apaga todos os Dados da Tabela
+    public void clearTables() {
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.delete(TABLE_MAKEUP, "1", null);
+        database.delete(TABLE_LOCATION, "1", null);
+        database.delete(TABLE_USER, "1", null);
+    }
+
 }
 
 

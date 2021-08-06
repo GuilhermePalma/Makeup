@@ -106,6 +106,8 @@ public class SingUpActivity extends AppCompatActivity {
                 if (insertInApi()) {
 
                     // todo: inserir idioma em uma preferences
+                    // Limpa a Tabela Usuario e Insere um Novo Usuario
+                    database.deleteAllUsers();
                     database.insertUser(user);
 
                     preferences.edit().putBoolean(FIRST_LOGIN, false).apply();

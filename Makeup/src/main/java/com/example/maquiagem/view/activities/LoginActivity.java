@@ -126,9 +126,10 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
+    // Sincroniza os Dados do BD Local
     private void syncSqlite(User user) {
         if (!database.existsInUser(user)) {
-            database.deleteAllUser();
+            database.deleteAllUsers();
             database.insertUser(user);
         }
     }
