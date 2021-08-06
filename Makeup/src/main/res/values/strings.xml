@@ -105,11 +105,8 @@
     <!-- Layout Result-->
     <string name="title_result">Resultados da Busca</string>
     <string name="return_search">Fazer outra Busca</string>
-    <string name="name_product">Nome do Produto</string>
-    <string name="currencyPrice_product">Moeda - Preço</string>
-    <string name="type_product"><b>Tipo: </b></string>
-    <string name="description_product"><b>Descrição: </b></string>
-    <string name="fill_text">Informações da API</string>
+    <string name="btn_product">Produto</string>
+    <string name="favorite_description">Favoritar Maquiagem</string>
     <string name="description_imageProduct">Imagem do Produto</string>
     <string name="empty_name">Produto sem Nome</string>
     <string name="empty_price">Preço não Encontrado</string>
