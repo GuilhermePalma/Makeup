@@ -1,6 +1,7 @@
 package com.example.maquiagem.view.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,9 @@ public class SlideScreen extends AppCompatActivity {
 
     private Button next;
     private Button back;
+
+    private final String FILE_PREFERENCE = "com.example.maquiagem";
+    private final String FIRST_LOGIN = "first_login";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +49,11 @@ public class SlideScreen extends AppCompatActivity {
     // Listener do Botão "Pular" --> Pula a apresentação do APP
     private void listenerSkip() {
         next.setOnClickListener( v -> {
+            // Define que não é o Primeiro Acesso do Usuario p/ não apresentar novamente o APP
+            SharedPreferences preferences = getSharedPreferences(FILE_PREFERENCE, 0);
+            preferences.edit().putBoolean(FIRST_LOGIN, false).apply();
             finish();
-            // todo: alterar pela pag. de cadastro
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            startActivity(new Intent(getApplicationContext(), SingUpActivity.class));
         });
     }
 
