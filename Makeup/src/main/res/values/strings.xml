@@ -24,17 +24,18 @@
         online</string>
 
     <!--Login Activity-->
-    <string name="description_login">Olá, Tudo Bem ? Entre para aproveitar as diversas Maquiagens !</string>
+    <string name="title_login"><u>Faça seu Login</u></string>
     <string name="hint_nickname">Nome de Usuario</string>
     <string name="hint_password">Senha</string>
     <string name="remember_user">Lembrar Usuario e Senha</string>
     <string name="btn_login">Entrar</string>
-    <string name="btn_goSingUp">Cadastro</string>
+    <string name="text_noRegister">Não possui uma Conta ?</string>
+    <string name="btn_clickHere">Cadastre-se</string>
 
     <!--SingUp Activity-->
     <string name="title_singup">Olá, Tudo bem ?</string>
-    <string name="description_singup">Faça seu Cadastro para Acessar o Sistema</string>
-    <string name="btn_goLogin">Já Possuo Cadastro</string>
+    <string name="description_singup">Faça seu Cadastro para acessar o Sistema</string>
+    <string name="btn_goLogin">Já Possuo Conta</string>
     <string name="label_personal"><u>Sobre o Usuario</u></string>
     <string name="hint_name">Nome e Sobrenome</string>
     <string name="hint_idioms">Idioma</string>
