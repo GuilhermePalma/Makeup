@@ -8,18 +8,18 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
 import android.util.Log;
-import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.RecycleAdapter;
 import com.example.maquiagem.model.Makeup;
 import com.example.maquiagem.model.SearchInternet;
 import com.example.maquiagem.view.AlertDialogs;
-import com.example.maquiagem.view.RecycleAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,9 +38,9 @@ public class ResultActivity extends AppCompatActivity {
             "/main/app/src/main/res/drawable/makeup_no_image.jpg";
 
     private RecycleAdapter recycleAdapter;
-    private final List<Makeup> makeupListRecycler = new ArrayList<>();
 
     private DataBaseHelper dataBaseHelper;
+    private final List<Makeup> makeupListRecycler = new ArrayList<>();
     private String jsonMakeup = "";
     int numberProducts, maxResult;
 
@@ -54,6 +54,9 @@ public class ResultActivity extends AppCompatActivity {
         dataBaseHelper = new DataBaseHelper(this);
         dialogs = new AlertDialogs();
 
+        Button btn_main = findViewById(R.id.btn_home);
+        btn_main.setOnClickListener(v -> returnMain());
+
         // Inicia e Configura o RecyclerView
         setRecyclerView();
 
@@ -62,26 +65,26 @@ public class ResultActivity extends AppCompatActivity {
         // Obtem os dados passados pela MainActivity
         Bundle querryBundle = getIntent().getExtras();
 
-        if (querryBundle == null){
-            dialogs.message(this, "Sem Dados",getString(R.string.error_recoveryData));
+        if (querryBundle == null) {
+            dialogs.message(this, "Sem Dados", getString(R.string.error_recoveryData));
             // Volta para a MainActivity
             super.onBackPressed();
         }
 
-        infoType = Objects.requireNonNull(querryBundle).getString("product_type","");
-        infoBrand = Objects.requireNonNull(querryBundle).getString("brand","");
+        infoType = Objects.requireNonNull(querryBundle).getString("product_type", "");
+        infoBrand = Objects.requireNonNull(querryBundle).getString("brand", "");
 
-        if (!infoType.equals("") && !infoBrand.equals("")){
+        if (!infoType.equals("") && !infoBrand.equals("")) {
             // Caso já exista produtos no Banco de Dados com a Marca e Tipo inserida no DB
             if (dataBaseHelper.existsInMakeup(infoType, infoBrand)) {
                 dataBaseHelper.close();
                 showWindow(infoType, infoBrand);
-            } else{
+            } else {
                 // Inicia a Ativividade Assincrona
                 asyncTask(infoType, infoBrand);
             }
         } else {
-            dialogs.message(this, "Sem Dados",getString(R.string.error_recoveryData));
+            dialogs.message(this, "Sem Dados", getString(R.string.error_recoveryData));
             // Volta para a MainActivity
             super.onBackPressed();
 
@@ -90,22 +93,30 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     // Limpa o Array e o RecyclerView
-    public void returnMain(View view){
+    public void returnMain() {
         makeupListRecycler.clear();
         recycleAdapter.notifyDataSetChanged();
         super.onBackPressed();
     }
 
     // Configura o RecyclerView
-    public void setRecyclerView(){
+    public void setRecyclerView() {
         // Instancia o RecyclerView
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        RecyclerView.LayoutManager layoutManagerRecycler = new LinearLayoutManager(this);
+        GridLayoutManager layoutManagerRecycler = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManagerRecycler);
 
         // Informa o Context, ListArray utilizado e a Activity que será usada
         recycleAdapter = new RecycleAdapter(this, makeupListRecycler, this);
         recyclerView.setAdapter(recycleAdapter);
+
+        layoutManagerRecycler.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return 1;
+            }
+        });
+
     }
 
     // Busca Assincrona ---> Consulta API e exibe os dados
@@ -155,18 +166,18 @@ public class ResultActivity extends AppCompatActivity {
                 .appendQueryParameter(BRAND_PARAMETERS, brand)
                 .build();
 
-        return SearchInternet.searchByUrl(buildMakeup.toString(),"GET");
+        return SearchInternet.searchByUrl(buildMakeup.toString(), "GET");
     }
 
     // Usa a Serilização e Insere os Dados no DataBase
     private boolean insertInDataBase(List<Makeup> makeups) {
-        if (makeups != null && !makeups.isEmpty()){
+        if (makeups != null && !makeups.isEmpty()) {
             // Verifica se o Array é null ou Vazio = Evita Exceptions
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 // Insere cada item do Array no DB
                 makeups.forEach(makeup -> dataBaseHelper.insertMakeup(makeup));
             } else {
-                for (int i= 0; i < makeups.size(); i++){
+                for (int i = 0; i < makeups.size(); i++) {
                     dataBaseHelper.insertMakeup(makeups.get(i));
                 }
             }
@@ -262,17 +273,17 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     // Mostra os Dados na Tela
-    public void showWindow(String type_search, String brand_search){
+    public void showWindow(String type_search, String brand_search) {
 
         // Busca os Valores no BD usando os Dados inseridos pelo Usuario e usado no Metodo Async
         Cursor cursor = dataBaseHelper.getDataMakeup(type_search, brand_search);
 
         // Caso haja posição para o Cursor
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             String brand, name, price, currency, type, description, urlImage;
 
             // Pega os dados enquanto o Cursor tiver proxima posição
-            do{
+            do {
                 brand = cursor.getString(1);
                 name = cursor.getString(2);
                 type = cursor.getString(3);
@@ -281,7 +292,7 @@ public class ResultActivity extends AppCompatActivity {
                 description = cursor.getString(6);
                 urlImage = cursor.getString(7);
 
-                Makeup makeup = new Makeup(brand, name, type, price, currency, description,urlImage);
+                Makeup makeup = new Makeup(brand, name, type, price, currency, description, urlImage);
 
                 // Atualiza o RecyclerView
                 makeupListRecycler.add(makeup);
@@ -290,12 +301,12 @@ public class ResultActivity extends AppCompatActivity {
                 recycleAdapter.notifyDataSetChanged();
             } while (cursor.moveToNext());
 
-        } else{
+        } else {
 
             // Não possui dados na Tabela
             Log.e("EMPTY DATABASE", "\nNão foi encontrado nenhum " +
                     "dado no Banco de Dados\n" + cursor.toString());
-            dialogs.message(ResultActivity.this,"Sem Dados",
+            dialogs.message(ResultActivity.this, "Sem Dados",
                     getString(R.string.table_empty)).show();
 
         }

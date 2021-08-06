@@ -1,4 +1,4 @@
-package com.example.maquiagem.view;
+package com.example.maquiagem.controller;
 
 import android.app.Activity;
 import android.content.Context;
@@ -35,18 +35,14 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
 
         protected TextView name;
         protected TextView currency_price;
-        protected TextView type_brand;
-        protected TextView description;
         protected ImageView image;
 
         // Recupera os valores definidos no Layout do RecycleAdpater
         public RecycleViewHolder(@NonNull View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.product_name);
-            currency_price = itemView.findViewById(R.id.currency_price);
-            type_brand = itemView.findViewById(R.id.content_typeBrand);
-            description = itemView.findViewById(R.id.content_description);
-            image = itemView.findViewById(R.id.imageProduct);
+            name = itemView.findViewById(R.id.txt_nameMakeup);
+            currency_price = itemView.findViewById(R.id.txt_priceMakeup);
+            image = itemView.findViewById(R.id.image_product);
         }
     }
 
@@ -60,7 +56,7 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
 
         // Instancia o valor do layout usado
         itemView = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.layout_result, viewGroup, false);
+                .inflate(R.layout.layout_recycler_view, viewGroup, false);
 
         return new RecycleAdapter.RecycleViewHolder(itemView);
     }
@@ -71,16 +67,34 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
     public void onBindViewHolder(@NonNull RecycleAdapter.RecycleViewHolder holder, int position) {
 
         Makeup makeup = makeupList.get(position);
-        holder.name.setText(makeup.getName());
+
+        String name = makeup.getName();
+        String name_formatted;
+
+        // Caso posua + que 13 Caracteres
+        if (name.length() > 13) {
+            if (name.startsWith(" ", 12)) {
+                // 13° Caracter = Espaço
+                name_formatted = name.substring(0, 12);
+            } else if (name.startsWith(" ", 13)) {
+                // 14° Caracter = Espaço
+                name_formatted = name.substring(0, 13);
+            } else {
+                // 13° Caracter = Preenchido com Algo =! espaço
+                name_formatted = name.substring(0, 13) + "...";
+            }
+        } else {
+            // Menos que 13 Caracteres = Pega o nome sem cortar
+            name_formatted = name;
+        }
+
+        holder.name.setText(name_formatted);
         holder.currency_price.setText(String.format("%s %s", makeup.getCurrency(), makeup.getPrice()));
-        holder.type_brand.setText(String.format("%s - %s", makeup.getType(), makeup.getBrand()));
-        holder.description.setText(makeup.getDescription());
 
         // Biblioteca Picasso (Converte URL da IMG ---> IMG)
         Picasso.with(holder.image.getContext()).load(makeup.getUrlImage())
                 .error(R.drawable.makeup_no_image)
                 .into(holder.image);
-
     }
 
     //Conta os Itens da Lista
