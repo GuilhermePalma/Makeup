@@ -37,8 +37,7 @@ public class SingUpActivity extends AppCompatActivity {
     private AlertDialogs dialog;
     private DataBaseHelper database;
 
-    private final String FILE_PREFERENCE = "login_user";
-    private final String FIRST_LOGIN = "first_login";
+    private final String FILE_PREFERENCE = "com.example.maquiagem";
     private final String LOGIN_NOT_REMEMBER = "not_remember_login";
 
     private String name, nickname, email, password, confirmPassword, idioms;
@@ -110,7 +109,6 @@ public class SingUpActivity extends AppCompatActivity {
                     database.deleteAllUsers();
                     database.insertUser(user);
 
-                    preferences.edit().putBoolean(FIRST_LOGIN, false).apply();
                     preferences.edit().putBoolean(LOGIN_NOT_REMEMBER, checkBox_remember.isChecked())
                             .apply();
 

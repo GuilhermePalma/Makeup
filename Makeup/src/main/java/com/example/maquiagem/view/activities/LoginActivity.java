@@ -32,8 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     private SharedPreferences preferences;
     private AlertDialogs dialog;
 
-    private final String FILE_PREFERENCE = "login_user";
-    private final String FIRST_LOGIN = "first_login";
+    private final String FILE_PREFERENCE = "com.example.maquiagem";
     private final String LOGIN_NOT_REMEMBER = "not_remember_login";
 
 
@@ -75,7 +74,6 @@ public class LoginActivity extends AppCompatActivity {
                 // todo: alterar p/ a passagem do Json recebido da API
                 syncSqlite(user);
 
-                preferences.edit().putBoolean(FIRST_LOGIN, false).apply();
                 // Define nas Preferences se o Usuario terá ou não que fazer Login a cada Acesso
                 preferences.edit().putBoolean(LOGIN_NOT_REMEMBER,
                         checkBox_rememberUser.isChecked()).apply();

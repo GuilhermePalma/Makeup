@@ -11,7 +11,7 @@ import com.example.maquiagem.R;
 
 public class SplashScreen extends AppCompatActivity {
 
-    private final String FILE_PREFERENCE = "login_user";
+    private final String FILE_PREFERENCE = "com.example.maquiagem";
     private final String FIRST_LOGIN = "first_login";
     private final String LOGIN_NOT_REMEMBER = "not_remember_login";
 
