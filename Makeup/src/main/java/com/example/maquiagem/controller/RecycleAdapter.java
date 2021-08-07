@@ -1,10 +1,11 @@
 package com.example.maquiagem.controller;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,43 +14,52 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.model.Makeup;
+import com.google.android.material.card.MaterialCardView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 // Classe Responsavel pelo controle do RecyclerView
-public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleViewHolder> {
+public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecyclerViewHolder> {
 
     // Context e List/Array --> Usados p/ mostar/armazenar os dados
     Context context;
-    private List<Makeup> makeupList;
+    private final List<Makeup> makeupList;
+    private final ClickRecyclerView clickRecyclerView;
 
     // Contrutor da Calsse
-    public RecycleAdapter(Context context, List<Makeup> list, Activity activity) {
+    public RecycleAdapter(Context context, List<Makeup> list, ClickRecyclerView clickRecyclerView) {
         this.context = context;
         this.makeupList = list;
+        this.clickRecyclerView = clickRecyclerView;
     }
 
     // Classe Protegida que retorna os campos usados e a Interface
-    protected class RecycleViewHolder extends RecyclerView.ViewHolder {
+    public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
-        protected TextView name;
-        protected TextView currency_price;
-        protected ImageView image;
+        private final MaterialCardView cardView;
+        private final TextView name;
+        private final TextView currency_price;
+        private final ImageView image;
+        private final Button btn_product;
+        private final ImageButton btn_favorite;
 
         // Recupera os valores definidos no Layout do RecycleAdpater
-        public RecycleViewHolder(@NonNull View itemView) {
+        public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
+            cardView = itemView.findViewById(R.id.cardView);
             name = itemView.findViewById(R.id.txt_nameMakeup);
             currency_price = itemView.findViewById(R.id.txt_priceMakeup);
             image = itemView.findViewById(R.id.image_product);
+            btn_product = itemView.findViewById(R.id.btn_details);
+            btn_favorite = itemView.findViewById(R.id.imgBtn_favorite);
         }
     }
 
     //Cria o ViewHolder; Instancia com o valor do Layout usado
     @NonNull
     @Override
-    public RecycleAdapter.RecycleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+    public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
 
         //Cria uma View
         View itemView;
@@ -58,13 +68,13 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
         itemView = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.layout_recycler_view, viewGroup, false);
 
-        return new RecycleAdapter.RecycleViewHolder(itemView);
+        return new RecyclerViewHolder(itemView);
     }
 
     // Recupera os Valores do ListArray
     // Insere os Valores na Tela de acordo com a posição pedida
     @Override
-    public void onBindViewHolder(@NonNull RecycleAdapter.RecycleViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
 
         Makeup makeup = makeupList.get(position);
 
@@ -95,12 +105,22 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
         Picasso.with(holder.image.getContext()).load(makeup.getUrlImage())
                 .error(R.drawable.makeup_no_image)
                 .into(holder.image);
+
+        // Listeners dos Cliques nos Itens do RecyclerView
+        holder.image.setOnClickListener(v -> clickRecyclerView.onClickProduct(makeup));
+        holder.cardView.setOnClickListener(v -> clickRecyclerView.onClickProduct(makeup));
+        holder.btn_product.setOnClickListener(v -> clickRecyclerView.onClickProduct(makeup));
+        holder.btn_favorite.setOnClickListener(v -> clickRecyclerView.onClickFavorite(makeup));
     }
 
     //Conta os Itens da Lista
     @Override
     public int getItemCount() {
-        return makeupList.size();
+        if (makeupList != null && !makeupList.isEmpty()) {
+            return makeupList.size();
+        } else {
+            return 0;
+        }
     }
 
 }

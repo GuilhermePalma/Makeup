@@ -1,5 +1,6 @@
 package com.example.maquiagem.view.activities;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maquiagem.R;
+import com.example.maquiagem.controller.ClickRecyclerView;
 import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.controller.RecycleAdapter;
 import com.example.maquiagem.model.Makeup;
@@ -31,7 +33,7 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ResultActivity extends AppCompatActivity {
+public class ResultActivity extends AppCompatActivity implements ClickRecyclerView {
 
     private final String MAKEUP_URL = "http://makeup-api.herokuapp.com/api/v1/products.json?";
     private final String URL_NO_IMAGE = "https://github.com/GuilhermeCallegari/Maquiagem/blob" +
@@ -44,7 +46,16 @@ public class ResultActivity extends AppCompatActivity {
     private String jsonMakeup = "";
     int numberProducts, maxResult;
 
-    AlertDialogs dialogs;
+    private AlertDialogs dialogs;
+
+    private static final String ID = "id";
+    private static final String BRAND = "brand";
+    private static final String NAME = "name";
+    private static final String PRICE = "price";
+    private static final String CURRENCY = "currency";
+    private static final String DESCRIPTION = "description";
+    private static final String TYPE = "type";
+    private static final String URL_IMAGE = "url_image";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -314,4 +325,25 @@ public class ResultActivity extends AppCompatActivity {
         dataBaseHelper.close();
     }
 
+
+    // Metodos da Interface que Trata os Cliques no RecyclerView
+    @Override
+    public void onClickProduct(Makeup makeup_click) {
+        Intent details_makeup = new Intent(getApplicationContext(), MakeupDetailsActivity.class);
+        details_makeup.putExtra(ID, makeup_click.getId());
+        details_makeup.putExtra(BRAND, makeup_click.getBrand());
+        details_makeup.putExtra(NAME, makeup_click.getName());
+        details_makeup.putExtra(PRICE, makeup_click.getPrice());
+        details_makeup.putExtra(CURRENCY, makeup_click.getCurrency());
+        details_makeup.putExtra(DESCRIPTION, makeup_click.getDescription());
+        details_makeup.putExtra(TYPE, makeup_click.getType());
+        details_makeup.putExtra(URL_IMAGE, makeup_click.getUrlImage());
+
+        startActivity(details_makeup);
+    }
+
+    @Override
+    public void onClickFavorite(Makeup makeup_click) {
+
+    }
 }
