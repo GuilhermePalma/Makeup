@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".view.activities.MakeupDetailsActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar4"
+            layout="@layout/tool_bar" />
+
+        <ImageView
+            android:id="@+id/img_detailsProduct"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="35dp"
+            android:contentDescription="@string/description_imageProduct"
+            android:scaleType="centerCrop"
+            android:src="@drawable/makeup_no_image" />
+
+        <TextView
+            android:id="@+id/txt_nameProduct"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="35dp"
+            android:textSize="20sp"
+            android:fontFamily="@font/ubuntu_bold"
+            android:gravity="start"
+            android:text="@string/formatted_name" />
+
+        <TextView
+            android:id="@+id/txt_brandTypeProduct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginLeft="45dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="45dp"
+            android:fontFamily="@font/ubuntu_medium"
+            android:text="@string/formatted_brandType"
+            android:textColor="@color/grey"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/txt_priceProduct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="35dp"
+            android:layout_marginRight="35dp"
+            android:fontFamily="@font/ubuntu_bold"
+            android:gravity="center"
+            android:text="@string/formatted_currencyPrice"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="50dp"
+            android:background="@color/grey" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="25dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/ubuntu_bold"
+            android:text="@string/label_details"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+
+
+        <TextView
+            android:id="@+id/txt_descriptionProduct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="35dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/ubuntu_medium"
+            android:text="Description for Item Makeup"
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+</ScrollView>

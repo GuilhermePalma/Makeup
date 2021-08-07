@@ -107,10 +107,25 @@
     <string name="return_search">Fazer outra Busca</string>
     <string name="btn_product">Produto</string>
     <string name="favorite_description">Favoritar Maquiagem</string>
-    <string name="description_imageProduct">Imagem do Produto</string>
+    <string name="description_imageProduct">Imagem da Maquiagem</string>
     <string name="empty_name">Produto sem Nome</string>
     <string name="empty_price">Preço não Encontrado</string>
     <string name="empty_description">Produto sem Descrição</string>
+
+    <!--Activity ImageView-->
+    <string name="btn_viewProduct">Ver Detalhes do Produto</string>
+    <string name="no_availableMakeup">Produto não Identificado</string>
+
+    <!--Activity Details Product-->
+    <string name="title_details">Detalhes do Produto</string>
+    <string name="label_details">Detalhes</string>
+    <string name="formatted_name">&lt;u>%s&lt;/u></string>
+    <string name="formatted_brandType">%1$s - %2$s</string>
+    <string name="formatted_currencyPrice">%1$s %2$s</string>
+    <string name="error_name">Produto sem Nome</string>
+    <string name="error_brandType">Produto sem Marca e Tipo</string>
+    <string name="error_price">Produto sem Preço</string>
+    <string name="error_description">Produto sem Descrição</string>
 
     <!-- Activity Location (&lt; = '<' em HTML)-->
     <string name="txt_titleLocation"><b>Localização Atual</b></string>
