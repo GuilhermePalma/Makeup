@@ -10,10 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.maquiagem.R;
+import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.model.Makeup;
 import com.squareup.picasso.Picasso;
-
-import java.util.Objects;
 
 public class MakeupDetailsActivity extends AppCompatActivity {
 
@@ -24,15 +23,6 @@ public class MakeupDetailsActivity extends AppCompatActivity {
     private ImageView image_product;
 
     private Makeup makeup;
-
-    private static final String BRAND = "brand";
-    private static final String NAME = "name";
-    private static final String PRICE = "price";
-    private static final String CURRENCY = "currency";
-    private static final String DESCRIPTION = "description";
-    private static final String TYPE = "type";
-    private static final String URL_IMAGE = "url_image";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,19 +36,19 @@ public class MakeupDetailsActivity extends AppCompatActivity {
 
         if (intentMakeup != null) {
             makeup = new Makeup();
-            makeup.setName(intentMakeup.getStringExtra(NAME));
-            makeup.setType(intentMakeup.getStringExtra(TYPE));
-            makeup.setBrand(intentMakeup.getStringExtra(BRAND));
-            makeup.setCurrency(intentMakeup.getStringExtra(CURRENCY));
-            makeup.setPrice(intentMakeup.getStringExtra(PRICE));
-            makeup.setDescription(intentMakeup.getStringExtra(DESCRIPTION));
-            makeup.setUrlImage(intentMakeup.getStringExtra(URL_IMAGE));
+            makeup.setName(intentMakeup.getStringExtra(DataBaseHelper.NAME_MAKEUP));
+            makeup.setType(intentMakeup.getStringExtra(DataBaseHelper.TYPE_MAKEUP));
+            makeup.setBrand(intentMakeup.getStringExtra(DataBaseHelper.BRAND_MAKEUP));
+            makeup.setCurrency(intentMakeup.getStringExtra(DataBaseHelper.CURRENCY_MAKEUP));
+            makeup.setPrice(intentMakeup.getStringExtra(DataBaseHelper.PRICE_MAKEUP));
+            makeup.setDescription(intentMakeup.getStringExtra(DataBaseHelper.DESCRIPTION_MAKEUP));
+            makeup.setUrlImage(intentMakeup.getStringExtra(DataBaseHelper.URL_IMAGE_MAKEUP));
 
             if (makeup.getName() == null && makeup.getPrice() == null) {
                 showWindowWithoutData();
+            } else {
+                showWindowData();
             }
-
-            showWindowData();
 
         } else {
             showWindowWithoutData();
@@ -67,11 +57,12 @@ public class MakeupDetailsActivity extends AppCompatActivity {
     }
 
     private void setUpToolBar() {
+        // TODO: INSUE
         Toolbar toolbar = findViewById(R.id.toolbar4);
         toolbar.setTitle(getString(R.string.title_details));
         setSupportActionBar(toolbar);
         // Icon de voltar para a Tela Home
-        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_return_home);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_return_home);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }

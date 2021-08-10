@@ -3,38 +3,59 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardView"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_margin="5dp"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="15dp"
     app:cardElevation="3dp">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical">
 
+        <ImageButton
+            android:id="@+id/imgBtn_favorite"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:contentDescription="@string/favorite_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_favorite"
+            app:tint="@color/grey" />
+
         <ImageView
             android:id="@+id/image_product"
-            android:layout_width="match_parent"
-            android:layout_height="194dp"
-            android:layout_margin="5dp"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
             android:contentDescription="@string/description_imageProduct"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgBtn_favorite"
             app:srcCompat="@drawable/makeup_no_image" />
 
         <!--Utlizado Strings no XML p/ ter como parametro os dados apresentados-->
         <TextView
             android:id="@+id/txt_nameMakeup"
             style="@style/TextAppearance.MaterialComponents.Headline6"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:fontFamily="@font/ubuntu_bold"
-            android:text="Blush Duo Cor.."
-            android:textSize="20sp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:fontFamily="@font/ubuntu_medium"
+            android:gravity="center"
+            android:text="Lorem ipsilum Lor"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_product"
             tools:ignore="HardcodedText" />
 
 
@@ -42,39 +63,21 @@
             android:id="@+id/txt_priceMakeup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu_medium"
-            android:text="US 10000"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="15dp"
+            android:fontFamily="@font/ubuntu_bold"
+            android:text="@string/formatted_currencyPrice"
             android:textAppearance="?attr/textAppearanceBody1"
-            android:textSize="18sp"
-            tools:ignore="HardcodedText" />
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_nameMakeup" />
 
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_details"
-                style="?attr/borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/btn_product"
-                android:textSize="13sp" />
-
-            <ImageButton
-                android:id="@+id/imgBtn_favorite"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:contentDescription="@string/favorite_description"
-                app:srcCompat="@drawable/ic_favorite" />
-        </LinearLayout>
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

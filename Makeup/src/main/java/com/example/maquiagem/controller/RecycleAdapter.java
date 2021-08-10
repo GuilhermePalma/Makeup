@@ -1,15 +1,16 @@
 package com.example.maquiagem.controller;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maquiagem.R;
@@ -41,7 +42,6 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Recycler
         private final TextView name;
         private final TextView currency_price;
         private final ImageView image;
-        private final Button btn_product;
         private final ImageButton btn_favorite;
 
         // Recupera os valores definidos no Layout do RecycleAdpater
@@ -51,7 +51,6 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Recycler
             name = itemView.findViewById(R.id.txt_nameMakeup);
             currency_price = itemView.findViewById(R.id.txt_priceMakeup);
             image = itemView.findViewById(R.id.image_product);
-            btn_product = itemView.findViewById(R.id.btn_details);
             btn_favorite = itemView.findViewById(R.id.imgBtn_favorite);
         }
     }
@@ -81,36 +80,38 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Recycler
         String name = makeup.getName();
         String name_formatted;
 
-        // Caso posua + que 13 Caracteres
+        // Formatação no Tamanho dos Nomes
         if (name.length() > 13) {
-            if (name.startsWith(" ", 12)) {
-                // 13° Caracter = Espaço
-                name_formatted = name.substring(0, 12);
-            } else if (name.startsWith(" ", 13)) {
-                // 14° Caracter = Espaço
-                name_formatted = name.substring(0, 13);
-            } else {
-                // 13° Caracter = Preenchido com Algo =! espaço
-                name_formatted = name.substring(0, 13) + "...";
-            }
+            name_formatted = name.substring(0, 12);
         } else {
-            // Menos que 13 Caracteres = Pega o nome sem cortar
             name_formatted = name;
         }
 
         holder.name.setText(name_formatted);
-        holder.currency_price.setText(String.format("%s %s", makeup.getCurrency(), makeup.getPrice()));
+        holder.currency_price.setText(Html.fromHtml(context.getString(R.string.formatted_currencyPrice,
+                makeup.getCurrency(), makeup.getPrice())));
+
+        // Recupera se o Produto foi Favoritado ou não
+        if (makeup.isFavorite()) {
+            // Coloca o Coração em Vermelho
+            DrawableCompat.setTint(holder.btn_favorite.getDrawable(),
+                    context.getResources().getColor(R.color.cerise));
+        } else {
+            // Coloca o Coração em Cinza
+            DrawableCompat.setTint(holder.btn_favorite.getDrawable(),
+                    context.getResources().getColor(R.color.light_grey));
+        }
 
         // Biblioteca Picasso (Converte URL da IMG ---> IMG)
-        Picasso.with(holder.image.getContext()).load(makeup.getUrlImage())
+        Picasso.with(context).load(makeup.getUrlImage())
                 .error(R.drawable.makeup_no_image)
                 .into(holder.image);
 
         // Listeners dos Cliques nos Itens do RecyclerView
         holder.image.setOnClickListener(v -> clickRecyclerView.onClickProduct(makeup));
         holder.cardView.setOnClickListener(v -> clickRecyclerView.onClickProduct(makeup));
-        holder.btn_product.setOnClickListener(v -> clickRecyclerView.onClickProduct(makeup));
         holder.btn_favorite.setOnClickListener(v -> clickRecyclerView.onClickFavorite(makeup));
+
     }
 
     //Conta os Itens da Lista

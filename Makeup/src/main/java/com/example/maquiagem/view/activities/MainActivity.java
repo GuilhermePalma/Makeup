@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             // Define o Background da Main Activity
             getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
-                    new SearchMakeup()).commit();
+                    new SearchMakeup(getApplicationContext())).commit();
             navigationView.setCheckedItem(R.id.option_searchMakeup);
         }
     }
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
                 case id_searchMakeup:
                     getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
-                            new SearchMakeup()).commit();
+                            new SearchMakeup(getApplicationContext())).commit();
                     break;
 
                 case id_popularMakeup:

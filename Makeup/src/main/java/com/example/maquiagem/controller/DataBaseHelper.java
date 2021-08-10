@@ -14,17 +14,18 @@ import com.example.maquiagem.model.User;
 public class DataBaseHelper extends SQLiteOpenHelper {
 
     //Definição das Constantes usadas
-    private static final String BD = "makeupDB";
-    private static final int VERSION = 1;
-    private static final String TABLE_MAKEUP = "products";
-    private static final String ID_MAKEUP = "id";
-    private static final String BRAND = "brand";
-    private static final String NAME = "name";
-    private static final String TYPE = "type";
-    private static final String PRICE = "price";
-    private static final String CURRENCY = "currency";
-    private static final String DESCRIPTION = "description";
-    private static final String IMAGE = "image";
+    public static final String DATABASE = "makeupDB";
+    public static final int VERSION_DATABASE = 1;
+    public static final String TABLE_MAKEUP = "makeups";
+    public static final String ID_MAKEUP = "id";
+    public static final String BRAND_MAKEUP = "brand";
+    public static final String NAME_MAKEUP = "name";
+    public static final String TYPE_MAKEUP = "type";
+    public static final String PRICE_MAKEUP = "price";
+    public static final String CURRENCY_MAKEUP = "currency";
+    public static final String DESCRIPTION_MAKEUP = "description";
+    public static final String URL_IMAGE_MAKEUP = "image";
+    public static final String IS_FAVORITE_MAKEUP = "is_favorite";
 
     private static final String TABLE_LOCATION = "location";
     private static final String ID_LOCATION = "id";
@@ -45,7 +46,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String EMAIL_USER = "email";
 
     public DataBaseHelper(Context context) {
-        super(context, BD, null, VERSION);
+        super(context, DATABASE, null, VERSION_DATABASE);
     }
 
     // Crição do Banco de Dados
@@ -53,14 +54,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(
                 "create table " + TABLE_MAKEUP + " (" +
-                        ID_MAKEUP + " integer PRIMARY KEY AUTOINCREMENT, " +
-                        BRAND + " text, " +
-                        NAME + " text, " +
-                        TYPE + " text, " +
-                        PRICE + " text, " +
-                        CURRENCY + " varchar(5), " +
-                        DESCRIPTION + " text, " +
-                        IMAGE + " text)"
+                        ID_MAKEUP + " integer PRIMARY KEY, " +
+                        BRAND_MAKEUP + " text, " +
+                        NAME_MAKEUP + " text, " +
+                        TYPE_MAKEUP + " text, " +
+                        PRICE_MAKEUP + " text, " +
+                        CURRENCY_MAKEUP + " varchar(5), " +
+                        DESCRIPTION_MAKEUP + " text, " +
+                        URL_IMAGE_MAKEUP + " text, " +
+                        IS_FAVORITE_MAKEUP + " text)"
         );
         db.execSQL(
                 "create table " + TABLE_LOCATION + " (" +
@@ -129,13 +131,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void insertMakeup(Makeup makeup) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(BRAND, makeup.getBrand());
-        values.put(NAME, makeup.getName());
-        values.put(TYPE, makeup.getType());
-        values.put(PRICE, makeup.getPrice());
-        values.put(CURRENCY, makeup.getCurrency());
-        values.put(DESCRIPTION, makeup.getDescription());
-        values.put(IMAGE, makeup.getUrlImage());
+        values.put(ID_MAKEUP, makeup.getId());
+        values.put(BRAND_MAKEUP, makeup.getBrand());
+        values.put(NAME_MAKEUP, makeup.getName());
+        values.put(TYPE_MAKEUP, makeup.getType());
+        values.put(PRICE_MAKEUP, makeup.getPrice());
+        values.put(CURRENCY_MAKEUP, makeup.getCurrency());
+        values.put(DESCRIPTION_MAKEUP, makeup.getDescription());
+        values.put(URL_IMAGE_MAKEUP, makeup.getUrlImage());
+        values.put(IS_FAVORITE_MAKEUP, makeup.isFavorite());
 
         db.insert(TABLE_MAKEUP, null, values);
     }
@@ -168,6 +172,21 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.update(TABLE_LOCATION, values, ID_LOCATION + "='" + idLocation + "'", null);
     }
 
+    public void updateFavoriteMakeup(Makeup makeup) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        // Altera o valor de ser ou não favorito a maquiagem
+        values.put(IS_FAVORITE_MAKEUP, String.valueOf(makeup.isFavorite()));
+
+        String whereClause = String.format("%1$s='%2$s' AND %3$s='%4$s' AND %5$s='%6$s'",
+                NAME_MAKEUP, makeup.getName(),
+                BRAND_MAKEUP, makeup.getBrand(),
+                TYPE_MAKEUP, makeup.getType());
+
+        database.update(TABLE_MAKEUP, values, whereClause, null);
+    }
+
     // Insere um Usuario no Banco de Dados
     public void insertUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -186,7 +205,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         // Conta cada item com as variavesis recebidas
         int amountRecords = (int) DatabaseUtils.queryNumEntries(database, TABLE_MAKEUP,
-                TYPE + "='" + type + "' AND " + BRAND + "='" + brand + "'");
+                TYPE_MAKEUP + "='" + type + "' AND " + BRAND_MAKEUP + "='" + brand + "'");
 
         // Caso tenha 1 ou mais registros ---> True
         return amountRecords != 0;
@@ -212,8 +231,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Cursor cursor;
         // Cria um cursor com cada Produto
         cursor = db.rawQuery("SELECT * FROM " + TABLE_MAKEUP +
-                        " WHERE " + TYPE + "='" + type +
-                        "' AND " + BRAND + "='" + brand + "'",
+                        " WHERE " + TYPE_MAKEUP + "='" + type +
+                        "' AND " + BRAND_MAKEUP + "='" + brand + "'",
                 null);
         return cursor;
     }

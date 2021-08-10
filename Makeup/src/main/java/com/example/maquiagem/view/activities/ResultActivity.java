@@ -42,20 +42,11 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
     private RecycleAdapter recycleAdapter;
 
     private DataBaseHelper dataBaseHelper;
-    private final List<Makeup> makeupListRecycler = new ArrayList<>();
+    private List<Makeup> makeupListRecycler = new ArrayList<>();
     private String jsonMakeup = "";
     int numberProducts, maxResult;
 
     private AlertDialogs dialogs;
-
-    private static final String ID = "id";
-    private static final String BRAND = "brand";
-    private static final String NAME = "name";
-    private static final String PRICE = "price";
-    private static final String CURRENCY = "currency";
-    private static final String DESCRIPTION = "description";
-    private static final String TYPE = "type";
-    private static final String URL_IMAGE = "url_image";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,29 +67,34 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
         // Obtem os dados passados pela MainActivity
         Bundle querryBundle = getIntent().getExtras();
 
-        if (querryBundle == null) {
-            dialogs.message(this, "Sem Dados", getString(R.string.error_recoveryData));
-            // Volta para a MainActivity
-            super.onBackPressed();
-        }
+        // todo: erro ao Obter os Parametros de quando retorna da MakeupDetails
 
-        infoType = Objects.requireNonNull(querryBundle).getString("product_type", "");
-        infoBrand = Objects.requireNonNull(querryBundle).getString("brand", "");
+        if (querryBundle != null) {
+            infoType = Objects.requireNonNull(querryBundle).getString("product_type", "");
+            infoBrand = Objects.requireNonNull(querryBundle).getString("brand", "");
 
-        if (!infoType.equals("") && !infoBrand.equals("")) {
-            // Caso já exista produtos no Banco de Dados com a Marca e Tipo inserida no DB
-            if (dataBaseHelper.existsInMakeup(infoType, infoBrand)) {
-                dataBaseHelper.close();
-                showWindow(infoType, infoBrand);
+            if (!infoType.equals("") && !infoBrand.equals("")) {
+
+                // Caso já exista produtos no Banco de Dados com a Marca e Tipo inserida no DB
+                if (dataBaseHelper.existsInMakeup(infoType, infoBrand)) {
+                    dataBaseHelper.close();
+                    showWindow(infoType, infoBrand);
+                } else {
+                    // Inicia a Ativividade Assincrona
+                    asyncTask(infoType, infoBrand);
+                }
             } else {
-                // Inicia a Ativividade Assincrona
-                asyncTask(infoType, infoBrand);
+                dialogs.message(this, "Sem Dados",
+                        getString(R.string.error_recoveryData)).show();
+                // Volta para a MainActivity
+                super.onBackPressed();
+
             }
         } else {
-            dialogs.message(this, "Sem Dados", getString(R.string.error_recoveryData));
+            dialogs.message(this, "Sem Dados",
+                    getString(R.string.error_recoveryData)).show();
             // Volta para a MainActivity
             super.onBackPressed();
-
         }
 
     }
@@ -260,7 +256,6 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
                     makeups.add(new Makeup(id, brand, name, type, price,
                             currency, description, urlImage));
 
-
                 } catch (Exception e) {
                     dialogs.message(ResultActivity.this, getString(R.string.title_noExist),
                             getString(R.string.error_noExists)).show();
@@ -292,9 +287,11 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
         // Caso haja posição para o Cursor
         if (cursor.moveToFirst()) {
             String brand, name, price, currency, type, description, urlImage;
+            int id;
 
             // Pega os dados enquanto o Cursor tiver proxima posição
             do {
+                id = cursor.getInt(0);
                 brand = cursor.getString(1);
                 name = cursor.getString(2);
                 type = cursor.getString(3);
@@ -303,7 +300,7 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
                 description = cursor.getString(6);
                 urlImage = cursor.getString(7);
 
-                Makeup makeup = new Makeup(brand, name, type, price, currency, description, urlImage);
+                Makeup makeup = new Makeup(id, brand, name, type, price, currency, description, urlImage);
 
                 // Atualiza o RecyclerView
                 makeupListRecycler.add(makeup);
@@ -319,7 +316,6 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
                     "dado no Banco de Dados\n" + cursor.toString());
             dialogs.message(ResultActivity.this, "Sem Dados",
                     getString(R.string.table_empty)).show();
-
         }
         cursor.close();
         dataBaseHelper.close();
@@ -330,14 +326,14 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
     @Override
     public void onClickProduct(Makeup makeup_click) {
         Intent details_makeup = new Intent(getApplicationContext(), MakeupDetailsActivity.class);
-        details_makeup.putExtra(ID, makeup_click.getId());
-        details_makeup.putExtra(BRAND, makeup_click.getBrand());
-        details_makeup.putExtra(NAME, makeup_click.getName());
-        details_makeup.putExtra(PRICE, makeup_click.getPrice());
-        details_makeup.putExtra(CURRENCY, makeup_click.getCurrency());
-        details_makeup.putExtra(DESCRIPTION, makeup_click.getDescription());
-        details_makeup.putExtra(TYPE, makeup_click.getType());
-        details_makeup.putExtra(URL_IMAGE, makeup_click.getUrlImage());
+        details_makeup.putExtra(DataBaseHelper.ID_MAKEUP, makeup_click.getId());
+        details_makeup.putExtra(DataBaseHelper.BRAND_MAKEUP, makeup_click.getBrand());
+        details_makeup.putExtra(DataBaseHelper.NAME_MAKEUP, makeup_click.getName());
+        details_makeup.putExtra(DataBaseHelper.PRICE_MAKEUP, makeup_click.getPrice());
+        details_makeup.putExtra(DataBaseHelper.CURRENCY_MAKEUP, makeup_click.getCurrency());
+        details_makeup.putExtra(DataBaseHelper.DESCRIPTION_MAKEUP, makeup_click.getDescription());
+        details_makeup.putExtra(DataBaseHelper.TYPE_MAKEUP, makeup_click.getType());
+        details_makeup.putExtra(DataBaseHelper.URL_IMAGE_MAKEUP, makeup_click.getUrlImage());
 
         startActivity(details_makeup);
     }
@@ -345,5 +341,15 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
     @Override
     public void onClickFavorite(Makeup makeup_click) {
 
+        int indexChangedItem = makeupListRecycler.indexOf(makeup_click);
+
+        // Inverte o valor booleano do Item (True <--> False)
+        makeup_click.setFavorite(!makeup_click.isFavorite());
+
+        // Atualiza o Item no Banco de Dados, List do Recycler View e Atualiza o RecyclerView
+        dataBaseHelper.updateFavoriteMakeup(makeup_click);
+        makeupListRecycler.set(indexChangedItem, makeup_click);
+
+        recycleAdapter.notifyDataSetChanged();
     }
 }

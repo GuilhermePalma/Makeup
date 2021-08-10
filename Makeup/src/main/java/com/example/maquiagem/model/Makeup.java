@@ -1,6 +1,17 @@
 package com.example.maquiagem.model;
 
 public class Makeup {
+
+    private int id;
+    private String brand;
+    private String name;
+    private String price;
+    private String currency;
+    private String description;
+    private String type;
+    private String urlImage;
+    private boolean isFavorite = false;
+
     public void setId(int id) {
         this.id = id;
     }
@@ -33,14 +44,9 @@ public class Makeup {
         this.urlImage = urlImage;
     }
 
-    private int id;
-    private String brand;
-    private String name;
-    private String price;
-    private String currency;
-    private String description;
-    private String type;
-    private String urlImage;
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
 
     public int getId() {
         return id;
@@ -74,6 +80,9 @@ public class Makeup {
         return urlImage;
     }
 
+    public boolean isFavorite() {
+        return isFavorite;
+    }
 
     public Makeup() {
     }
