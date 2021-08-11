@@ -16,7 +16,7 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <ImageButton
+        <!--<ImageButton
             android:id="@+id/imgBtn_favorite"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="50dp"
@@ -25,7 +25,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_favorite"
-            app:tint="@color/grey" />
+            app:tint="@color/grey" />-->
 
         <ImageView
             android:id="@+id/image_product"
@@ -35,8 +35,19 @@
             android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imgBtn_favorite"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/makeup_no_image" />
+
+        <CheckBox
+            android:id="@+id/checkBox_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:drawableEnd="@drawable/custom_icon_favorite"
+            android:drawableRight="@drawable/custom_icon_favorite"
+            android:padding="7dp"
+            app:layout_constraintEnd_toEndOf="@id/image_product"
+            app:layout_constraintTop_toTopOf="@id/image_product" />
 
         <!--Utlizado Strings no XML p/ ter como parametro os dados apresentados-->
         <TextView

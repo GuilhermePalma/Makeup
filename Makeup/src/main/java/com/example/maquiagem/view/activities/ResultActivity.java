@@ -282,8 +282,9 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
 
         // Caso haja posição para o Cursor
         if (cursor.moveToFirst()) {
-            String brand, name, price, currency, type, description, urlImage;
+            String brand, name, price, currency, type, description, urlImage, stringFavorite;
             int id;
+            boolean isFavorited;
 
             // Pega os dados enquanto o Cursor tiver proxima posição
             do {
@@ -295,8 +296,12 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
                 currency = cursor.getString(5);
                 description = cursor.getString(6);
                 urlImage = cursor.getString(7);
+                stringFavorite = cursor.getString(8);
+                isFavorited = stringFavorite.equals("true");
 
-                Makeup makeup = new Makeup(id, brand, name, type, price, currency, description, urlImage);
+                Makeup makeup = new Makeup(id, brand, name, type, price, currency, description,
+                        urlImage);
+                makeup.setFavorite(isFavorited);
 
                 // Atualiza o RecyclerView
                 makeupListRecycler.add(makeup);
@@ -338,14 +343,8 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
     public void onClickFavorite(Makeup makeup_click) {
 
         int indexChangedItem = makeupListRecycler.indexOf(makeup_click);
-
-        // Inverte o valor booleano do Item (True <--> False)
-        makeup_click.setFavorite(!makeup_click.isFavorite());
-
-        // Atualiza o Item no Banco de Dados, List do Recycler View e Atualiza o RecyclerView
+        // Atualiza o Item no Banco de Dados e no List do Recycler View
         dataBaseHelper.updateFavoriteMakeup(makeup_click);
         makeupListRecycler.set(indexChangedItem, makeup_click);
-
-        recycleAdapter.notifyDataSetChanged();
     }
 }
