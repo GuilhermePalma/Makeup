@@ -3,9 +3,11 @@ package com.example.maquiagem.view.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -57,7 +59,6 @@ public class MakeupDetailsActivity extends AppCompatActivity {
     }
 
     private void setUpToolBar() {
-        // TODO: INSUE
         Toolbar toolbar = findViewById(R.id.toolbar4);
         toolbar.setTitle(getString(R.string.title_details));
         setSupportActionBar(toolbar);
@@ -67,6 +68,16 @@ public class MakeupDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
+    /* Trata o Clique no Icone "Return" da ToolBar
+       Fecha essa Activity e Mantem os dados dos Produtos da ResultActivity */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void getInstanceItens() {
         name = findViewById(R.id.txt_nameProduct);
