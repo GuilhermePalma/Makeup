@@ -67,8 +67,6 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
         // Obtem os dados passados pela MainActivity
         Bundle querryBundle = getIntent().getExtras();
 
-        // todo: erro ao Obter os Parametros de quando retorna da MakeupDetails
-
         if (querryBundle != null) {
             infoType = Objects.requireNonNull(querryBundle).getString("product_type", "");
             infoBrand = Objects.requireNonNull(querryBundle).getString("brand", "");
