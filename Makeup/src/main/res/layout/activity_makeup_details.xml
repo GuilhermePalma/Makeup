@@ -24,16 +24,16 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="35dp"
             android:contentDescription="@string/description_imageProduct"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             android:src="@drawable/makeup_no_image" />
 
         <TextView
             android:id="@+id/txt_nameProduct"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="35dp"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="35dp"
+            android:layout_marginRight="30dp"
             android:textSize="20sp"
             android:fontFamily="@font/ubuntu_bold"
             android:gravity="start"
@@ -41,23 +41,23 @@
 
         <TextView
             android:id="@+id/txt_brandTypeProduct"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_marginLeft="45dp"
+            android:layout_marginLeft="40dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="45dp"
+            android:layout_marginRight="40dp"
             android:fontFamily="@font/ubuntu_medium"
             android:text="@string/formatted_brandType"
             android:textColor="@color/grey"
-            android:textSize="18sp" />
+            android:textSize="19sp" />
 
         <TextView
             android:id="@+id/txt_priceProduct"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="35dp"
             android:layout_marginRight="35dp"
             android:fontFamily="@font/ubuntu_bold"
@@ -78,23 +78,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_marginStart="25dp"
-            android:layout_marginLeft="25dp"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="20dp"
             android:fontFamily="@font/ubuntu_bold"
             android:text="@string/label_details"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            android:layout_marginStart="30dp" />
 
 
         <TextView
             android:id="@+id/txt_descriptionProduct"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_marginLeft="35dp"
+            android:layout_marginLeft="40dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="35dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="25dp"
             android:fontFamily="@font/ubuntu_medium"
             android:text="Description for Item Makeup"
             android:textSize="16sp"

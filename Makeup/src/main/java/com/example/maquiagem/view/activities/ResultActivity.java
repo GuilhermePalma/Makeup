@@ -86,15 +86,11 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
             } else {
                 dialogs.message(this, "Sem Dados",
                         getString(R.string.error_recoveryData)).show();
-                // Volta para a MainActivity
-                super.onBackPressed();
 
             }
         } else {
             dialogs.message(this, "Sem Dados",
                     getString(R.string.error_recoveryData)).show();
-            // Volta para a MainActivity
-            super.onBackPressed();
         }
 
     }
