@@ -9,12 +9,16 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ClickRecyclerView;
 import com.example.maquiagem.controller.DataBaseHelper;
@@ -39,42 +43,41 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
     private final String URL_NO_IMAGE = "https://github.com/GuilhermeCallegari/Maquiagem/blob" +
             "/main/app/src/main/res/drawable/makeup_no_image.jpg";
 
+    private TextView title_loading;
+    private RecyclerView recyclerView;
     private RecycleAdapter recycleAdapter;
 
+    private SkeletonScreen skeletonScreen;
     private DataBaseHelper dataBaseHelper;
-    private List<Makeup> makeupListRecycler = new ArrayList<>();
+    private AlertDialogs dialogs;
+
+    private List<Makeup> makeupListRecycler;
     private String jsonMakeup = "";
     int numberProducts, maxResult;
-
-    private AlertDialogs dialogs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        dataBaseHelper = new DataBaseHelper(this);
-        dialogs = new AlertDialogs();
+        instanceItens();
 
         Button btn_main = findViewById(R.id.btn_home);
         btn_main.setOnClickListener(v -> returnMain());
 
-        // Inicia e Configura o RecyclerView
-        setRecyclerView();
-
+        // Obtem os dados passados pela MainActivity
+        Bundle queryBundle = getIntent().getExtras();
         String infoType, infoBrand;
 
-        // Obtem os dados passados pela MainActivity
-        Bundle querryBundle = getIntent().getExtras();
-
-        if (querryBundle != null) {
-            infoType = Objects.requireNonNull(querryBundle).getString("product_type", "");
-            infoBrand = Objects.requireNonNull(querryBundle).getString("brand", "");
+        if (queryBundle != null) {
+            infoType = Objects.requireNonNull(queryBundle).getString("product_type", "");
+            infoBrand = Objects.requireNonNull(queryBundle).getString("brand", "");
 
             if (!infoType.equals("") && !infoBrand.equals("")) {
 
                 // Caso já exista produtos no Banco de Dados com a Marca e Tipo inserida no DB
                 if (dataBaseHelper.existsInMakeup(infoType, infoBrand)) {
+                    setUpRecyclerView();
                     dataBaseHelper.close();
                     showWindow(infoType, infoBrand);
                 } else {
@@ -84,26 +87,33 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
             } else {
                 dialogs.message(this, "Sem Dados",
                         getString(R.string.error_recoveryData)).show();
-
             }
         } else {
             dialogs.message(this, "Sem Dados",
                     getString(R.string.error_recoveryData)).show();
         }
+    }
 
+    private void instanceItens() {
+        makeupListRecycler = new ArrayList<>();
+        dataBaseHelper = new DataBaseHelper(this);
+        dialogs = new AlertDialogs();
+        title_loading = findViewById(R.id.title_loadingMakeup);
+        recyclerView = findViewById(R.id.recyclerView);
     }
 
     // Limpa o Array e o RecyclerView
     public void returnMain() {
-        makeupListRecycler.clear();
-        recycleAdapter.notifyDataSetChanged();
+        if (makeupListRecycler.size() != 0) {
+            makeupListRecycler.clear();
+            recycleAdapter.notifyDataSetChanged();
+        }
         super.onBackPressed();
     }
 
     // Configura o RecyclerView
-    public void setRecyclerView() {
-        // Instancia o RecyclerView
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+    public void setUpRecyclerView() {
+        // Configura o RecyclerView
         GridLayoutManager layoutManagerRecycler = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManagerRecycler);
 
@@ -118,6 +128,14 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
             }
         });
 
+        // Animação do Loading
+        title_loading.setVisibility(View.VISIBLE);
+        skeletonScreen = Skeleton.bind(recyclerView)
+                .adapter(recycleAdapter)
+                .load(R.layout.layout_default_item_skeleton)
+                .color(R.color.white_light)
+                .duration(1200)
+                .show();
     }
 
     // Busca Assincrona ---> Consulta API e exibe os dados
@@ -150,9 +168,10 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
                             getString(R.string.title_invalidData), getString(R.string.error_json))
                             .show();
                 } else {
+                    // Inicia e Configura o RecyclerView
+                    setUpRecyclerView();
                     showWindow(type, brand);
                 }
-
             });
         });
     }
@@ -172,10 +191,12 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
 
     // Usa a Serilização e Insere os Dados no DataBase
     private boolean insertInDataBase(List<Makeup> makeups) {
+
+        // Verifica se o Array é null ou Vazio = Evita Exceptions
         if (makeups != null && !makeups.isEmpty()) {
-            // Verifica se o Array é null ou Vazio = Evita Exceptions
+
+            // Insere cada item do Array no DB
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                // Insere cada item do Array no DB
                 makeups.forEach(makeup -> dataBaseHelper.insertMakeup(makeup));
             } else {
                 for (int i = 0; i < makeups.size(); i++) {
@@ -301,12 +322,17 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
                         urlImage);
                 makeup.setFavorite(isFavorited);
 
-                // Atualiza o RecyclerView
+                // Atualiza a Lista e o RecyclerView
                 makeupListRecycler.add(makeup);
-
-                // Notifica ao adpter que houve mudança
                 recycleAdapter.notifyDataSetChanged();
+
             } while (cursor.moveToNext());
+
+            // Remove a Animação do RecyclerView
+            recyclerView.postDelayed(() -> {
+                skeletonScreen.hide();
+                title_loading.setVisibility(View.GONE);
+            }, 2500);
 
         } else {
 

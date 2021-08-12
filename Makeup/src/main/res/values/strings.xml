@@ -111,6 +111,7 @@
     <string name="empty_name">Produto sem Nome</string>
     <string name="empty_price">Preço não Encontrado</string>
     <string name="empty_description">Produto sem Descrição</string>
+    <string name="loading_text">Carregando Produtos</string>
 
     <!--Activity ImageView-->
     <string name="btn_viewProduct">Ver Detalhes do Produto</string>
