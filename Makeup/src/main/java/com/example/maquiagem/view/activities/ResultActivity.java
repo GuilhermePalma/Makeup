@@ -85,11 +85,12 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
                     asyncTask(infoType, infoBrand);
                 }
             } else {
-                dialogs.message(this, "Sem Dados",
+                dialogs.messageWithCloseWindow(this, this,
+                        getString(R.string.title_noData),
                         getString(R.string.error_recoveryData)).show();
             }
         } else {
-            dialogs.message(this, "Sem Dados",
+            dialogs.messageWithCloseWindow(this, this, getString(R.string.title_noData),
                     getString(R.string.error_recoveryData)).show();
         }
     }
@@ -149,24 +150,17 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
             handler.post(() -> {
 
                 if (jsonMakeup.equals("")) {
-                    handler.post(() -> dialogs.message(ResultActivity.this,
-                            getString(R.string.title_noExist), getString(R.string.error_noExists)).show());
+                    handler.post(() -> dialogs.messageWithCloseWindow(ResultActivity.this,
+                            this, getString(R.string.title_noExist),
+                            getString(R.string.error_noExists)).show());
                     return;
                 }
 
                 // Serializa e Insere os Dados no Banco de Dados
                 List<Makeup> makeupList = serializationDataMakeup(jsonMakeup);
 
-                if (makeupList != null && makeupList.size() == 0) {
-                    // Caso a List seja igual à vazia ou nula
-                    dialogs.message(ResultActivity.this,
-                            getString(R.string.title_invalidData), getString(R.string.error_json))
-                            .show();
-                } else if (!insertInDataBase(makeupList)) {
-                    // Caso o metodo do BD retorne false
-                    dialogs.message(ResultActivity.this,
-                            getString(R.string.title_invalidData), getString(R.string.error_json))
-                            .show();
+                if (makeupList != null && makeupList.isEmpty() || !insertInDataBase(makeupList)) {
+                    errorData();
                 } else {
                     // Inicia e Configura o RecyclerView
                     setUpRecyclerView();
@@ -272,8 +266,7 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
                             currency, description, urlImage));
 
                 } catch (Exception e) {
-                    dialogs.message(ResultActivity.this, getString(R.string.title_noExist),
-                            getString(R.string.error_noExists)).show();
+                    errorData();
                     Log.e("RECOVERY ARRAY", "Erro ao recuperar os valores do Array " +
                             "dos Produtos\n" + e);
                     e.printStackTrace();
@@ -285,8 +278,7 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
 
         } catch (JSONException e) {
             //Caso dê Algum Problema durante a criação do Array
-            dialogs.message(ResultActivity.this, getString(R.string.title_invalidData),
-                    getString(R.string.error_json)).show();
+            errorData();
             Log.e("NOT VALID ARRAY", "Erro no Array ou no Recebimento da String\n" + e);
             e.printStackTrace();
             return null;
@@ -339,11 +331,15 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
             // Não possui dados na Tabela
             Log.e("EMPTY DATABASE", "\nNão foi encontrado nenhum " +
                     "dado no Banco de Dados\n" + cursor.toString());
-            dialogs.message(ResultActivity.this, "Sem Dados",
-                    getString(R.string.table_empty)).show();
+            errorData();
         }
         cursor.close();
         dataBaseHelper.close();
+    }
+
+    private void errorData() {
+        dialogs.messageWithCloseWindow(ResultActivity.this, this,
+                getString(R.string.title_invalidData), getString(R.string.error_json)).show();
     }
 
 
