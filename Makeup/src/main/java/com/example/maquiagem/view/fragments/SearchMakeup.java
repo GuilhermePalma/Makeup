@@ -16,7 +16,7 @@ import android.widget.EditText;
 import androidx.fragment.app.Fragment;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.view.AlertDialogs;
+import com.example.maquiagem.view.PersonAlertDialogs;
 import com.example.maquiagem.view.activities.ResultActivity;
 
 public class SearchMakeup extends Fragment {
@@ -80,7 +80,7 @@ public class SearchMakeup extends Fragment {
 
             } else {
                 // Mostra uma Mensagem na Tela
-                new AlertDialogs().message(getContext(), getString(R.string.title_noConnection),
+                new PersonAlertDialogs(context).message(getString(R.string.title_noConnection),
                         getString(R.string.error_connection)).show();
             }
         });

@@ -6,9 +6,16 @@ import android.content.Context;
 import androidx.appcompat.app.AlertDialog;
 
 
-public class AlertDialogs {
+public class PersonAlertDialogs {
 
-    public AlertDialog message(Context context, String title, String message) {
+    private final Context context;
+
+    public PersonAlertDialogs(Context context) {
+        this.context = context;
+    }
+
+
+    public AlertDialog message(String title, String message) {
 
         // Cria o alertDialog
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
@@ -24,8 +31,7 @@ public class AlertDialogs {
         return alertDialog;
     }
 
-    public AlertDialog messageWithCloseWindow(Activity activity, Context context,
-                                              String title, String message) {
+    public AlertDialog messageWithCloseWindow(Activity activity, String title, String message) {
 
         // Criação do AlertDialog
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();

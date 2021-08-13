@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
-import com.example.maquiagem.view.AlertDialogs;
+import com.example.maquiagem.view.PersonAlertDialogs;
 
 public class FeedbackLocation extends Fragment {
 
@@ -50,9 +50,11 @@ public class FeedbackLocation extends Fragment {
                 // Caso a posição seja correta, insere no Banco de Dados 'True', se não = 'False'
                 helperDatabase.insertTypeLocation(lastIdLocation, rbtn_correct.isChecked());
             } else {
-                AlertDialogs alertDialogs = new AlertDialogs();
-                alertDialogs.message(view.getContext(), getString(R.string.title_invalidData),
-                        Html.fromHtml(getString(R.string.error_selected)).toString()).show();
+                PersonAlertDialogs personAlertDialogs = new PersonAlertDialogs(
+                        view.getContext());
+                personAlertDialogs.message(getString(R.string.title_invalidData), Html.fromHtml(
+                        getString(R.string.error_selected)).toString())
+                        .show();
             }
         });
 
