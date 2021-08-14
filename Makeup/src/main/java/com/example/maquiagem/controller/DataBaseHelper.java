@@ -225,16 +225,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return amountRecords == 1;
     }
 
-    // Seleciona um Produto do Banco de Dados
-    public Cursor getDataMakeup(String type, String brand) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor;
-        // Cria um cursor com cada Produto
-        cursor = db.rawQuery("SELECT * FROM " + TABLE_MAKEUP +
-                        " WHERE " + TYPE_MAKEUP + "='" + type +
-                        "' AND " + BRAND_MAKEUP + "='" + brand + "'",
-                null);
-        return cursor;
+    // Seleciona um Produto atravez de um SELECT passado
+    public Cursor selectMakeup(String select) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        return database.rawQuery(select, null);
     }
 
     // Apaga todos os Usuarios
