@@ -115,8 +115,9 @@ public class MakeupDetailsActivity extends AppCompatActivity {
             DataBaseHelper database = new DataBaseHelper(this);
 
             makeup.setFavorite(!makeup.isFavorite());
-            database.updateFavoriteMakeup(makeup);
+            cbx_favorite.setChecked(makeup.isFavorite());
 
+            database.updateFavoriteMakeup(makeup);
             database.close();
         });
     }

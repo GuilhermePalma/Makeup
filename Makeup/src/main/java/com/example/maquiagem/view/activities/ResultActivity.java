@@ -1,7 +1,6 @@
 package com.example.maquiagem.view.activities;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,11 +20,12 @@ import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ClickRecyclerView;
+import com.example.maquiagem.controller.CursorMakeup;
 import com.example.maquiagem.controller.DataBaseHelper;
-import com.example.maquiagem.controller.RecycleAdapter;
+import com.example.maquiagem.controller.RecyclerResultSearch;
 import com.example.maquiagem.model.Makeup;
 import com.example.maquiagem.model.SearchInternet;
-import com.example.maquiagem.view.AlertDialogs;
+import com.example.maquiagem.view.PersonAlertDialogs;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,18 +42,16 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
     private final String MAKEUP_URL = "http://makeup-api.herokuapp.com/api/v1/products.json?";
     private final String URL_NO_IMAGE = "https://github.com/GuilhermeCallegari/Maquiagem/blob" +
             "/main/app/src/main/res/drawable/makeup_no_image.jpg";
-
+    int numberProducts, maxResult;
     private TextView title_loading;
     private RecyclerView recyclerView;
-    private RecycleAdapter recycleAdapter;
-
+    private RecyclerResultSearch recyclerResultSearch;
     private SkeletonScreen skeletonScreen;
     private DataBaseHelper dataBaseHelper;
-    private AlertDialogs dialogs;
-
+    private PersonAlertDialogs dialogs;
+    private CursorMakeup cursorMakeup;
     private List<Makeup> makeupListRecycler;
     private String jsonMakeup = "";
-    int numberProducts, maxResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,12 +83,12 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
                     asyncTask(infoType, infoBrand);
                 }
             } else {
-                dialogs.messageWithCloseWindow(this, this,
+                dialogs.messageWithCloseWindow(this,
                         getString(R.string.title_noData),
                         getString(R.string.error_recoveryData)).show();
             }
         } else {
-            dialogs.messageWithCloseWindow(this, this, getString(R.string.title_noData),
+            dialogs.messageWithCloseWindow(this, getString(R.string.title_noData),
                     getString(R.string.error_recoveryData)).show();
         }
     }
@@ -98,16 +96,17 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
     private void instanceItens() {
         makeupListRecycler = new ArrayList<>();
         dataBaseHelper = new DataBaseHelper(this);
-        dialogs = new AlertDialogs();
+        dialogs = new PersonAlertDialogs(this);
         title_loading = findViewById(R.id.title_loadingMakeup);
         recyclerView = findViewById(R.id.recyclerView);
+        cursorMakeup = new CursorMakeup(getApplicationContext());
     }
 
     // Limpa o Array e o RecyclerView
     public void returnMain() {
         if (makeupListRecycler.size() != 0) {
             makeupListRecycler.clear();
-            recycleAdapter.notifyDataSetChanged();
+            recyclerResultSearch.notifyDataSetChanged();
         }
         super.onBackPressed();
     }
@@ -119,8 +118,8 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
         recyclerView.setLayoutManager(layoutManagerRecycler);
 
         // Informa o Context, ListArray utilizado e a Activity que será usada
-        recycleAdapter = new RecycleAdapter(this, makeupListRecycler, this);
-        recyclerView.setAdapter(recycleAdapter);
+        recyclerResultSearch = new RecyclerResultSearch(this, makeupListRecycler, this);
+        recyclerView.setAdapter(recyclerResultSearch);
 
         layoutManagerRecycler.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -132,7 +131,7 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
         // Animação do Loading
         title_loading.setVisibility(View.VISIBLE);
         skeletonScreen = Skeleton.bind(recyclerView)
-                .adapter(recycleAdapter)
+                .adapter(recyclerResultSearch)
                 .load(R.layout.layout_default_item_skeleton)
                 .color(R.color.white_light)
                 .duration(1200)
@@ -150,8 +149,8 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
             handler.post(() -> {
 
                 if (jsonMakeup.equals("")) {
-                    handler.post(() -> dialogs.messageWithCloseWindow(ResultActivity.this,
-                            this, getString(R.string.title_noExist),
+                    handler.post(() -> dialogs.messageWithCloseWindow(this,
+                            getString(R.string.title_noExist),
                             getString(R.string.error_noExists)).show());
                     return;
                 }
@@ -288,57 +287,39 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
     // Mostra os Dados na Tela
     public void showWindow(String type_search, String brand_search) {
 
-        // Busca os Valores no BD usando os Dados inseridos pelo Usuario e usado no Metodo Async
-        Cursor cursor = dataBaseHelper.getDataMakeup(type_search, brand_search);
+        String select_typeBrand = String.format("SELECT * FROM %1$s WHERE %2$s = '%3$s'" +
+                        " AND %4$s = '%5$s'",
+                DataBaseHelper.TABLE_MAKEUP,
+                DataBaseHelper.TYPE_MAKEUP, type_search,
+                DataBaseHelper.BRAND_MAKEUP, brand_search);
 
-        // Caso haja posição para o Cursor
-        if (cursor.moveToFirst()) {
-            String brand, name, price, currency, type, description, urlImage, stringFavorite;
-            int id;
-            boolean isFavorited;
+        // Limpa a Lista caso tivesse algum dado
+        if (makeupListRecycler != null && makeupListRecycler.size() > 0) {
+            makeupListRecycler.clear();
+        }
 
-            // Pega os dados enquanto o Cursor tiver proxima posição
-            do {
-                id = cursor.getInt(0);
-                brand = cursor.getString(1);
-                name = cursor.getString(2);
-                type = cursor.getString(3);
-                price = cursor.getString(4);
-                currency = cursor.getString(5);
-                description = cursor.getString(6);
-                urlImage = cursor.getString(7);
-                stringFavorite = cursor.getString(8);
-                isFavorited = stringFavorite.equals("true");
+        // Obtem os Dados da Tabela no Formato de List<Makeup>
+        List<Makeup> list_cursorMakeup;
 
-                Makeup makeup = new Makeup(id, brand, name, type, price, currency, description,
-                        urlImage);
-                makeup.setFavorite(isFavorited);
+        list_cursorMakeup = cursorMakeup.selectDataBase(select_typeBrand);
 
-                // Atualiza a Lista e o RecyclerView
-                makeupListRecycler.add(makeup);
-                recycleAdapter.notifyDataSetChanged();
-
-            } while (cursor.moveToNext());
+        if (list_cursorMakeup == null) {
+            errorData();
+        } else {
+            // Instancia a Lista e atualiza o RecyclerView
+            makeupListRecycler.addAll(list_cursorMakeup);
+            recyclerResultSearch.notifyDataSetChanged();
 
             // Remove a Animação do RecyclerView
             recyclerView.postDelayed(() -> {
                 skeletonScreen.hide();
                 title_loading.setVisibility(View.GONE);
             }, 2500);
-
-        } else {
-
-            // Não possui dados na Tabela
-            Log.e("EMPTY DATABASE", "\nNão foi encontrado nenhum " +
-                    "dado no Banco de Dados\n" + cursor.toString());
-            errorData();
         }
-        cursor.close();
-        dataBaseHelper.close();
     }
 
     private void errorData() {
-        dialogs.messageWithCloseWindow(ResultActivity.this, this,
+        dialogs.messageWithCloseWindow(this,
                 getString(R.string.title_invalidData), getString(R.string.error_json)).show();
     }
 
@@ -355,15 +336,16 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
         details_makeup.putExtra(DataBaseHelper.DESCRIPTION_MAKEUP, makeup_click.getDescription());
         details_makeup.putExtra(DataBaseHelper.TYPE_MAKEUP, makeup_click.getType());
         details_makeup.putExtra(DataBaseHelper.URL_IMAGE_MAKEUP, makeup_click.getUrlImage());
+        details_makeup.putExtra(DataBaseHelper.IS_FAVORITE_MAKEUP, makeup_click.isFavorite());
 
         startActivity(details_makeup);
     }
 
     @Override
     public void onClickFavorite(Makeup makeup_click) {
-
         int indexChangedItem = makeupListRecycler.indexOf(makeup_click);
         // Atualiza o Item no Banco de Dados e no List do Recycler View
+        makeup_click.setFavorite(!makeup_click.isFavorite());
         dataBaseHelper.updateFavoriteMakeup(makeup_click);
         makeupListRecycler.set(indexChangedItem, makeup_click);
     }

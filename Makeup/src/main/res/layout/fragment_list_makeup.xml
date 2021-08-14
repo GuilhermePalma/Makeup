@@ -5,26 +5,15 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".view.fragments.ListMakeup">
+    tools:context=".view.fragments.FragmentListMakeup">
 
-    <!--todo: adicionar Layout-->
-
-    <!--TextView com valor alterado Futuramente-->
-    <TextView
-        android:id="@+id/txt_fragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Title of Fragment"
-        android:textSize="18sp"
-        tools:ignore="HardcodedText" />
-
-    <TextView
-        android:id="@+id/txt_maintenance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="Pagina em Manutenção"
-        android:textSize="18sp"
-        tools:ignore="HardcodedText" />
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_listMakeup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="7dp"
+        android:layout_marginLeft="7dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginRight="7dp"
+        tools:listitem="@layout/layout_recycler_list" />
 </LinearLayout>
