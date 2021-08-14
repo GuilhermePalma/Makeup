@@ -20,7 +20,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 // Classe Responsavel pelo controle do RecyclerView E Adapter dos Campos Usados
-public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecyclerViewHolder> {
+public class RecyclerResultSearch extends RecyclerView.Adapter<RecyclerResultSearch.ViewHolderResultSearch> {
 
     // Context e List/Array (mostar/armazenar os dados) e ClickRecyclerView (Trata os Cliques)
     private final List<Makeup> makeupList;
@@ -28,7 +28,7 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Recycler
     private final Context context;
 
     // Contrutor da Calsse
-    public RecycleAdapter(Context context, List<Makeup> list, ClickRecyclerView clickRecyclerView) {
+    public RecyclerResultSearch(Context context, List<Makeup> list, ClickRecyclerView clickRecyclerView) {
         this.context = context;
         this.makeupList = list;
         this.clickRecyclerView = clickRecyclerView;
@@ -37,18 +37,18 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Recycler
     //Cria o ViewHolder; Instancia com o valor do Layout usado
     @NonNull
     @Override
-    public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+    public ViewHolderResultSearch onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
 
         //Cria uma View e Instancia com o Layout Usado
         View itemView = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.layout_recycler_view, viewGroup, false);
+                .inflate(R.layout.layout_recycler_result, viewGroup, false);
 
-        return new RecyclerViewHolder(itemView);
+        return new ViewHolderResultSearch(itemView);
     }
 
     // Recupera os Valores do ListArray e Insere os Valores de Acordo com a Posição no RecyclerView
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolderResultSearch holder, int position) {
 
         Makeup makeup = makeupList.get(position);
 
@@ -97,8 +97,7 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Recycler
     }
 
     // Classe que retorna os campos usados já referenciados
-    public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
-
+    protected static class ViewHolderResultSearch extends RecyclerView.ViewHolder {
         private final MaterialCardView cardView;
         private final TextView name;
         private final TextView currency_price;
@@ -106,7 +105,7 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Recycler
         private final CheckBox checkBox_favorite;
 
         // Recupera os valores definidos no Layout do RecycleAdpater
-        public RecyclerViewHolder(@NonNull View itemView) {
+        protected ViewHolderResultSearch(@NonNull View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.cardView);
             name = itemView.findViewById(R.id.txt_nameMakeup);

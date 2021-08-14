@@ -16,17 +16,6 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <!--<ImageButton
-            android:id="@+id/imgBtn_favorite"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="50dp"
-            android:layout_height="45dp"
-            android:contentDescription="@string/favorite_description"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_favorite"
-            app:tint="@color/grey" />-->
-
         <ImageView
             android:id="@+id/image_product"
             android:layout_width="0dp"
@@ -81,6 +70,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="15dp"
             android:fontFamily="@font/ubuntu_bold"
+            android:gravity="center"
             android:text="@string/formatted_currencyPrice"
             android:textAppearance="?attr/textAppearanceBody1"
             android:textSize="22sp"
