@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +25,7 @@ public class MakeupDetailsActivity extends AppCompatActivity {
     private TextView currency_price;
     private TextView description;
     private ImageView image_product;
+    private CheckBox cbx_favorite;
 
     private Makeup makeup;
 
@@ -45,11 +48,13 @@ public class MakeupDetailsActivity extends AppCompatActivity {
             makeup.setPrice(intentMakeup.getStringExtra(DataBaseHelper.PRICE_MAKEUP));
             makeup.setDescription(intentMakeup.getStringExtra(DataBaseHelper.DESCRIPTION_MAKEUP));
             makeup.setUrlImage(intentMakeup.getStringExtra(DataBaseHelper.URL_IMAGE_MAKEUP));
+            makeup.setFavorite(intentMakeup.getBooleanExtra(DataBaseHelper.IS_FAVORITE_MAKEUP, false));
 
             if (makeup.getName() == null && makeup.getPrice() == null) {
                 showWindowWithoutData();
             } else {
                 showWindowData();
+                listenerFavorite();
             }
 
         } else {
@@ -85,6 +90,7 @@ public class MakeupDetailsActivity extends AppCompatActivity {
         currency_price = findViewById(R.id.txt_priceProduct);
         description = findViewById(R.id.txt_descriptionProduct);
         image_product = findViewById(R.id.img_detailsProduct);
+        cbx_favorite = findViewById(R.id.checkBox_favoriteDetails);
     }
 
     private void showWindowData() {
@@ -99,12 +105,28 @@ public class MakeupDetailsActivity extends AppCompatActivity {
         currency_price.setText(getString(R.string.formatted_currencyPrice,
                 makeup.getCurrency(), makeup.getPrice()));
         description.setText(makeup.getDescription());
+        cbx_favorite.setChecked(makeup.isFavorite());
     }
+
+    private void listenerFavorite() {
+        cbx_favorite.setOnClickListener(v -> {
+
+            // Atualiza o Estado do Favorite
+            DataBaseHelper database = new DataBaseHelper(this);
+
+            makeup.setFavorite(!makeup.isFavorite());
+            database.updateFavoriteMakeup(makeup);
+
+            database.close();
+        });
+    }
+
 
     private void showWindowWithoutData() {
         name.setText(Html.fromHtml(getString(R.string.error_name)));
         currency_price.setText(getString(R.string.error_price));
         brandType.setText(getString(R.string.error_brandType));
         description.setText(getString(R.string.error_description));
+        cbx_favorite.setVisibility(View.GONE);
     }
 }
