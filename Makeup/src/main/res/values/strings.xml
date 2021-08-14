@@ -57,7 +57,7 @@
     <string name="option_searchMakeup">Pesquisar Maquiagem</string>
     <string name="option_allMakeup">Historico de Buscas</string>
     <string name="option_favoriteMakeup">Minhas Favoritas</string>
-    <string name="option_popularMakeup">Maquiagens mais Buscadas</string>
+    <string name="option_popularMakeup">Maquiagens mais Favoritadas</string>
     <string name="option_titleLocation">Localização</string>
     <string name="option_location">Localização Atual</string>
     <string name="option_titleResources">Recursos</string>
@@ -76,7 +76,6 @@
     <string name="string_empty"> </string>
 
     <!-- Mensagens de Erro -->
-    <string name="table_empty">A Tabela não Possuem nenhum Dado</string>
     <string name="title_noConnection">Sem Internet</string>
     <string name="title_invalidData">Dados Invalidos</string>
     <string name="title_noGps">Sem GPS</string>
@@ -102,6 +101,7 @@
     <string name="error_existUser">O Usuario %s já existe no Sistema. Realize o Login !</string>
     <string name="error_noExistUser">O Usuario %s não existe no Sistema. Realize o Cadastro !</string>
     <string name="error_api">Houve um erro na execução da solicitação. Tente Novamente</string>
+    <string name="error_tableEmpty">A Tabela não Possuem nenhum Dado</string>
 
     <!-- Layout Result-->
     <string name="title_result">Resultados da Busca</string>
@@ -166,5 +166,16 @@
 
     <!--Profile Activity-->
     <string name="toolbar_profile">Perfil</string>
+
+    <!--Recycler ListMakeup-->
+    <string name="txt_quantityFavorite">%d Favoritos</string>
+
+    <!--Header ListMakeup-->
+    <string name="title_favoriteList">Minhas Makes</string>
+    <string name="title_historicList">Maquiagens Buscadas</string>
+    <string name="title_moreLikedList">As mais Queridinhas</string>
+    <string name="subtitlte_favoriteList">Confira as suas maquiagens Favoritas</string>
+    <string name="subtitlte_historicList">Confira as suas buscas de Maquiagens</string>
+    <string name="subtitlte_moreLikedList">Confira as maquiagens Favoritas dos Usuarios</string>
 
 </resources>
