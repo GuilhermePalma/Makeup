@@ -18,7 +18,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.CursorMakeup;
 import com.example.maquiagem.controller.DataBaseHelper;
-import com.example.maquiagem.controller.ManagerKeyboard;
 import com.example.maquiagem.model.Makeup;
 import com.example.maquiagem.view.PersonAlertDialogs;
 import com.example.maquiagem.view.fragments.FragmentListMakeup;
@@ -63,10 +62,6 @@ public class MainActivity extends AppCompatActivity {
         listMakeup = new ArrayList<>();
         cursorMakeup = new CursorMakeup(getApplicationContext());
         dialogs = new PersonAlertDialogs(this);
-
-        // Fecha o Teclado ao Iniciar a Activity
-        ManagerKeyboard managerKeyboard = new ManagerKeyboard(this);
-        managerKeyboard.closeKeyboard(this);
 
         // Criação da ToolBar
         toolbar.setTitle(R.string.app_name);
