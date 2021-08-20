@@ -11,7 +11,7 @@ import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.controller.ManagerKeyboard;
 import com.example.maquiagem.model.User;
-import com.example.maquiagem.view.AlertDialogs;
+import com.example.maquiagem.view.PersonAlertDialogs;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private DataBaseHelper database;
     private ManagerKeyboard managerKeyboard;
     private SharedPreferences preferences;
-    private AlertDialogs dialog;
+    private PersonAlertDialogs dialog;
 
     private final String FILE_PREFERENCE = "com.example.maquiagem";
     private final String LOGIN_NOT_REMEMBER = "not_remember_login";
@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         database = new DataBaseHelper(getApplicationContext());
         managerKeyboard = new ManagerKeyboard(LoginActivity.this);
         preferences = getSharedPreferences(FILE_PREFERENCE, 0);
-        dialog = new AlertDialogs();
+        dialog = new PersonAlertDialogs(this);
     }
 
     private void userLogin() {
@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
             } else {
                 // Usuario não Existe na API
-                dialog.message(LoginActivity.this, getString(R.string.title_noExistUser),
+                dialog.message(getString(R.string.title_noExistUser),
                         getString(R.string.error_noExistUser, user.getNickname())).show();
             }
         }

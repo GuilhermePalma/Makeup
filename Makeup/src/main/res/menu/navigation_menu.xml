@@ -10,7 +10,6 @@
         android:id="@+id/option_favoriteMakeup"
         android:title="@string/option_favoriteMakeup" />
 
-
     <!--Cria um menu com o Titulo desativado-->
     <item android:title="@string/option_titleMakeup">
         <menu>
@@ -19,10 +18,10 @@
                 android:title="@string/option_searchMakeup" />
 
             <item
-                android:id="@+id/option_popularMakeup"
+                android:id="@+id/option_moreFavorites"
                 android:title="@string/option_popularMakeup" />
             <item
-                android:id="@+id/option_allMakeup"
+                android:id="@+id/option_historicMakeup"
                 android:title="@string/option_allMakeup" />
         </menu>
     </item>

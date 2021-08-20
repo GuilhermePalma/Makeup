@@ -13,7 +13,7 @@ import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.controller.ManagerKeyboard;
 import com.example.maquiagem.model.User;
-import com.example.maquiagem.view.AlertDialogs;
+import com.example.maquiagem.view.PersonAlertDialogs;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -34,7 +34,7 @@ public class SingUpActivity extends AppCompatActivity {
 
     private ManagerKeyboard managerKeyboard;
     private SharedPreferences preferences;
-    private AlertDialogs dialog;
+    private PersonAlertDialogs dialog;
     private DataBaseHelper database;
 
     private final String FILE_PREFERENCE = "com.example.maquiagem";
@@ -76,7 +76,7 @@ public class SingUpActivity extends AppCompatActivity {
 
         preferences = getSharedPreferences(FILE_PREFERENCE, 0);
         managerKeyboard = new ManagerKeyboard(SingUpActivity.this);
-        dialog = new AlertDialogs();
+        dialog = new PersonAlertDialogs(this);
         database = new DataBaseHelper(getApplicationContext());
 
         idioms = "";
@@ -116,12 +116,12 @@ public class SingUpActivity extends AppCompatActivity {
                     finish();
                 } else {
                     // Não foi Possivel inserir na API o Usuario
-                    dialog.message(getApplicationContext(), getString(R.string.title_errorAPI),
+                    dialog.message(getString(R.string.title_errorAPI),
                             getString(R.string.error_api)).show();
                 }
             } else {
                 // Usuario já cadastrado
-                dialog.message(getApplicationContext(), getString(R.string.title_existUser),
+                dialog.message(getString(R.string.title_existUser),
                         getString(R.string.error_existUser, user.getName())).show();
             }
         }

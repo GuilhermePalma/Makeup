@@ -16,18 +16,21 @@ import android.widget.EditText;
 import androidx.fragment.app.Fragment;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.view.AlertDialogs;
+import com.example.maquiagem.view.PersonAlertDialogs;
 import com.example.maquiagem.view.activities.ResultActivity;
 
 public class SearchMakeup extends Fragment {
 
+    private Context context;
+
     // Contrutor Vazio do Fragment
-    public SearchMakeup() {
+    public SearchMakeup(Context context) {
+        this.context = context;
     }
 
     // Nova instancia do Fragment SearchMakeup
-    public static SearchMakeup newInstance() {
-        return new SearchMakeup();
+    public static SearchMakeup newInstance(Context context) {
+        return new SearchMakeup(context);
     }
 
     // Criação do Fragment
@@ -63,7 +66,7 @@ public class SearchMakeup extends Fragment {
             closeKeyboard(view);
 
             //Validação da Conexão Ativa
-            if (connectionAvailable(view)) {
+            if (connectionAvailable()) {
 
                 // Limpa os valores da Tela Inteira
                 editType.setText(R.string.string_empty);
@@ -77,8 +80,8 @@ public class SearchMakeup extends Fragment {
 
             } else {
                 // Mostra uma Mensagem na Tela
-                new AlertDialogs().message(getContext(), getString(R.string.title_noConnection),
-                        getString(R.string.error_connection));
+                new PersonAlertDialogs(context).message(getString(R.string.title_noConnection),
+                        getString(R.string.error_connection)).show();
             }
         });
 
@@ -87,9 +90,9 @@ public class SearchMakeup extends Fragment {
     }
 
     // Valida a Conexão com a Internet
-    private boolean connectionAvailable(View view) {
+    private boolean connectionAvailable() {
         ConnectivityManager connectionManager = (ConnectivityManager)
-                view.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo;
 
         // Valida se o serviço de Internet está ativo
@@ -116,7 +119,7 @@ public class SearchMakeup extends Fragment {
     // Metodo que Fecha o Teclado
     private void closeKeyboard(View view) {
         InputMethodManager keyboardManager = (InputMethodManager)
-                view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                context.getSystemService(Context.INPUT_METHOD_SERVICE);
 
         // Caso o Serviço do Teclado esteja disponivel
         if (keyboardManager != null) {
