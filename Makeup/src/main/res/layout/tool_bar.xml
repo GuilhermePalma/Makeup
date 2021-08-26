@@ -11,4 +11,5 @@
     app:layout_collapseMode="pin"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     app:titleTextColor="@color/white_light"
+    app:menu="@menu/main_menu"
     tools:targetApi="lollipop" />

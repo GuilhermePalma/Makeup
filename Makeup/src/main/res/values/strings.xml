@@ -57,6 +57,7 @@
     <string name="option_searchMakeup">Pesquisar Maquiagem</string>
     <string name="option_allMakeup">Historico de Buscas</string>
     <string name="option_favoriteMakeup">Minhas Favoritas</string>
+    <string name="option_catalog">Inicio</string>
     <string name="option_popularMakeup">Maquiagens mais Favoritadas</string>
     <string name="option_titleLocation">Localização</string>
     <string name="option_location">Localização Atual</string>

@@ -7,8 +7,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -29,18 +32,25 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final int ID_PROFILE = R.id.option_profile;
-    private final int ID_CONFIG = R.id.option_config;
-    private final int ID_DATA_USED = R.id.option_dataUsed;
-    private final int ID_EXIT = R.id.option_exit;
-    private final int ID_SEARCH_MAKEUP = R.id.option_searchMakeup;
-    private final int ID_HISTORIC_MAKEUP = R.id.option_historicMakeup;
-    private final int ID_FAVORITE_MAKEUPS = R.id.option_favoriteMakeup;
-    private final int ID_MORE_FAVORITES = R.id.option_moreFavorites;
-    private final int ID_LOCATION = R.id.option_location;
-    private final int ID_SENSOR = R.id.option_sensor;
+    private final int OPTION_PROFILE = R.id.option_profile;
+    private final int OPTION_CONFIG = R.id.option_config;
+    private final int OPTION_DATA_USED = R.id.option_dataUsed;
+    private final int OPTION_EXIT = R.id.option_exit;
+    private final int OPTION_SEARCH_MAKEUP = R.id.option_searchMakeup;
+    private final int OPTION_HISTORIC_MAKEUP = R.id.option_historicMakeup;
+    private final int OPTION_FAVORITE_MAKEUPS = R.id.option_favoriteMakeup;
+    private final int OPTION_MORE_FAVORITES = R.id.option_moreFavorites;
+    private final int OPTION_HOME_MAKEUP = R.id.option_homeMakeup;
+    private final int OPTION_LOCATION = R.id.option_location;
+    private final int OPTION_SENSOR = R.id.option_sensor;
+
+    private final int POSITION_TOP_MENU_SEARCH = 0;
+    private final int POSITION_TOP_MENU_HOME = 1;
+    private final int OPTION_MENU_TOP_HOME = R.id.topMenu_home;
+    private final int OPTION_MENU_TOP_SEARCH = R.id.search_option;
 
     private Toolbar toolbar;
+    private Menu menu;
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private List<Makeup> listMakeup;
@@ -54,14 +64,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = findViewById(R.id.toolBar);
-        drawer = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.navigation_view);
-
-        fragmentListMakeup = new FragmentListMakeup();
-        listMakeup = new ArrayList<>();
-        cursorMakeup = new CursorMakeup(getApplicationContext());
-        dialogs = new PersonAlertDialogs(this);
+        instanceItems();
 
         // Criação da ToolBar
         toolbar.setTitle(R.string.app_name);
@@ -70,16 +73,39 @@ public class MainActivity extends AppCompatActivity {
         setUpDrawer();
         listenerNavigation();
 
-        // Define o Background da Main Activity
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
-                new SearchMakeup(getApplicationContext())).commit();
+        // Criação do Fragment Inicial
+        // todo: alterar o Fragment da Activity p/ obter produtos da API
+        String select_historic = String.format("SELECT * FROM %s",
+                DataBaseHelper.TABLE_MAKEUP);
+        listMakeup = cursorMakeup.selectDataBase(select_historic);
+        setUpListFragment(listMakeup, FragmentListMakeup.TYPE_CATALOG);
 
         // Define o Item que será inicialmente Selecionado
-        navigationView.getMenu().findItem(R.id.option_searchMakeup).setChecked(true);
-        navigationView.getMenu().findItem(R.id.option_searchMakeup).setCheckable(true);
+        navigationView.getMenu().findItem(OPTION_HOME_MAKEUP).setChecked(true);
+        navigationView.getMenu().findItem(OPTION_HOME_MAKEUP).setCheckable(true);
 
     }
 
+    private void instanceItems() {
+        toolbar = findViewById(R.id.toolBar);
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigation_view);
+
+        fragmentListMakeup = new FragmentListMakeup();
+        listMakeup = new ArrayList<>();
+        cursorMakeup = new CursorMakeup(getApplicationContext());
+        dialogs = new PersonAlertDialogs(this);
+    }
+
+    // Cria as Opções do Menu Superior
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+
+        this.menu = menu;
+        return true;
+    }
 
     // Configuração do Menu Lateral
     private void setUpDrawer() {
@@ -91,38 +117,114 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.syncState();
     }
 
+    // Seleção do Item de Pesqusia
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case OPTION_MENU_TOP_SEARCH:
+                //Desseleciona o Menu Lateral e Altera a Visibilidade do Icone Superior
+                unselectedItemsMenu();
+                menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(false);
+                menu.getItem(POSITION_TOP_MENU_HOME).setVisible(true);
 
+                // Instancia o Fragment e Seleciona sua opção no Menu Lateral
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
+                        new SearchMakeup(this)).commit();
+                navigationView.getMenu().findItem(OPTION_SEARCH_MAKEUP).setChecked(true);
+                navigationView.getMenu().findItem(OPTION_SEARCH_MAKEUP).setCheckable(true);
+
+                return true;
+            case OPTION_MENU_TOP_HOME:
+                //Desseleciona o Menu Lateral e Altera a Visibilidade do Icone Superior
+                unselectedItemsMenu();
+                menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(true);
+                menu.getItem(POSITION_TOP_MENU_HOME).setVisible(false);
+
+                // todo: alterar p/ o Fragment de Obter os Produtos da API
+                String select_historic = String.format("SELECT * FROM %s",
+                        DataBaseHelper.TABLE_MAKEUP);
+                listMakeup = cursorMakeup.selectDataBase(select_historic);
+
+                // Instancia o Fragment e Seleciona sua opção no Menu Lateral
+                setUpListFragment(listMakeup, FragmentListMakeup.TYPE_CATALOG);
+                navigationView.getMenu().findItem(OPTION_HOME_MAKEUP).setChecked(true);
+                navigationView.getMenu().findItem(OPTION_HOME_MAKEUP).setCheckable(true);
+
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    // Tira a Seleção dos Itens (Menu Latreal) que não foram Selecionados
+    private void unselectedItemsMenu() {
+        int sizeMenu = navigationView.getMenu().size();
+        for (int i = 0; i < sizeMenu; i++) {
+
+            MenuItem menuItem = navigationView.getMenu().getItem(i);
+
+            if (menuItem.hasSubMenu()) {
+
+                // Caso tenha um Sub-menu, acessa eles para retirar a seleção
+                for (int u = 0; u < menuItem.getSubMenu().size(); u++) {
+                    menuItem.getSubMenu().getItem(u).setChecked(false);
+                    menuItem.getSubMenu().getItem(u).setCheckable(false);
+                }
+            } else {
+                navigationView.getMenu().getItem(i).setChecked(false);
+                navigationView.getMenu().getItem(i).setCheckable(false);
+            }
+        }
+    }
+
+    // Listener do Clique no Menu Lateral
     private void listenerNavigation() {
         // Trata o Clique nos Itens
         navigationView.setNavigationItemSelectedListener(item -> {
 
-            // Tira a Seleção dos Itens que não foram Selecionados
-            int sizeMenu = navigationView.getMenu().size();
-            for (int i = 0; i < sizeMenu; i++) {
-                MenuItem item1 = navigationView.getMenu().getItem(i);
-                if (item1.hasSubMenu()) {
-                    // Caso tenha um Sub-menu, acessa eles para retirar a seleção
-                    for (int u = 0; u < item1.getSubMenu().size(); u++) {
-                        item1.getSubMenu().getItem(u).setChecked(false);
-                        item1.getSubMenu().getItem(u).setCheckable(false);
-                    }
-                } else {
-                    navigationView.getMenu().getItem(i).setChecked(false);
-                    navigationView.getMenu().getItem(i).setCheckable(false);
+            int id_item = item.getItemId();
+
+            // Caso seja o Item de Localização ---> Valida Conexão com Internet e GPS
+            if (id_item == OPTION_LOCATION) {
+                if (!connectionAvailable()) {
+                    dialogs.message(getString(R.string.title_noConnection),
+                            getString(R.string.error_connection)).show();
+
+                    drawer.closeDrawer(GravityCompat.START);
+                    return false;
+                } else if (!gpsAvailable()) {
+                    dialogs.message(getString(R.string.title_noGps),
+                            getString(R.string.error_noGps)).show();
+
+                    drawer.closeDrawer(GravityCompat.START);
+                    return false;
                 }
             }
 
-            // Seleciona o Item clicado
+            // Deseleciona o Item seleciona e Coloca a Seleção do Item Clicado
+            unselectedItemsMenu();
             item.setChecked(true);
             item.setCheckable(true);
 
             // SwitchCase para verificar qual item foi selecionado
-            switch (item.getItemId()) {
-                case ID_PROFILE:
+            switch (id_item) {
+                case OPTION_PROFILE:
                     startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                     break;
 
-                case ID_FAVORITE_MAKEUPS:
+                case OPTION_HOME_MAKEUP:
+                    // todo: alterar o Fragment da Activity p/ obter produtos da API
+                    String select_catalog = String.format("SELECT * FROM %s",
+                            DataBaseHelper.TABLE_MAKEUP);
+                    listMakeup = cursorMakeup.selectDataBase(select_catalog);
+                    setUpListFragment(listMakeup, FragmentListMakeup.TYPE_CATALOG);
+
+                    //Altera o Icone Superior (Icone Search)
+                    menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(true);
+                    menu.getItem(POSITION_TOP_MENU_HOME).setVisible(false);
+
+                    break;
+                case OPTION_FAVORITE_MAKEUPS:
                     String select_favorite = String.format("SELECT * FROM %1$s WHERE %2$s='%3$s'",
                             DataBaseHelper.TABLE_MAKEUP, DataBaseHelper.IS_FAVORITE_MAKEUP, "true");
 
@@ -130,12 +232,16 @@ public class MainActivity extends AppCompatActivity {
                     setUpListFragment(listMakeup, FragmentListMakeup.TYPE_FAVORITE);
                     break;
 
-                case ID_SEARCH_MAKEUP:
+                case OPTION_SEARCH_MAKEUP:
                     getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
                             new SearchMakeup(getApplicationContext())).commit();
+
+                    //Altera o Icone Superior (Icone Home)
+                    menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(false);
+                    menu.getItem(POSITION_TOP_MENU_HOME).setVisible(true);
                     break;
 
-                case ID_MORE_FAVORITES:
+                case OPTION_MORE_FAVORITES:
                     // Todo: Implementar metodo da API das Maquiagens mais Favoritadas
                     String select_popular = String.format("SELECT * FROM %s",
                             DataBaseHelper.TABLE_MAKEUP);
@@ -143,45 +249,34 @@ public class MainActivity extends AppCompatActivity {
                     setUpListFragment(listMakeup, FragmentListMakeup.TYPE_MORE_LIKED);
                     break;
 
-                case ID_HISTORIC_MAKEUP:
+                case OPTION_HISTORIC_MAKEUP:
                     String select_historic = String.format("SELECT * FROM %s",
                             DataBaseHelper.TABLE_MAKEUP);
                     listMakeup = cursorMakeup.selectDataBase(select_historic);
                     setUpListFragment(listMakeup, FragmentListMakeup.TYPE_HISTORIC);
                     break;
 
-                case ID_LOCATION:
-                    // Possui Conexão
-                    if (connectionAvailable()) {
-                        // GPS ativo
-                        if (gpsAvailable()) {
-                            startActivity(new Intent(this, LocationActivity.class));
-                        } else {
-                            dialogs.message(getString(R.string.title_noGps), getString(R.string.error_noGps))
-                                    .show();
-                        }
-                    } else {
-                        dialogs.message(getString(R.string.title_noConnection), getString(R.string.error_connection))
-                                .show();
-                    }
+                case OPTION_LOCATION:
+                    // Já foi Validado Internet e GPS
+                    startActivity(new Intent(this, LocationActivity.class));
                     break;
 
-                case ID_SENSOR:
+                case OPTION_SENSOR:
                     startActivity(new Intent(MainActivity.this,
                             SensorActivity.class));
                     break;
 
-                case ID_CONFIG:
+                case OPTION_CONFIG:
                     startActivity(new Intent(MainActivity.this,
                             ConfigurationActivity.class));
                     break;
 
-                case ID_DATA_USED:
+                case OPTION_DATA_USED:
                     startActivity(new Intent(MainActivity.this,
                             DataApplicationActivity.class));
                     break;
 
-                case ID_EXIT:
+                case OPTION_EXIT:
                     // todo: deslogar ---> Implementar depois do Cadastro/Login
                     break;
 
@@ -193,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // Configura os Fragmentos de Lista (Favoritadas, Historico)
     private void setUpListFragment(List<Makeup> makeups, String type_fragment) {
         if (makeups == null) {
             dialogs.message(getString(R.string.title_noData),
@@ -206,16 +302,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Caso clique no botão voltar
-    @Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
+    // Verifica se a Internet está disponivel
     private boolean connectionAvailable() {
         ConnectivityManager connectionManager = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -242,6 +329,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Verifica se o GPS está disponivel
     private boolean gpsAvailable() {
         // Gerencia os serviços de Localziação
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -257,4 +345,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Caso clique no Botão Voltar ---> Diferencia o "Voltar do Menu Lateral" e "Voltar"
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

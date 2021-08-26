@@ -28,11 +28,6 @@ public class SearchMakeup extends Fragment {
         this.context = context;
     }
 
-    // Nova instancia do Fragment SearchMakeup
-    public static SearchMakeup newInstance(Context context) {
-        return new SearchMakeup(context);
-    }
-
     // Criação do Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
