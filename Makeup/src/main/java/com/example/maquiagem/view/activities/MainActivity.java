@@ -24,7 +24,7 @@ import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.model.Makeup;
 import com.example.maquiagem.view.PersonAlertDialogs;
 import com.example.maquiagem.view.fragments.FragmentListMakeup;
-import com.example.maquiagem.view.fragments.SearchMakeup;
+import com.example.maquiagem.view.fragments.FragmentSearchMakeup;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Instancia o Fragment e Seleciona sua opção no Menu Lateral
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
-                        new SearchMakeup(this)).commit();
+                        new FragmentSearchMakeup(this)).commit();
                 navigationView.getMenu().findItem(OPTION_SEARCH_MAKEUP).setChecked(true);
                 navigationView.getMenu().findItem(OPTION_SEARCH_MAKEUP).setCheckable(true);
 
@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
 
                 case OPTION_SEARCH_MAKEUP:
                     getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
-                            new SearchMakeup(getApplicationContext())).commit();
+                            new FragmentSearchMakeup(getApplicationContext())).commit();
 
                     //Altera o Icone Superior (Icone Home)
                     menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(false);

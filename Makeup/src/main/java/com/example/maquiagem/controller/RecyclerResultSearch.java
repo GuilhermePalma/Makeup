@@ -5,6 +5,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,6 +47,7 @@ public class RecyclerResultSearch extends RecyclerView.Adapter<RecyclerResultSea
         return new ViewHolderResultSearch(itemView);
     }
 
+    // todo: Implementar ListFragments
     // Recupera os Valores do ListArray e Insere os Valores de Acordo com a Posição no RecyclerView
     @Override
     public void onBindViewHolder(@NonNull ViewHolderResultSearch holder, int position) {
@@ -83,6 +85,7 @@ public class RecyclerResultSearch extends RecyclerView.Adapter<RecyclerResultSea
             holder.checkBox_favorite.setChecked(makeup.isFavorite());
             clickRecyclerView.onClickFavorite(makeup);
         });
+        holder.btn_view_product.setOnClickListener(v -> clickRecyclerView.onClickProduct(makeup));
 
     }
 
@@ -103,6 +106,7 @@ public class RecyclerResultSearch extends RecyclerView.Adapter<RecyclerResultSea
         private final TextView currency_price;
         private final ImageView image;
         private final CheckBox checkBox_favorite;
+        private final Button btn_view_product;
 
         // Recupera os valores definidos no Layout do RecycleAdpater
         protected ViewHolderResultSearch(@NonNull View itemView) {
@@ -112,6 +116,7 @@ public class RecyclerResultSearch extends RecyclerView.Adapter<RecyclerResultSea
             currency_price = itemView.findViewById(R.id.txt_priceMakeup);
             image = itemView.findViewById(R.id.image_product);
             checkBox_favorite = itemView.findViewById(R.id.checkBox_favorite);
+            btn_view_product = itemView.findViewById(R.id.btn_viewProduct);
         }
     }
 

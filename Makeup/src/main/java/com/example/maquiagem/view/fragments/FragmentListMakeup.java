@@ -26,7 +26,7 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
     public static final String TYPE_FAVORITE = "favorite";
     public static final String TYPE_MORE_LIKED = "more_search";
     public static final String TYPE_HISTORIC = "historic";
-    // Todo: Retirar caralogo
+    // Todo: Retirar catalogo
     public static final String TYPE_CATALOG = "catalog";
     private static final String TYPE = "type_fragment";
     private View header_view;

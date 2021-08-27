@@ -19,12 +19,12 @@ import com.example.maquiagem.R;
 import com.example.maquiagem.view.PersonAlertDialogs;
 import com.example.maquiagem.view.activities.ResultActivity;
 
-public class SearchMakeup extends Fragment {
+public class FragmentSearchMakeup extends Fragment {
 
     private Context context;
 
     // Contrutor Vazio do Fragment
-    public SearchMakeup(Context context) {
+    public FragmentSearchMakeup(Context context) {
         this.context = context;
     }
 

@@ -114,9 +114,9 @@
     <string name="empty_price">Preço não Encontrado</string>
     <string name="empty_description">Produto sem Descrição</string>
     <string name="loading_text">Carregando Produtos</string>
+    <string name="btn_viewProduct">Ver Produto</string>
 
     <!--Activity ImageView-->
-    <string name="btn_viewProduct">Ver Detalhes do Produto</string>
     <string name="no_availableMakeup">Produto não Identificado</string>
 
     <!--Activity Details Product-->
