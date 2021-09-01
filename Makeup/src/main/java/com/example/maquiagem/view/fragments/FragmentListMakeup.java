@@ -26,8 +26,6 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
     public static final String TYPE_FAVORITE = "favorite";
     public static final String TYPE_MORE_LIKED = "more_search";
     public static final String TYPE_HISTORIC = "historic";
-    // Todo: Retirar catalogo
-    public static final String TYPE_CATALOG = "catalog";
     private static final String TYPE = "type_fragment";
     private View header_view;
     private RecyclerView recyclerView;
@@ -123,12 +121,6 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
             case TYPE_MORE_LIKED:
                 header_title.setText(R.string.title_moreLikedList);
                 header_subtitle.setText(R.string.subtitlte_moreLikedList);
-                break;
-
-            // Todo: Retirar catalogo
-            case TYPE_CATALOG:
-                header_title.setText("Catalogo de Produtos");
-                header_subtitle.setText("Esses são Nossos Produtos Cadastrados");
                 break;
 
             default:

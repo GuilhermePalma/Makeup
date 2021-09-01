@@ -76,6 +76,22 @@
     <string name="btn_search">Pesquisar</string>
     <string name="string_empty"> </string>
 
+    <!--Fragment Catalog-->
+    <string name="txt_titleCatalog">Olá, Seja Bem-Vindo(a)</string>
+    <string name="txt_subtitleCatalog">Veja alguns de nossos Produtos !</string>
+    <string-array name="array_chips">
+        <item>Blush</item>
+        <item>Bronzer</item>
+        <item>Eyebrow</item>
+        <item>Eyeliner</item>
+        <item>Eyeshadow</item>
+        <item>Foundation</item>
+        <item>Lip liner</item>
+        <item>Lipstick</item>
+        <item>Mascara</item>
+        <item>Nail polish</item>
+    </string-array>
+
     <!-- Mensagens de Erro -->
     <string name="title_noConnection">Sem Internet</string>
     <string name="title_invalidData">Dados Invalidos</string>
@@ -113,7 +129,7 @@
     <string name="empty_name">Produto sem Nome</string>
     <string name="empty_price">Preço não Encontrado</string>
     <string name="empty_description">Produto sem Descrição</string>
-    <string name="loading_text">Carregando Produtos</string>
+    <string name="loading_text">Carregando Produtos…</string>
     <string name="btn_viewProduct">Ver Produto</string>
 
     <!--Activity ImageView-->

@@ -16,7 +16,7 @@
         android:layout_marginRight="10dp"
         android:fontFamily="@font/ubuntu_bold"
         android:gravity="center"
-        android:text="@string/title_favoriteList"
+        android:text="@string/txt_titleCatalog"
         android:textSize="26sp" />
 
     <TextView
@@ -32,7 +32,7 @@
         android:layout_marginRight="15dp"
         android:fontFamily="@font/ubuntu_regular"
         android:gravity="center"
-        android:text="@string/subtitlte_favoriteList"
+        android:text="@string/txt_subtitleCatalog"
         android:textSize="14sp" />
 
     <View
