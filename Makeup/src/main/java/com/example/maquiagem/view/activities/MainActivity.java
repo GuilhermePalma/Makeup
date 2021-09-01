@@ -19,9 +19,9 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.controller.CursorMakeup;
 import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.model.Makeup;
+import com.example.maquiagem.model.SerializationData;
 import com.example.maquiagem.view.PersonAlertDialogs;
 import com.example.maquiagem.view.fragments.FragmentListMakeup;
 import com.example.maquiagem.view.fragments.FragmentSearchMakeup;
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Makeup> listMakeup;
 
     private FragmentListMakeup fragmentListMakeup;
-    private CursorMakeup cursorMakeup;
+    private SerializationData serializationData;
     private PersonAlertDialogs dialogs;
 
     @Override
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         // todo: alterar o Fragment da Activity p/ obter produtos da API
         String select_historic = String.format("SELECT * FROM %s",
                 DataBaseHelper.TABLE_MAKEUP);
-        listMakeup = cursorMakeup.selectDataBase(select_historic);
+        listMakeup = serializationData.serializationSelectMakeup(select_historic);
         setUpListFragment(listMakeup, FragmentListMakeup.TYPE_CATALOG);
 
         // Define o Item que será inicialmente Selecionado
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentListMakeup = new FragmentListMakeup();
         listMakeup = new ArrayList<>();
-        cursorMakeup = new CursorMakeup(getApplicationContext());
+        serializationData = new SerializationData(this);
         dialogs = new PersonAlertDialogs(this);
     }
 
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 // todo: alterar p/ o Fragment de Obter os Produtos da API
                 String select_historic = String.format("SELECT * FROM %s",
                         DataBaseHelper.TABLE_MAKEUP);
-                listMakeup = cursorMakeup.selectDataBase(select_historic);
+                listMakeup = serializationData.serializationSelectMakeup(select_historic);
 
                 // Instancia o Fragment e Seleciona sua opção no Menu Lateral
                 setUpListFragment(listMakeup, FragmentListMakeup.TYPE_CATALOG);
@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
                     // todo: alterar o Fragment da Activity p/ obter produtos da API
                     String select_catalog = String.format("SELECT * FROM %s",
                             DataBaseHelper.TABLE_MAKEUP);
-                    listMakeup = cursorMakeup.selectDataBase(select_catalog);
+                    listMakeup = serializationData.serializationSelectMakeup(select_catalog);
                     setUpListFragment(listMakeup, FragmentListMakeup.TYPE_CATALOG);
 
                     //Altera o Icone Superior (Icone Search)
@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
                     String select_favorite = String.format("SELECT * FROM %1$s WHERE %2$s='%3$s'",
                             DataBaseHelper.TABLE_MAKEUP, DataBaseHelper.IS_FAVORITE_MAKEUP, "true");
 
-                    listMakeup = cursorMakeup.selectDataBase(select_favorite);
+                    listMakeup = serializationData.serializationSelectMakeup(select_favorite);
                     setUpListFragment(listMakeup, FragmentListMakeup.TYPE_FAVORITE);
                     break;
 
@@ -245,14 +245,14 @@ public class MainActivity extends AppCompatActivity {
                     // Todo: Implementar metodo da API das Maquiagens mais Favoritadas
                     String select_popular = String.format("SELECT * FROM %s",
                             DataBaseHelper.TABLE_MAKEUP);
-                    listMakeup = cursorMakeup.selectDataBase(select_popular);
+                    listMakeup = serializationData.serializationSelectMakeup(select_popular);
                     setUpListFragment(listMakeup, FragmentListMakeup.TYPE_MORE_LIKED);
                     break;
 
                 case OPTION_HISTORIC_MAKEUP:
                     String select_historic = String.format("SELECT * FROM %s",
                             DataBaseHelper.TABLE_MAKEUP);
-                    listMakeup = cursorMakeup.selectDataBase(select_historic);
+                    listMakeup = serializationData.serializationSelectMakeup(select_historic);
                     setUpListFragment(listMakeup, FragmentListMakeup.TYPE_HISTORIC);
                     break;
 

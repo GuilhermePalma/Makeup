@@ -6,8 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,16 +18,12 @@ import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ClickRecyclerView;
-import com.example.maquiagem.controller.CursorMakeup;
 import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.controller.RecyclerResultSearch;
 import com.example.maquiagem.model.Makeup;
 import com.example.maquiagem.model.SearchInternet;
+import com.example.maquiagem.model.SerializationData;
 import com.example.maquiagem.view.PersonAlertDialogs;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,48 +33,52 @@ import java.util.concurrent.Executors;
 
 public class ResultActivity extends AppCompatActivity implements ClickRecyclerView {
 
-    private final String MAKEUP_URL = "http://makeup-api.herokuapp.com/api/v1/products.json?";
-    private final String URL_NO_IMAGE = "https://github.com/GuilhermeCallegari/Maquiagem/blob" +
-            "/main/app/src/main/res/drawable/makeup_no_image.jpg";
-    int numberProducts, maxResult;
+    public static final String PARAMETER_BRAND = "brand";
+    public static final String PARAMETER_TYPE = "product_type";
+    public static final String PARAMETER_QUANTITY = "product_type";
+    private SerializationData serializationJson;
     private TextView title_loading;
     private RecyclerView recyclerView;
     private RecyclerResultSearch recyclerResultSearch;
     private SkeletonScreen skeletonScreen;
     private DataBaseHelper dataBaseHelper;
+    private Makeup makeup;
     private PersonAlertDialogs dialogs;
-    private CursorMakeup cursorMakeup;
     private List<Makeup> makeupListRecycler;
-    private String jsonMakeup = "";
+    private int max_result_search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        instanceItens();
+        instanceItems();
 
         Button btn_main = findViewById(R.id.btn_home);
         btn_main.setOnClickListener(v -> returnMain());
 
         // Obtem os dados passados pela MainActivity
         Bundle queryBundle = getIntent().getExtras();
-        String infoType, infoBrand;
 
+        // Se não for Nulo, Obtem os Dados passado pela Activity
         if (queryBundle != null) {
-            infoType = Objects.requireNonNull(queryBundle).getString("product_type", "");
-            infoBrand = Objects.requireNonNull(queryBundle).getString("brand", "");
 
-            if (!infoType.equals("") && !infoBrand.equals("")) {
+            makeup.setType(Objects.requireNonNull(queryBundle).getString(
+                    PARAMETER_TYPE, ""));
+            makeup.setBrand(Objects.requireNonNull(queryBundle).getString(
+                    PARAMETER_BRAND, ""));
+            max_result_search = Objects.requireNonNull(queryBundle).getInt(
+                    PARAMETER_QUANTITY, SerializationData.OPT_SHOW_DEFAULT);
 
-                // Caso já exista produtos no Banco de Dados com a Marca e Tipo inserida no DB
-                if (dataBaseHelper.existsInMakeup(infoType, infoBrand)) {
+            if (!makeup.getType().equals("") && !makeup.getBrand().equals("")) {
+
+                // Busca e Exibe os Produtos se existirem no DB Local. Se não, Pesquisa na API
+                if (dataBaseHelper.existsInMakeup(makeup.getType(), makeup.getBrand())) {
                     setUpRecyclerView();
                     dataBaseHelper.close();
-                    showWindow(infoType, infoBrand);
+                    showWindow();
                 } else {
-                    // Inicia a Ativividade Assincrona
-                    asyncTask(infoType, infoBrand);
+                    asyncTask();
                 }
             } else {
                 dialogs.messageWithCloseWindow(this,
@@ -93,13 +91,14 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
         }
     }
 
-    private void instanceItens() {
+    private void instanceItems() {
+        makeup = new Makeup();
+        serializationJson = new SerializationData(this);
         makeupListRecycler = new ArrayList<>();
         dataBaseHelper = new DataBaseHelper(this);
         dialogs = new PersonAlertDialogs(this);
         title_loading = findViewById(R.id.title_loadingMakeup);
         recyclerView = findViewById(R.id.recyclerView);
-        cursorMakeup = new CursorMakeup(getApplicationContext());
     }
 
     // Limpa o Array e o RecyclerView
@@ -134,49 +133,51 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
                 .adapter(recyclerResultSearch)
                 .load(R.layout.layout_default_item_skeleton)
                 .color(R.color.white_light)
-                .duration(1200)
+                .duration(1000)
                 .show();
     }
 
     // Busca Assincrona ---> Consulta API e exibe os dados
-    private void asyncTask(String type, String brand) {
+    private void asyncTask() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
         executorService.execute(() -> {
-            jsonMakeup = getMakeup(type, brand);
+            // Obtem o JSON
+            String json_search_makeup = getMakeup();
 
             handler.post(() -> {
 
-                if (jsonMakeup.equals("")) {
+                if (json_search_makeup == null || json_search_makeup.equals("")) {
                     handler.post(() -> dialogs.messageWithCloseWindow(this,
                             getString(R.string.title_noExist),
                             getString(R.string.error_noExists)).show());
                     return;
                 }
 
-                // Serializa e Insere os Dados no Banco de Dados
-                List<Makeup> makeupList = serializationDataMakeup(jsonMakeup);
+                // Serializa O JSON
+                List<Makeup> makeupList = serializationJson.
+                        serializationJsonMakeup(json_search_makeup, max_result_search);
 
+                // Verifica se Há Itens na Lista e se Realizou Inserção no Banco de Dados
                 if (makeupList != null && makeupList.isEmpty() || !insertInDataBase(makeupList)) {
                     errorData();
                 } else {
-                    // Inicia e Configura o RecyclerView
                     setUpRecyclerView();
-                    showWindow(type, brand);
+                    showWindow();
                 }
             });
         });
     }
 
     // Cria uma URI e inicializa o Metodo SearchInternet
-    private String getMakeup(String type, String brand) {
+    private String getMakeup() {
 
-        String BRAND_PARAMETERS = "brand";
-        String TYPE_PARAMETERS = "product_type";
+        final String MAKEUP_URL = "http://makeup-api.herokuapp.com/api/v1/products.json?";
+
         Uri buildMakeup = Uri.parse(MAKEUP_URL).buildUpon()
-                .appendQueryParameter(TYPE_PARAMETERS, type)
-                .appendQueryParameter(BRAND_PARAMETERS, brand)
+                .appendQueryParameter(PARAMETER_QUANTITY, makeup.getType())
+                .appendQueryParameter(PARAMETER_BRAND, makeup.getBrand())
                 .build();
 
         return SearchInternet.searchByUrl(buildMakeup.toString(), "GET");
@@ -203,95 +204,14 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
         }
     }
 
-    // Faz o Tratamento dos Dados Recebidoss
-    private List<Makeup> serializationDataMakeup(String json) {
-
-        String name, type, brand, price, currency, description, urlImage;
-        int id;
-        List<Makeup> makeups = new ArrayList<>();
-
-        JSONArray itemsArray;
-
-        try {
-            itemsArray = new JSONArray(json);
-            // Recebe o valor do Tamanho da List com os Produtos
-            numberProducts = itemsArray.length();
-
-            // Define a Quantidade de Resultados ---> Maximo = 20
-            maxResult = numberProducts < 19 ? numberProducts : 20;
-
-            for (int i = 0; i < maxResult; i++) {
-                // Pega um objeto de acordo com a Posição (Posição = Item/Produto)
-                JSONObject jsonObject = new JSONObject(itemsArray.getString(i));
-
-                try {
-                    id = Integer.parseInt(jsonObject.getString("id"));
-                    brand = jsonObject.getString("brand");
-                    name = jsonObject.getString("name");
-                    price = jsonObject.getString("price").
-                            replaceAll("[^0-9^,.]", "");
-                    currency = jsonObject.getString("currency");
-                    type = jsonObject.getString("product_type");
-                    description = jsonObject.getString("description").
-                            replaceAll("\n", "");
-                    urlImage = jsonObject.getString("image_link");
-
-                    // Normalizando as Strings Recebidas (HTML Tags ---> String)
-                    brand = Html.fromHtml(brand).toString();
-                    name = Html.fromHtml(name).toString();
-                    currency = Html.fromHtml(currency).toString();
-                    type = Html.fromHtml(type).toString();
-                    description = Html.fromHtml(description).toString();
-
-                    //Caso não tenha dados inseridos
-                    if (name.equals("null") || name.equals("")) {
-                        name = getString(R.string.empty_name);
-                    }
-                    if (price.equals("null") || price.equals("")) {
-                        price = getString(R.string.empty_price);
-                    }
-                    if (currency.equals("null") || currency.equals("")) {
-                        currency = "";
-                    }
-                    if (description.equals("null") || description.equals("")) {
-                        description = getString(R.string.empty_description);
-                    }
-                    if (urlImage.equals("null") || urlImage.equals("")) {
-                        urlImage = URL_NO_IMAGE;
-                    }
-
-                    // Intancia a Classe e Insere no Banco de Dados
-                    makeups.add(new Makeup(id, brand, name, type, price,
-                            currency, description, urlImage));
-
-                } catch (Exception e) {
-                    errorData();
-                    Log.e("RECOVERY ARRAY", "Erro ao recuperar os valores do Array " +
-                            "dos Produtos\n" + e);
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-            return makeups.isEmpty() ? null : makeups;
-
-        } catch (JSONException e) {
-            //Caso dê Algum Problema durante a criação do Array
-            errorData();
-            Log.e("NOT VALID ARRAY", "Erro no Array ou no Recebimento da String\n" + e);
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     // Mostra os Dados na Tela
-    public void showWindow(String type_search, String brand_search) {
+    public void showWindow() {
 
         String select_typeBrand = String.format("SELECT * FROM %1$s WHERE %2$s = '%3$s'" +
                         " AND %4$s = '%5$s'",
                 DataBaseHelper.TABLE_MAKEUP,
-                DataBaseHelper.TYPE_MAKEUP, type_search,
-                DataBaseHelper.BRAND_MAKEUP, brand_search);
+                DataBaseHelper.TYPE_MAKEUP, makeup.getType(),
+                DataBaseHelper.BRAND_MAKEUP, makeup.getBrand());
 
         // Limpa a Lista caso tivesse algum dado
         if (makeupListRecycler != null && makeupListRecycler.size() > 0) {
@@ -299,22 +219,21 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
         }
 
         // Obtem os Dados da Tabela no Formato de List<Makeup>
-        List<Makeup> list_cursorMakeup;
+        List<Makeup> list_cursorMakeup = serializationJson.serializationSelectMakeup(select_typeBrand);
 
-        list_cursorMakeup = cursorMakeup.selectDataBase(select_typeBrand);
-
-        if (list_cursorMakeup == null) {
-            errorData();
-        } else {
+        // Verifica se a List com o Select do Banco não é Nula ou Vazia
+        if (list_cursorMakeup != null && !list_cursorMakeup.isEmpty()) {
             // Instancia a Lista e atualiza o RecyclerView
             makeupListRecycler.addAll(list_cursorMakeup);
             recyclerResultSearch.notifyDataSetChanged();
 
-            // Remove a Animação do RecyclerView
+            // Remove a Animação do RecyclerView depois de 2,5 seg
             recyclerView.postDelayed(() -> {
                 skeletonScreen.hide();
                 title_loading.setVisibility(View.GONE);
             }, 2500);
+        } else {
+            errorData();
         }
     }
 

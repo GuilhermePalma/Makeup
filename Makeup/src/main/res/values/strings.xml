@@ -80,14 +80,14 @@
     <string name="title_noConnection">Sem Internet</string>
     <string name="title_invalidData">Dados Invalidos</string>
     <string name="title_noGps">Sem GPS</string>
-    <string name="title_noExist">Produto e/ou Marca não Encontrado</string>
+    <string name="title_noExist">Produto não Encontrado</string>
     <string name="title_noLocation">Sem Localização</string>
     <string name="title_existUser">Usuario já Existente</string>
     <string name="title_noExistUser">Usuario não Encontrado</string>
     <string name="title_errorAPI">Operação Não Relizada</string>
     <string name="title_noData">Sem Dados</string>
     <string name="error_input">Preencha os Campos</string>
-    <string name="error_noExists">Não existe nenhum Produto Cadastrado com esse Tipo e Marca</string>
+    <string name="error_noExists">Não existe nenhum Produto Cadastrado com esses Filtros</string>
     <string name="error_connection">Sem Conexão com a Internet</string>
     <string name="error_json">Erro na Leitura dos Dados, Tente Novamente</string>
     <string name="error_noGps">Sem conexão com o GPS</string>
