@@ -160,7 +160,7 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
                         serializationJsonMakeup(json_search_makeup, max_result_search);
 
                 // Verifica se Há Itens na Lista e se Realizou Inserção no Banco de Dados
-                if (makeupList != null && makeupList.isEmpty() || !insertInDataBase(makeupList)) {
+                if (makeupList == null || makeupList.isEmpty() || !insertInDataBase(makeupList)) {
                     errorData();
                 } else {
                     setUpRecyclerView();

@@ -18,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.maquiagem.CatalogFragment;
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.model.Makeup;
@@ -73,12 +74,9 @@ public class MainActivity extends AppCompatActivity {
         setUpDrawer();
         listenerNavigation();
 
-        // Criação do Fragment Inicial
-        // todo: alterar o Fragment da Activity p/ obter produtos da API
-        String select_historic = String.format("SELECT * FROM %s",
-                DataBaseHelper.TABLE_MAKEUP);
-        listMakeup = serializationData.serializationSelectMakeup(select_historic);
-        setUpListFragment(listMakeup, FragmentListMakeup.TYPE_CATALOG);
+        // Inicialização do Fragment Inicial
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
+                CatalogFragment.newInstance(this)).commit();
 
         // Define o Item que será inicialmente Selecionado
         navigationView.getMenu().findItem(OPTION_HOME_MAKEUP).setChecked(true);
@@ -140,13 +138,9 @@ public class MainActivity extends AppCompatActivity {
                 menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(true);
                 menu.getItem(POSITION_TOP_MENU_HOME).setVisible(false);
 
-                // todo: alterar p/ o Fragment de Obter os Produtos da API
-                String select_historic = String.format("SELECT * FROM %s",
-                        DataBaseHelper.TABLE_MAKEUP);
-                listMakeup = serializationData.serializationSelectMakeup(select_historic);
-
                 // Instancia o Fragment e Seleciona sua opção no Menu Lateral
-                setUpListFragment(listMakeup, FragmentListMakeup.TYPE_CATALOG);
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
+                        CatalogFragment.newInstance(this)).commit();
                 navigationView.getMenu().findItem(OPTION_HOME_MAKEUP).setChecked(true);
                 navigationView.getMenu().findItem(OPTION_HOME_MAKEUP).setCheckable(true);
 
@@ -213,11 +207,8 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case OPTION_HOME_MAKEUP:
-                    // todo: alterar o Fragment da Activity p/ obter produtos da API
-                    String select_catalog = String.format("SELECT * FROM %s",
-                            DataBaseHelper.TABLE_MAKEUP);
-                    listMakeup = serializationData.serializationSelectMakeup(select_catalog);
-                    setUpListFragment(listMakeup, FragmentListMakeup.TYPE_CATALOG);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
+                            CatalogFragment.newInstance(this)).commit();
 
                     //Altera o Icone Superior (Icone Search)
                     menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(true);
