@@ -119,6 +119,7 @@
     <string name="error_noExistUser">O Usuario %s não existe no Sistema. Realize o Cadastro !</string>
     <string name="error_api">Houve um erro na execução da solicitação. Tente Novamente</string>
     <string name="error_tableEmpty">A Tabela não Possuem nenhum Dado</string>
+    <string name="error_dataUser">Infelizmente, não foi possivel obter os Dados do Usuario</string>
 
     <!-- Layout Result-->
     <string name="title_result">Resultados da Busca</string>
@@ -183,6 +184,7 @@
 
     <!--Profile Activity-->
     <string name="toolbar_profile">Perfil</string>
+    <string name="text_formatted">&lt;b>%1$s: &lt;/b>%2$s</string>
 
     <!--Recycler ListMakeup-->
     <string name="txt_quantityFavorite">%d Favoritos</string>
