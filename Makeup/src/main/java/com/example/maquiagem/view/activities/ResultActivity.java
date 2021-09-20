@@ -19,7 +19,7 @@ import com.ethanhua.skeleton.SkeletonScreen;
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ClickRecyclerView;
 import com.example.maquiagem.controller.DataBaseHelper;
-import com.example.maquiagem.controller.RecyclerResultSearch;
+import com.example.maquiagem.controller.RecyclerListMakeup;
 import com.example.maquiagem.model.Makeup;
 import com.example.maquiagem.model.SearchInternet;
 import com.example.maquiagem.model.SerializationData;
@@ -39,7 +39,7 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
     private SerializationData serializationJson;
     private TextView title_loading;
     private RecyclerView recyclerView;
-    private RecyclerResultSearch recyclerResultSearch;
+    private RecyclerListMakeup adapterListMakeup;
     private SkeletonScreen skeletonScreen;
     private DataBaseHelper dataBaseHelper;
     private Makeup makeup;
@@ -68,7 +68,7 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
             makeup.setBrand(Objects.requireNonNull(queryBundle).getString(
                     PARAMETER_BRAND, ""));
             max_result_search = Objects.requireNonNull(queryBundle).getInt(
-                    PARAMETER_QUANTITY, SerializationData.OPT_SHOW_DEFAULT);
+                    PARAMETER_QUANTITY, SerializationData.DEFAULT_QUANTITY_RESULT);
 
             if (!makeup.getType().equals("") && !makeup.getBrand().equals("")) {
 
@@ -105,7 +105,7 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
     public void returnMain() {
         if (makeupListRecycler.size() != 0) {
             makeupListRecycler.clear();
-            recyclerResultSearch.notifyDataSetChanged();
+            adapterListMakeup.notifyDataSetChanged();
         }
         super.onBackPressed();
     }
@@ -117,8 +117,9 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
         recyclerView.setLayoutManager(layoutManagerRecycler);
 
         // Informa o Context, ListArray utilizado e a Activity que será usada
-        recyclerResultSearch = new RecyclerResultSearch(this, makeupListRecycler, this);
-        recyclerView.setAdapter(recyclerResultSearch);
+        adapterListMakeup = new RecyclerListMakeup(this,
+                null, makeupListRecycler, this);
+        recyclerView.setAdapter(adapterListMakeup);
 
         layoutManagerRecycler.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -130,7 +131,7 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
         // Animação do Loading
         title_loading.setVisibility(View.VISIBLE);
         skeletonScreen = Skeleton.bind(recyclerView)
-                .adapter(recyclerResultSearch)
+                .adapter(adapterListMakeup)
                 .load(R.layout.layout_default_item_skeleton)
                 .color(R.color.white_light)
                 .duration(1000)
@@ -225,7 +226,7 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
         if (list_cursorMakeup != null && !list_cursorMakeup.isEmpty()) {
             // Instancia a Lista e atualiza o RecyclerView
             makeupListRecycler.addAll(list_cursorMakeup);
-            recyclerResultSearch.notifyDataSetChanged();
+            adapterListMakeup.notifyDataSetChanged();
 
             // Remove a Animação do RecyclerView depois de 2,5 seg
             recyclerView.postDelayed(() -> {

@@ -40,7 +40,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="8dp"
         android:layout_marginRight="5dp"
-        tools:listitem="@layout/layout_recycler_result">
+        tools:listitem="@layout/layout_recycler_list">
 
     </androidx.recyclerview.widget.RecyclerView>
 </LinearLayout>

@@ -17,8 +17,8 @@ import java.util.List;
 
 public class SerializationData {
 
-    public static final int OPT_SHOW_DEFAULT = 1;
-    private static final int DEFAULT_QUANTITY_RESULT = 30;
+    public static final int DEFAULT_QUANTITY_RESULT = 30;
+    public static final int ALL_ITEMS_JSON = -1;
     private static final String URL_NO_IMAGE = "https://github.com/GuilhermeCallegari/Maquiagem/blob" +
             "/main/app/src/main/res/drawable/makeup_no_image.jpg";
 
@@ -29,7 +29,7 @@ public class SerializationData {
     }
 
     // Tratamento/Serialização do JSON recebido
-    public List<Makeup> serializationJsonMakeup(String json, int option_quantity) {
+    public List<Makeup> serializationJsonMakeup(String json, int quantity_show) {
 
         List<Makeup> makeupList = new ArrayList<>();
         JSONArray itemsArray;
@@ -40,10 +40,15 @@ public class SerializationData {
             int quantity_array = itemsArray.length();
             int max_result;
 
-            // Define a Quantidade de Resultados ---> Maximo = 20
-            if (option_quantity == OPT_SHOW_DEFAULT) {
+            // Define a Quantidade de Resultados
+            if (quantity_show == DEFAULT_QUANTITY_RESULT) {
+                // Pega o menor Valor entre: o valor passado e 30
                 max_result = Math.min(quantity_array, DEFAULT_QUANTITY_RESULT);
+            } else if (quantity_show == ALL_ITEMS_JSON) {
+                // Obtem todos os Itens do Array
+                max_result = quantity_array;
             } else {
+                // Obtem o Valor Informado
                 max_result = quantity_array;
             }
 
@@ -52,7 +57,6 @@ public class SerializationData {
                 JSONObject jsonObject = new JSONObject(itemsArray.getString(i));
 
                 try {
-
                     Makeup makeupLoop = new Makeup();
 
                     // Obtem os Dados do JSON, atravez do nome dos campos
@@ -118,7 +122,7 @@ public class SerializationData {
         }
     }
 
-    // Tratamento/Serialização de Dados do Banco Local
+    // Tratamento/Serialização de Dados do Banco Local (SQLite)
     public List<Makeup> serializationSelectMakeup(String select) {
 
         DataBaseHelper database = new DataBaseHelper(context);
@@ -166,4 +170,5 @@ public class SerializationData {
         return list_resultSelect.isEmpty() ? null : list_resultSelect;
     }
 
+    // todo: Implementar serialização da API_Local
 }

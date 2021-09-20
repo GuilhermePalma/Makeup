@@ -118,7 +118,7 @@
     <string name="error_existUser">O Usuario %s já existe no Sistema. Realize o Login !</string>
     <string name="error_noExistUser">O Usuario %s não existe no Sistema. Realize o Cadastro !</string>
     <string name="error_api">Houve um erro na execução da solicitação. Tente Novamente</string>
-    <string name="error_tableEmpty">A Tabela não Possuem nenhum Dado</string>
+    <string name="error_tableEmpty">Não há registros com os dados Solicitados</string>
     <string name="error_dataUser">Infelizmente, não foi possivel obter os Dados do Usuario</string>
 
     <!-- Layout Result-->
@@ -193,8 +193,8 @@
     <string name="title_favoriteList">Minhas Makes</string>
     <string name="title_historicList">Maquiagens Buscadas</string>
     <string name="title_moreLikedList">As mais Queridinhas</string>
-    <string name="subtitlte_favoriteList">Confira as suas maquiagens Favoritas</string>
-    <string name="subtitlte_historicList">Confira as suas buscas de Maquiagens</string>
-    <string name="subtitlte_moreLikedList">Confira as maquiagens Favoritas dos Usuarios</string>
+    <string name="subtitle_favoriteList">Confira as suas maquiagens Favoritas</string>
+    <string name="subtitle_historicList">Confira as suas buscas de Maquiagens</string>
+    <string name="subtitle_moreLikedList">Confira as maquiagens Favoritas dos Usuarios</string>
 
 </resources>

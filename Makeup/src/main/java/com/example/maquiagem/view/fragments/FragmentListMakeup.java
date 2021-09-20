@@ -23,6 +23,7 @@ import java.util.List;
 
 public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
 
+    public static final String TYPE_CATALOG = "catalog";
     public static final String TYPE_FAVORITE = "favorite";
     public static final String TYPE_MORE_LIKED = "more_search";
     public static final String TYPE_HISTORIC = "historic";
@@ -110,19 +111,23 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
         switch (type_fragment) {
             case TYPE_FAVORITE:
                 header_title.setText(R.string.title_favoriteList);
-                header_subtitle.setText(R.string.subtitlte_favoriteList);
+                header_subtitle.setText(R.string.subtitle_favoriteList);
                 break;
 
             case TYPE_HISTORIC:
                 header_title.setText(R.string.title_historicList);
-                header_subtitle.setText(R.string.subtitlte_historicList);
+                header_subtitle.setText(R.string.subtitle_historicList);
                 break;
 
             case TYPE_MORE_LIKED:
                 header_title.setText(R.string.title_moreLikedList);
-                header_subtitle.setText(R.string.subtitlte_moreLikedList);
+                header_subtitle.setText(R.string.subtitle_moreLikedList);
                 break;
 
+            case TYPE_CATALOG:
+                header_title.setText(R.string.txt_titleCatalog);
+                header_subtitle.setText(R.string.txt_subtitleCatalog);
+                break;
             default:
                 break;
         }
