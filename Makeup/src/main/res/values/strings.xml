@@ -79,7 +79,7 @@
     <!--Fragment Catalog-->
     <string name="txt_titleCatalog">Olá, Seja Bem-Vindo(a)</string>
     <string name="txt_subtitleCatalog">Veja alguns de nossos Produtos !</string>
-    <string-array name="array_chips">
+    <string-array name="array_type">
         <item>Blush</item>
         <item>Bronzer</item>
         <item>Eyebrow</item>
@@ -178,6 +178,12 @@
 
     <!--Configuration Activity-->
     <string name="toolbar_configuration">Configurações</string>
+    <string name="dialog_idiom">Sua Opção de Idioma foi Salva. Entretanto, no momento ainda não
+        Traduzimos o Aplicativo, aguarde que em breve será disponibilizada essa Linguagem</string>
+    <string name="title_changeIdiom">Idioma Alterado com Sucesso</string>
+    <string name="text_changeIdiom">Alterar Idioma</string>
+    <string name="text_changeTheme">Alterar Tema</string>
+    <string name="text_darkTheme">Tema Escuro</string>
 
     <!--Data Aplication Activity-->
     <string name="toolbar_dataApplication">Dados do Uso</string>

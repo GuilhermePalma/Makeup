@@ -2,6 +2,7 @@ package com.example.maquiagem.model;
 
 public class User {
 
+    // todo: adicionar mais itens da classe User
     private String name;
     private String nickname;
     private String email;
