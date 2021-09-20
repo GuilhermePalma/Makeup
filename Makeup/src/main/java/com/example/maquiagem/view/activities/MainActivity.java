@@ -7,8 +7,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -377,15 +375,13 @@ public class MainActivity extends AppCompatActivity {
      */
     private void asyncTask(int option_search) {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
+
+        // Carrega o Circular Progress Indicator
+        layout_loading.setVisibility(View.VISIBLE);
+        frame_fragment.setVisibility(View.GONE);
 
         // Executa as Operações em Backgorund
         executorService.execute(() -> {
-
-            // Carrega o Circular Progress Indicator
-            layout_loading.setVisibility(View.VISIBLE);
-            frame_fragment.setVisibility(View.GONE);
-
             // Obtem o JSON e Quantidade de Resultados
             String json;
             int quantity_result;
@@ -410,8 +406,8 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
 
-            // Apreseenta o Resultado Background
-            handler.post(() -> {
+            // Apresenta o Resultado Background
+            runOnUiThread(() -> {
                 // Caso o Json seja Invalido ou Vazio
                 if (json == null || json.equals("")) {
                     showError();
@@ -420,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     // Serializa O JSON ---> Retorno = List<Makeup> ou null
-                    listMakeup.addAll(new SerializationData(this).
+                    listMakeup.addAll(new SerializationData(getApplicationContext()).
                             serializationJsonMakeup(json, quantity_result));
 
                     if (listMakeup == null || listMakeup.isEmpty()) {
