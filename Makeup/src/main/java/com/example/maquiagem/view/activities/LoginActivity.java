@@ -43,10 +43,8 @@ public class LoginActivity extends AppCompatActivity {
 
         instanceItens();
 
-        btn_singUp.setOnClickListener(v -> {
-            startActivity(new Intent(LoginActivity.this, SingUpActivity.class));
-            finish();
-        });
+        btn_singUp.setOnClickListener(v -> startActivity(new Intent(
+                LoginActivity.this, SingUpActivity.class)));
 
         btn_login.setOnClickListener(v -> userLogin());
     }
@@ -79,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                         checkBox_rememberUser.isChecked()).apply();
 
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                finish();
+                finishAffinity();
             } else {
                 // Usuario não Existe na API
                 dialog.message(getString(R.string.title_noExistUser),

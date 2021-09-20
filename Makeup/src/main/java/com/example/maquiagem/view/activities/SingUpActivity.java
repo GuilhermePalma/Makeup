@@ -113,7 +113,7 @@ public class SingUpActivity extends AppCompatActivity {
                             .apply();
 
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finish();
+                    finishAffinity();
                 } else {
                     // Não foi Possivel inserir na API o Usuario
                     dialog.message(getString(R.string.title_errorAPI),
