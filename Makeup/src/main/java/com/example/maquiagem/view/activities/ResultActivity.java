@@ -72,6 +72,7 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
 
             if (!makeup.getType().equals("") && !makeup.getBrand().equals("")) {
 
+                dataBaseHelper = new DataBaseHelper(this);
                 // Busca e Exibe os Produtos se existirem no DB Local. Se não, Pesquisa na API
                 if (dataBaseHelper.existsInMakeup(makeup.getType(), makeup.getBrand())) {
                     setUpRecyclerView();
@@ -95,7 +96,6 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
         makeup = new Makeup();
         serializationJson = new SerializationData(this);
         makeupListRecycler = new ArrayList<>();
-        dataBaseHelper = new DataBaseHelper(this);
         dialogs = new PersonAlertDialogs(this);
         title_loading = findViewById(R.id.title_loadingMakeup);
         recyclerView = findViewById(R.id.recyclerView);
@@ -189,7 +189,7 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
 
         // Verifica se o Array é null ou Vazio = Evita Exceptions
         if (makeups != null && !makeups.isEmpty()) {
-
+            dataBaseHelper = new DataBaseHelper(this);
             // Insere cada item do Array no DB
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 makeups.forEach(makeup -> dataBaseHelper.insertMakeup(makeup));
@@ -208,8 +208,8 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
     // Mostra os Dados na Tela
     public void showWindow() {
 
-        String select_typeBrand = String.format("SELECT * FROM %1$s WHERE %2$s = '%3$s'" +
-                        " AND %4$s = '%5$s'",
+        String select_typeBrand = String.format("SELECT * FROM %1$s WHERE %2$s='%3$s'" +
+                        " AND %4$s='%5$s'",
                 DataBaseHelper.TABLE_MAKEUP,
                 DataBaseHelper.TYPE_MAKEUP, makeup.getType(),
                 DataBaseHelper.BRAND_MAKEUP, makeup.getBrand());
@@ -264,7 +264,9 @@ public class ResultActivity extends AppCompatActivity implements ClickRecyclerVi
     @Override
     public void onClickFavorite(Makeup makeup_click) {
         int indexChangedItem = makeupListRecycler.indexOf(makeup_click);
+
         // Atualiza o Item no Banco de Dados e no List do Recycler View
+        dataBaseHelper = new DataBaseHelper(this);
         makeup_click.setFavorite(!makeup_click.isFavorite());
         dataBaseHelper.updateFavoriteMakeup(makeup_click);
         makeupListRecycler.set(indexChangedItem, makeup_click);

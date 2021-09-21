@@ -70,6 +70,7 @@ public class SerializationData {
                     makeupLoop.setDescription(jsonObject.getString("description").
                             replaceAll("\n", "&lt;br />"));
                     makeupLoop.setUrlImage(jsonObject.getString("image_link"));
+                    makeupLoop.setFavorite(false);
 
                     // Normaliza as Strings Recebidas (HTML Tags ---> String)
                     makeupLoop.setBrand(Html.fromHtml(makeupLoop.getBrand()).toString());
@@ -132,22 +133,22 @@ public class SerializationData {
         // Caso haja posição para o Cursor
         if (cursor.moveToFirst()) {
 
-            String brand, name, price, currency, type, description, urlImage, stringFavorite;
-            int id;
+            String brand, name, price, currency, type, description, urlImage;
+            int id, intFavorite;
             boolean isFavorite;
 
             // Pega os dados enquanto o Cursor tiver proxima posição
             do {
-                id = cursor.getInt(0);
-                brand = cursor.getString(1);
-                name = cursor.getString(2);
-                type = cursor.getString(3);
-                price = cursor.getString(4);
-                currency = cursor.getString(5);
-                description = cursor.getString(6);
-                urlImage = cursor.getString(7);
-                stringFavorite = cursor.getString(8);
-                isFavorite = stringFavorite.equals("true");
+                id = cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseHelper.ID_MAKEUP));
+                brand = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseHelper.BRAND_MAKEUP));
+                name = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseHelper.NAME_MAKEUP));
+                type = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseHelper.TYPE_MAKEUP));
+                price = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseHelper.PRICE_MAKEUP));
+                currency = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseHelper.CURRENCY_MAKEUP));
+                description = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseHelper.DESCRIPTION_MAKEUP));
+                urlImage = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseHelper.URL_IMAGE_MAKEUP));
+                intFavorite = cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseHelper.IS_FAVORITE_MAKEUP));
+                isFavorite = intFavorite == 1;
 
                 Makeup makeup = new Makeup(id, brand, name, type, price, currency, description,
                         urlImage);
@@ -162,9 +163,10 @@ public class SerializationData {
             // Não possui dados na Tabela
             Log.e("EMPTY DATABASE", "Não foi encontrado nenhum " +
                     "dado no Banco de Dados\n" + cursor.toString());
+            return null;
         }
 
-        if (cursor != null && !cursor.isClosed()) cursor.close();
+        if (cursor != null) cursor.close();
         if (database != null) database.close();
 
         return list_resultSelect.isEmpty() ? null : list_resultSelect;

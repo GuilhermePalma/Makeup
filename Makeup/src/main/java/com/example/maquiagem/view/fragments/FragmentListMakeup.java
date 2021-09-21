@@ -43,7 +43,6 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
     // Contrutor passando a List (RecyclerView) e Context (DataBase)
     public FragmentListMakeup(Context context, List<Makeup> makeups) {
         this.makeupList = makeups;
-        this.database = new DataBaseHelper(context);
     }
 
     // Intancia do Fragment ---> Inserindo o Valor Instanciado do Titulo, Context e List Usada
@@ -67,7 +66,6 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_list_makeup, container, false);
 
         context = view.getContext();
@@ -89,6 +87,7 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
         setUpHeader();
 
         // Define o adapter (Classe que configura o RecyclerView) do RecyclerView
+        //recyclerListMakeup = new RecyclerListMakeup(context, header_view, makeupList, this);
         recyclerListMakeup = new RecyclerListMakeup(context, header_view, makeupList, this);
         recyclerView.setAdapter(recyclerListMakeup);
 
@@ -151,17 +150,24 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
 
     @Override
     public void onClickFavorite(Makeup makeup_click) {
+        // Obtem a Posição do Item na Lista
         int indexItem = makeupList.indexOf(makeup_click);
-
-        // Atualiza o Estado de'Favorito' do Item e atualiza o Banco de Dados
         makeup_click.setFavorite(!makeup_click.isFavorite());
-        database.updateFavoriteMakeup(makeup_click);
+        database = new DataBaseHelper(context);
+
+        if (type_fragment.equals(TYPE_CATALOG)) {
+            database.insertMakeup(makeup_click);
+        } else {
+            database.updateFavoriteMakeup(makeup_click);
+        }
 
         if (type_fragment.equals(TYPE_FAVORITE)) {
             makeupList.remove(indexItem);
         } else {
             makeupList.set(indexItem, makeup_click);
         }
+
+        database.close();
         // Atualiza o Recycler com a Nova List
         recyclerListMakeup.notifyDataSetChanged();
     }

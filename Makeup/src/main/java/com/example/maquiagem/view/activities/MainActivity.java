@@ -202,6 +202,9 @@ public class MainActivity extends AppCompatActivity {
         // Trata o Clique nos Itens
         navigationView.setNavigationItemSelectedListener(item -> {
 
+            // Reinica a List Makeup
+            listMakeup.clear();
+
             int id_item = item.getItemId();
 
             // Caso seja o Item de Localização ---> Valida Conexão com Internet e GPS
@@ -244,10 +247,10 @@ public class MainActivity extends AppCompatActivity {
                 case OPTION_FAVORITE_MAKEUPS:
                     // todo: Implementar API_LOCAL
                     // Verificar a Internet: Se disponivel acessa api_local se não obtem do BD
-                    String select_favorite = String.format("SELECT * FROM %1$s WHERE %2$s='%3$s'",
-                            DataBaseHelper.TABLE_MAKEUP, DataBaseHelper.IS_FAVORITE_MAKEUP, "true");
+                    String select_favorite = String.format("SELECT * FROM %1$s WHERE %2$s=1",
+                            DataBaseHelper.TABLE_MAKEUP, DataBaseHelper.IS_FAVORITE_MAKEUP);
 
-                    listMakeup = serializationData.serializationSelectMakeup(select_favorite);
+                    listMakeup.addAll(serializationData.serializationSelectMakeup(select_favorite));
                     setUpListFragment(listMakeup, FragmentListMakeup.TYPE_FAVORITE);
                     break;
 

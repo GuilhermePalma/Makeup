@@ -67,7 +67,9 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerListMakeup.
         // Caso o Layout Superior Exista, não configura um Item do RecyclerView
         if (header != null && isHeader(position)) return;
 
-        Makeup makeup = makeupList.get(position);
+        // Subtrai 1 da Posição por conta do Header
+        int position_real = position - 1;
+        Makeup makeup = makeupList.get(position_real);
 
         String name = makeup.getName();
         String name_formatted;
