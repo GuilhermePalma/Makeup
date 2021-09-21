@@ -121,6 +121,12 @@
     <string name="error_tableEmpty">Não há registros com os dados Solicitados</string>
     <string name="error_dataUser">Infelizmente, não foi possivel obter os Dados do Usuario</string>
 
+    <!-- Validação dos Formularios -->
+    <string name="validation_ok">Campo Validado</string>
+    <string name="validation_empty">Campo %s Obrigatorio.</string>
+    <string name="validation_length">%1$s deve ter entre %2$s e %3$s Caracteres</string>
+    <string name="validation_noFormmat">%1$s deve ter conter apenas %2$s</string>
+
     <!-- Layout Result-->
     <string name="title_result">Resultados da Busca</string>
     <string name="return_search">Fazer outra Busca</string>
@@ -190,7 +196,8 @@
 
     <!--Profile Activity-->
     <string name="toolbar_profile">Perfil</string>
-    <string name="text_formatted">&lt;b>%1$s: &lt;/b>%2$s</string>
+    <string name="text_change">Alterar</string>
+    <string name="text_abort">Cancelar</string>
 
     <!--Recycler ListMakeup-->
     <string name="txt_quantityFavorite">%d Favoritos</string>
