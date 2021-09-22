@@ -10,12 +10,12 @@ jobs:
     
       # Decodifica nosso keyStrore de Base64
       - name: Decode Keystore
-        env:
-            ENCODED_STRING: ${{ secrets.KEYSTORE }}
-        run: |
-            TMP_KEYSTORE_FILE_PATH="${RUNNER_TEMP}"/keystore
-            mkdir "${TMP_KEYSTORE_FILE_PATH}"
-            echo $ENCODED_STRING | base64 -di > "${TMP_KEYSTORE_FILE_PATH}"/your_keystore_file.jks
+        id: decode_keystore
+        uses: timheuer/base64-to-file@v1.1
+        with:
+          fileName: 'your_keystore.jks'
+          fileDir: 'keystore'
+          encodedString: ${{secrets.KEYSTORE}}
 
       - uses: actions/checkout@v2
       - name: set up JDK 1.8
