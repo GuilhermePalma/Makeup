@@ -184,11 +184,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // Altera o valor de ser ou não favorito a maquiagem
         values.put(IS_FAVORITE_MAKEUP, makeup.isFavorite() ? 1 : 0);
 
-        String whereClause = String.format("%1$s='%2$s' AND %3$s='%4$s' AND %5$s='%6$s'",
-                NAME_MAKEUP, makeup.getName(), BRAND_MAKEUP, makeup.getBrand(),
-                TYPE_MAKEUP, makeup.getType());
+        String whereClause = String.format("%1$s= ? AND %2$s= ? AND %3$s= ?",
+                NAME_MAKEUP, BRAND_MAKEUP, TYPE_MAKEUP);
+        String[] valuesWhere = new String[]{
+                makeup.getName(), makeup.getBrand(), makeup.getType()
+        };
 
-        database.update(TABLE_MAKEUP, values, whereClause, null);
+        database.update(TABLE_MAKEUP, values, whereClause, valuesWhere);
     }
 
     // Insere um Usuario no Banco de Dados
@@ -207,9 +209,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public boolean existsInMakeup(String type, String brand) {
         SQLiteDatabase database = this.getReadableDatabase();
 
+        String whereClause = String.format("%1$s= ? AND %2$s= ?", TYPE_MAKEUP, BRAND_MAKEUP);
+
         // Conta cada item com as variavesis recebidas
         int amountRecords = (int) DatabaseUtils.queryNumEntries(database, TABLE_MAKEUP,
-                TYPE_MAKEUP + "='" + type + "' AND " + BRAND_MAKEUP + "='" + brand + "'");
+                whereClause, new String[]{type, brand});
 
         // Caso tenha 1 ou mais registros ---> True
         return amountRecords != 0;

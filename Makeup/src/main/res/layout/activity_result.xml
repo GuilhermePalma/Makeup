@@ -22,25 +22,35 @@
         app:icon="@drawable/ic_return_home" />
 
     <TextView
-        android:id="@+id/title_loadingMakeup"
+        android:id="@+id/txt_titleLoadingSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
         android:fontFamily="@font/ubuntu_bold"
         android:gravity="center"
         android:text="@string/loading_text"
         android:textSize="20sp"
         android:visibility="gone" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progress_loadingSearch"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="5dp"
-        tools:listitem="@layout/layout_recycler_list">
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="10dp"
+        android:foregroundGravity="center"
+        android:indeterminate="true"
+        android:visibility="gone" />
 
-    </androidx.recyclerview.widget.RecyclerView>
+    <FrameLayout
+        android:id="@+id/frame_forFragmentSearch"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" />
+
 </LinearLayout>
