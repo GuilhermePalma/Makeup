@@ -22,32 +22,85 @@
             android:text="@string/app_name"
             android:textSize="25sp" />
 
-        <ImageView
-            android:id="@+id/image_makeup"
-            android:layout_width="290dp"
-            android:layout_height="186dp"
-            android:layout_marginTop="30dp"
-            android:contentDescription="@string/tip_image"
-            android:foregroundGravity="center_vertical|center|center_horizontal"
-            app:srcCompat="@drawable/makeup" />
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="20dp"
+            android:hint="@string/hint_brand">
 
-        <com.example.maquiagem.model.CustomEditText
-            android:id="@+id/edit_type"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginTop="15dp"
-            android:ems="10"
-            android:hint="@string/edit_type"
-            android:inputType="text" />
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/autoComplete_brand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
 
-        <com.example.maquiagem.model.CustomEditText
-            android:id="@+id/edit_brand"
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:hint="@string/hint_type">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/autoComplete_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputLayout_category"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:hint="@string/hint_category">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/autoComplete_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/button_showTags"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="15dp"
-            android:ems="10"
-            android:hint="@string/edit_marca"
-            android:inputType="text" />
+            android:drawableEnd="@drawable/ic_keyboard_arrow_down"
+            android:drawableRight="@drawable/ic_keyboard_arrow_down"
+            android:text="@string/text_showTags" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chips_tags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:foregroundGravity="center"
+            android:visibility="gone">
+
+        </com.google.android.material.chip.ChipGroup>
+
 
         <Button
             android:id="@+id/btn_search"
@@ -61,6 +114,7 @@
             android:layout_marginBottom="25dp"
             android:text="@string/btn_search"
             android:textColorHighlight="#FFFFFF" />
+
     </LinearLayout>
 
 </ScrollView>

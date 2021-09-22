@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Instancia o Fragment e Seleciona sua opção no Menu Lateral
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
-                        new FragmentSearchMakeup(this)).commit();
+                        new FragmentSearchMakeup(this, this)).commit();
                 navigationView.getMenu().findItem(OPTION_SEARCH_MAKEUP).setChecked(true);
                 navigationView.getMenu().findItem(OPTION_SEARCH_MAKEUP).setCheckable(true);
 
@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
 
                 case OPTION_SEARCH_MAKEUP:
                     getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
-                            new FragmentSearchMakeup(getApplicationContext())).commit();
+                            new FragmentSearchMakeup(this, this)).commit();
 
                     //Altera o Icone Superior (Icone Home)
                     menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(false);

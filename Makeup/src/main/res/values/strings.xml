@@ -69,16 +69,98 @@
     <string name="open_menu">Abrir o Menu Lateral</string>
     <string name="close_menu">Fechar o Menu Lateral</string>
 
-    <!-- Activity MainActivity-->
-    <string name="edit_type">Tipo</string>
-    <string name="edit_marca">Marca</string>
+    <!-- Fragment SearchMakeup-->
+    <string name="hint_brand">Marca</string>
+    <string name="hint_type">Tipo de Maquiagem</string>
+    <string name="hint_category">Formato do Produto</string>
     <string name="tip_image">Imagem de Maquiagem</string>
     <string name="btn_search">Pesquisar</string>
     <string name="string_empty"> </string>
-
-    <!--Fragment Catalog-->
-    <string name="txt_titleCatalog">Olá, Seja Bem-Vindo(a)</string>
-    <string name="txt_subtitleCatalog">Veja alguns de nossos Produtos !</string>
+    <string name="text_showTags">Mostrar Tags</string>
+    <string-array name="array_tags">
+        <item>Canadian</item>
+        <item>CertClean</item>
+        <item>Chemical Free</item>
+        <item>Dairy Free</item>
+        <item>EWG Verified</item>
+        <item>EcoCert</item>
+        <item>Fair Trade</item>
+        <item>Gluten Free</item>
+        <item>No Talc</item>
+        <item>Hypoallergenic</item>
+        <item>Natural</item>
+        <item>Non-GMO</item>
+        <item>Organic</item>
+        <item>Vegan</item>
+        <item>Peanut Free Product</item>
+        <item>Sugar Free</item>
+        <item>USDA Organic</item>
+        <item>alcohol free</item>
+        <item>cruelty free</item>
+        <item>oil free</item>
+        <item>purpicks</item>
+        <item>silicone free</item>
+        <item>water free</item>
+    </string-array>
+    <string-array name="array_brand">
+        <item>almay</item>
+        <item>alva</item>
+        <item>anna sui</item>
+        <item>annabelle</item>
+        <item>benefit</item>
+        <item>boosh</item>
+        <item>burt\'s bees</item>
+        <item>butter london</item>
+        <item>c\'est moi</item>
+        <item>cargo cosmetics</item>
+        <item>china glaze</item>
+        <item>clinique</item>
+        <item>coastal classic creation</item>
+        <item>colourpop</item>
+        <item>covergirl</item>
+        <item>dalish</item>
+        <item>deciem</item>
+        <item>dior</item>
+        <item>dr. hauschka</item>
+        <item>e.l.f.</item>
+        <item>essie</item>
+        <item>fenty</item>
+        <item>glossier</item>
+        <item>green people</item>
+        <item>iman</item>
+        <item>l\'oreal</item>
+        <item>lotus cosmetics usa</item>
+        <item>maia\'s mineral galaxy</item>
+        <item>marcelle</item>
+        <item>marienatie</item>
+        <item>maybelline</item>
+        <item>milani</item>
+        <item>mineral fusion</item>
+        <item>misa</item>
+        <item>mistura</item>
+        <item>moov</item>
+        <item>nudus</item>
+        <item>nyx</item>
+        <item>orly</item>
+        <item>pacifica</item>
+        <item>penny lane organics</item>
+        <item>physicians formula</item>
+        <item>piggy paint</item>
+        <item>pure anada</item>
+        <item>rejuva minerals</item>
+        <item>revlon</item>
+        <item>sally b\'s skin yummies</item>
+        <item>salon perfect</item>
+        <item>sante</item>
+        <item>sinful colours</item>
+        <item>smashbox</item>
+        <item>stila</item>
+        <item>suncoat</item>
+        <item>w3llpeople</item>
+        <item>wet n wild</item>
+        <item>zorah</item>
+        <item>zorah biocosmetiques</item>
+    </string-array>
     <string-array name="array_type">
         <item>Blush</item>
         <item>Bronzer</item>
@@ -91,6 +173,50 @@
         <item>Mascara</item>
         <item>Nail polish</item>
     </string-array>
+    <string-array name="array_categoryBlush">
+        <item>Powder</item>
+        <item>Cream</item>
+    </string-array>
+    <string-array name="array_categoryBronzer">
+        <item>Powder</item>
+    </string-array>
+    <string-array name="array_categoryEyebrow">
+        <item>Pencil</item>
+    </string-array>
+    <string-array name="array_categoryEyeliner">
+        <item>Liquid</item>
+        <item>Pencil</item>
+        <item>Gel</item>
+        <item>Cream</item>
+    </string-array>
+    <string-array name="array_categoryEyeshadow">
+        <item>Palette</item>
+        <item>Pencil</item>
+        <item>Cream</item>
+    </string-array>
+    <string-array name="array_categoryFoundation">
+        <item>Concealer</item>
+        <item>Liquid</item>
+        <item>Contour</item>
+        <item>Bb cc</item>
+        <item>Cream</item>
+        <item>Mineral</item>
+        <item>Powder</item>
+        <item>Highlighter</item>
+    </string-array>
+    <string-array name="array_categoryLipLiner">
+        <item>Pencil</item>
+    </string-array>
+    <string-array name="array_categoryLipstick">
+        <item>Lipstick</item>
+        <item>Lip gloss</item>
+        <item>Liquid</item>
+        <item>Lip stain</item>
+    </string-array>
+
+    <!--Fragment Catalog-->
+    <string name="txt_titleCatalog">Olá, Seja Bem-Vindo(a)</string>
+    <string name="txt_subtitleCatalog">Veja alguns de nossos Produtos !</string>
 
     <!-- Mensagens de Erro -->
     <string name="title_noConnection">Sem Internet</string>
@@ -105,7 +231,6 @@
     <string name="error_input">Preencha os Campos</string>
     <string name="error_noExists">Não existe nenhum Produto Cadastrado com esses Filtros</string>
     <string name="error_connection">Sem Conexão com a Internet</string>
-    <string name="error_json">Erro na Leitura dos Dados, Tente Novamente</string>
     <string name="error_noGps">Sem conexão com o GPS</string>
     <string name="error_location">Erro ao Recuperar a Ultima Localização</string>
     <string name="error_recoveryData">Nenhum dado foi informado para a Busca</string>
@@ -120,6 +245,10 @@
     <string name="error_api">Houve um erro na execução da solicitação. Tente Novamente</string>
     <string name="error_tableEmpty">Não há registros com os dados Solicitados</string>
     <string name="error_dataUser">Infelizmente, não foi possivel obter os Dados do Usuario</string>
+    <string name="error_category">Categorias só estarão disponiveis após selecionar um
+        Tipo de Produto. &lt;br />&lt;br /> * Mascara e Nail Polish não possuem categorias</string>
+    <string name="error_notArgsSearch">É necessario ao menos UMA opção escolhida para realizar
+        a busca</string>
 
     <!-- Validação dos Formularios -->
     <string name="validation_ok">Campo Validado</string>
