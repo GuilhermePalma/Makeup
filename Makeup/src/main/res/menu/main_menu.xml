@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/search_option"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="always"
+        android:iconTint="@color/white"
+        android:title="@string/btn_search"
+        android:visible="true"
+        tools:targetApi="o" />
+
+    <item
+        android:id="@+id/topMenu_home"
+        android:icon="@drawable/ic_home"
+        app:showAsAction="always"
+        android:iconTint="@color/white"
+        android:title="@string/option_catalog"
+        android:visible="false"
+        tools:targetApi="o"
+        tools:ignore="AlwaysShowAction" />
+</menu>

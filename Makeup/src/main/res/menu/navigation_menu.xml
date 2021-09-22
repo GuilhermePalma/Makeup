@@ -4,6 +4,9 @@
     tools:showIn="navigation_view">
 
     <item
+        android:id="@+id/option_homeMakeup"
+        android:title="@string/option_catalog" />
+    <item
         android:id="@+id/option_profile"
         android:title="@string/option_profile" />
     <item

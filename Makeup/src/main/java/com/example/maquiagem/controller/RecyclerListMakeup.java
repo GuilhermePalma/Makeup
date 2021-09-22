@@ -28,7 +28,7 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerListMakeup.
     private final int NUMBER_ITEM = 1;
     private final List<Makeup> makeupList;
     // Context e List/Array (mostar/armazenar os dados) e ClickRecyclerView (Trata os Cliques)
-    private View header;
+    private final View header;
 
     // Contrutor da Calsse
     public RecyclerListMakeup(Context context, View header,
@@ -48,11 +48,7 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerListMakeup.
     @NonNull
     @Override
     public ViewHolderListMakeup onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        if (viewType == NUMBER_HEADER) {
-            if (header == null) {
-                header = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.layout_header_list, viewGroup, false);
-            }
+        if (viewType == NUMBER_HEADER && header != null) {
             // Infla o Layout do Header
             return new ViewHolderListMakeup(header);
         } else {
@@ -68,16 +64,15 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerListMakeup.
     @Override
     public void onBindViewHolder(@NonNull ViewHolderListMakeup holder, int position) {
 
-        // Layout Superior
-        if (isHeader(position)) {
-            return;
-        }
+        // Caso o Layout Superior Exista, não configura um Item do RecyclerView
+        if (header != null && isHeader(position)) return;
 
-        Makeup makeup = makeupList.get(position);
+        // Subtrai 1 da Posição por conta do Header
+        int position_real = position - 1;
+        Makeup makeup = makeupList.get(position_real);
 
         String name = makeup.getName();
         String name_formatted;
-
 
         // Formatação no Tamanho dos Nomes
         if (position % 5 == 0) {
@@ -96,8 +91,7 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerListMakeup.
             }
         }
 
-
-        // Mostra os Dados na Tela
+        // Exibe os Dados na Tela
         holder.name.setText(name_formatted);
         holder.currency_price.setText(Html.fromHtml(context.getString(R.string.formatted_currencyPrice,
                 makeup.getCurrency(), makeup.getPrice())));
@@ -131,9 +125,7 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerListMakeup.
     public int getItemCount() {
         if (makeupList != null && !makeupList.isEmpty()) {
             return makeupList.size();
-        } else {
-            return 0;
-        }
+        } else return 0;
     }
 
     public boolean isHeader(int positionItem) {
