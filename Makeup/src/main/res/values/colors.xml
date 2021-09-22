@@ -11,6 +11,7 @@
     <!-- Cores Base-->
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
+    <color name="snow">#FFFFFAFA</color>
 
 
     <!-- Variantes das Cores-->

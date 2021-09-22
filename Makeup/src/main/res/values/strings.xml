@@ -2,49 +2,285 @@
 
     <string name="app_name">API - Maquiagem</string>
 
-    <!-- Activity MainActivity-->
-    <string name="edit_type">Tipo</string>
-    <string name="edit_marca">Marca</string>
+    <!--Splash Screen-->
+    <string name="logo_description">Logo Maquiagem</string>
+
+    <!--Slide Screen-->
+    <string name="dot_code">&#8226;</string>
+    <string name="btn_skip">Pular</string>
+    <string name="btn_next">Proxima</string>
+    <string name="btn_back">Anterior</string>
+    <string name="title_api">Maquiagens Ilimitadas</string>
+    <string name="descriptionImg_api">Imagem de Cosmeticos</string>
+    <string name="description_api">Buscas em um Banco de Dados, filtrando com diversas
+        Caracteristicas</string>
+    <string name="title_idioms">Varios Idiomas</string>
+    <string name="descriptionImg_idioms">Imagem de Caracter Chines e outro Ocidental</string>
+    <string name="description_idioms">4 Idiomas Disponiveis: Espanhol, Francês, Ingles e
+        Português (BR)</string>
+    <string name="title_backup">Tudo Salvo !</string>
+    <string name="descriptionImg_backup">Imagem de uma Nuvem</string>
+    <string name="description_backup">Os Dados do Usuario e Produtos Favoritados salvos
+        online</string>
+
+    <!--Login Activity-->
+    <string name="title_login"><u>Faça seu Login</u></string>
+    <string name="hint_nickname">Nome de Usuario</string>
+    <string name="hint_password">Senha</string>
+    <string name="remember_user">Lembrar Usuario e Senha</string>
+    <string name="btn_login">Entrar</string>
+    <string name="text_noRegister">Não possui uma Conta ?</string>
+    <string name="btn_clickHere">Cadastre-se</string>
+
+    <!--SingUp Activity-->
+    <string name="title_singup">Olá, Tudo bem ?</string>
+    <string name="description_singup">Faça seu Cadastro para acessar o Sistema</string>
+    <string name="btn_goLogin">Já Possuo Conta</string>
+    <string name="label_personal"><u>Sobre o Usuario</u></string>
+    <string name="hint_name">Nome e Sobrenome</string>
+    <string name="hint_idioms">Idioma</string>
+    <string name="label_access"><u>Dados de Acesso</u></string>
+    <string name="hint_email">Email</string>
+    <string name="hint_confirmPassword">Confirmar Senha</string>
+    <string name="btn_singup">Cadastrar</string>
+    <string-array name="array_idioms">
+        <item>Português (BR)</item>
+        <item>Ingles</item>
+        <item>Espanhol</item>
+        <item>Frances</item>
+    </string-array>
+
+    <!--Strings do Menu Lateral-->
+    <string name="option_profile">Seu Perfil</string>
+    <string name="option_exit">Sair</string>
+    <string name="option_titleMakeup">Maquiagens</string>
+    <string name="option_searchMakeup">Pesquisar Maquiagem</string>
+    <string name="option_allMakeup">Historico de Buscas</string>
+    <string name="option_favoriteMakeup">Minhas Favoritas</string>
+    <string name="option_catalog">Inicio</string>
+    <string name="option_popularMakeup">Maquiagens mais Favoritadas</string>
+    <string name="option_titleLocation">Localização</string>
+    <string name="option_location">Localização Atual</string>
+    <string name="option_titleResources">Recursos</string>
+    <string name="option_sensorProximity">Sensor de Proximidade</string>
+    <string name="option_titleConfig">Dados e Pesonalização</string>
+    <string name="option_config">Configurações</string>
+    <string name="option_dataUse">Dados de Uso</string>
+    <string name="open_menu">Abrir o Menu Lateral</string>
+    <string name="close_menu">Fechar o Menu Lateral</string>
+
+    <!-- Fragment SearchMakeup-->
+    <string name="hint_brand">Marca</string>
+    <string name="hint_type">Tipo de Maquiagem</string>
+    <string name="hint_category">Formato do Produto</string>
     <string name="tip_image">Imagem de Maquiagem</string>
     <string name="btn_search">Pesquisar</string>
     <string name="string_empty"> </string>
-    <string name="value_required">Campo Obrigatorio</string>
+    <string name="text_showTags">Mostrar Tags</string>
+    <string-array name="array_tags">
+        <item>Canadian</item>
+        <item>CertClean</item>
+        <item>Chemical Free</item>
+        <item>Dairy Free</item>
+        <item>EWG Verified</item>
+        <item>EcoCert</item>
+        <item>Fair Trade</item>
+        <item>Gluten Free</item>
+        <item>No Talc</item>
+        <item>Hypoallergenic</item>
+        <item>Natural</item>
+        <item>Non-GMO</item>
+        <item>Organic</item>
+        <item>Vegan</item>
+        <item>Peanut Free Product</item>
+        <item>Sugar Free</item>
+        <item>USDA Organic</item>
+        <item>alcohol free</item>
+        <item>cruelty free</item>
+        <item>oil free</item>
+        <item>purpicks</item>
+        <item>silicone free</item>
+        <item>water free</item>
+    </string-array>
+    <string-array name="array_brand">
+        <item>almay</item>
+        <item>alva</item>
+        <item>anna sui</item>
+        <item>annabelle</item>
+        <item>benefit</item>
+        <item>boosh</item>
+        <item>burt\'s bees</item>
+        <item>butter london</item>
+        <item>c\'est moi</item>
+        <item>cargo cosmetics</item>
+        <item>china glaze</item>
+        <item>clinique</item>
+        <item>coastal classic creation</item>
+        <item>colourpop</item>
+        <item>covergirl</item>
+        <item>dalish</item>
+        <item>deciem</item>
+        <item>dior</item>
+        <item>dr. hauschka</item>
+        <item>e.l.f.</item>
+        <item>essie</item>
+        <item>fenty</item>
+        <item>glossier</item>
+        <item>green people</item>
+        <item>iman</item>
+        <item>l\'oreal</item>
+        <item>lotus cosmetics usa</item>
+        <item>maia\'s mineral galaxy</item>
+        <item>marcelle</item>
+        <item>marienatie</item>
+        <item>maybelline</item>
+        <item>milani</item>
+        <item>mineral fusion</item>
+        <item>misa</item>
+        <item>mistura</item>
+        <item>moov</item>
+        <item>nudus</item>
+        <item>nyx</item>
+        <item>orly</item>
+        <item>pacifica</item>
+        <item>penny lane organics</item>
+        <item>physicians formula</item>
+        <item>piggy paint</item>
+        <item>pure anada</item>
+        <item>rejuva minerals</item>
+        <item>revlon</item>
+        <item>sally b\'s skin yummies</item>
+        <item>salon perfect</item>
+        <item>sante</item>
+        <item>sinful colours</item>
+        <item>smashbox</item>
+        <item>stila</item>
+        <item>suncoat</item>
+        <item>w3llpeople</item>
+        <item>wet n wild</item>
+        <item>zorah</item>
+        <item>zorah biocosmetiques</item>
+    </string-array>
+    <string-array name="array_type">
+        <item>Blush</item>
+        <item>Bronzer</item>
+        <item>Eyebrow</item>
+        <item>Eyeliner</item>
+        <item>Eyeshadow</item>
+        <item>Foundation</item>
+        <item>Lip liner</item>
+        <item>Lipstick</item>
+        <item>Mascara</item>
+        <item>Nail polish</item>
+    </string-array>
+    <string-array name="array_categoryBlush">
+        <item>Powder</item>
+        <item>Cream</item>
+    </string-array>
+    <string-array name="array_categoryBronzer">
+        <item>Powder</item>
+    </string-array>
+    <string-array name="array_categoryEyebrow">
+        <item>Pencil</item>
+    </string-array>
+    <string-array name="array_categoryEyeliner">
+        <item>Liquid</item>
+        <item>Pencil</item>
+        <item>Gel</item>
+        <item>Cream</item>
+    </string-array>
+    <string-array name="array_categoryEyeshadow">
+        <item>Palette</item>
+        <item>Pencil</item>
+        <item>Cream</item>
+    </string-array>
+    <string-array name="array_categoryFoundation">
+        <item>Concealer</item>
+        <item>Liquid</item>
+        <item>Contour</item>
+        <item>Bb cc</item>
+        <item>Cream</item>
+        <item>Mineral</item>
+        <item>Powder</item>
+        <item>Highlighter</item>
+    </string-array>
+    <string-array name="array_categoryLipLiner">
+        <item>Pencil</item>
+    </string-array>
+    <string-array name="array_categoryLipstick">
+        <item>Lipstick</item>
+        <item>Lip gloss</item>
+        <item>Liquid</item>
+        <item>Lip stain</item>
+    </string-array>
+
+    <!--Fragment Catalog-->
+    <string name="txt_titleCatalog">Olá, Seja Bem-Vindo(a)</string>
+    <string name="txt_subtitleCatalog">Veja alguns de nossos Produtos !</string>
 
     <!-- Mensagens de Erro -->
-    <string name="table_empty">A Tabela não Possuem nenhum Dado</string>
     <string name="title_noConnection">Sem Internet</string>
     <string name="title_invalidData">Dados Invalidos</string>
     <string name="title_noGps">Sem GPS</string>
-    <string name="title_noExist">Produto e/ou Marca não Encontrado</string>
+    <string name="title_noExist">Produto não Encontrado</string>
     <string name="title_noLocation">Sem Localização</string>
+    <string name="title_existUser">Usuario já Existente</string>
+    <string name="title_noExistUser">Usuario não Encontrado</string>
+    <string name="title_errorAPI">Operação Não Relizada</string>
+    <string name="title_noData">Sem Dados</string>
     <string name="error_input">Preencha os Campos</string>
-    <string name="error_noExists">Não existe nenhum Produto Cadastrado com esse Tipo e Marca</string>
+    <string name="error_noExists">Não existe nenhum Produto Cadastrado com esses Filtros</string>
     <string name="error_connection">Sem Conexão com a Internet</string>
-    <string name="error_json">Erro na Leitura dos Dados, Tente Novamente</string>
     <string name="error_noGps">Sem conexão com o GPS</string>
     <string name="error_location">Erro ao Recuperar a Ultima Localização</string>
     <string name="error_recoveryData">Nenhum dado foi informado para a Busca</string>
     <string name="error_sensor">Sensor de Proximidade não Disponivel no Dispostivo</string>
     <string name="error_selected">Nenhuma Opção foi Selecionada.&lt;br />Tente Novamente</string>
+    <string name="error_lenght">O Campo %1$s aceita somente %2$s Caracteres</string>
+    <string name="error_wrongInput">Campo %s Invalido</string>
+    <string name="error_valueRequired">Campo Obrigatorio</string>
+    <string name="error_noMatchPassword">As Senhas não são Iguais</string>
+    <string name="error_existUser">O Usuario %s já existe no Sistema. Realize o Login !</string>
+    <string name="error_noExistUser">O Usuario %s não existe no Sistema. Realize o Cadastro !</string>
+    <string name="error_api">Houve um erro na execução da solicitação. Tente Novamente</string>
+    <string name="error_tableEmpty">Não há registros com os dados Solicitados</string>
+    <string name="error_dataUser">Infelizmente, não foi possivel obter os Dados do Usuario</string>
+    <string name="error_category">Categorias só estarão disponiveis após selecionar um
+        Tipo de Produto. &lt;br />&lt;br /> * Mascara e Nail Polish não possuem categorias</string>
+    <string name="error_notArgsSearch">É necessario ao menos UMA opção escolhida para realizar
+        a busca</string>
 
-    <!-- Strings do Menu -->
-    <string name="clear_bd">Limpar Dados Salvos</string>
-    <string name="change_theme">Alterar Tema</string>
-    <string name="location_now">Localização Atual</string>
-    <string name="sensor_menu">Sensor de Luminosidade</string>
+    <!-- Validação dos Formularios -->
+    <string name="validation_ok">Campo Validado</string>
+    <string name="validation_empty">Campo %s Obrigatorio.</string>
+    <string name="validation_length">%1$s deve ter entre %2$s e %3$s Caracteres</string>
+    <string name="validation_noFormmat">%1$s deve ter conter apenas %2$s</string>
 
     <!-- Layout Result-->
     <string name="title_result">Resultados da Busca</string>
     <string name="return_search">Fazer outra Busca</string>
-    <string name="name_product">Nome do Produto</string>
-    <string name="currencyPrice_product">Moeda - Preço</string>
-    <string name="type_product"><b>Tipo: </b></string>
-    <string name="description_product"><b>Descrição: </b></string>
-    <string name="fill_text">Informações da API</string>
-    <string name="description_imageProduct">Imagem do Produto</string>
+    <string name="btn_product">Produto</string>
+    <string name="favorite_description">Favoritar Maquiagem</string>
+    <string name="description_imageProduct">Imagem da Maquiagem</string>
     <string name="empty_name">Produto sem Nome</string>
     <string name="empty_price">Preço não Encontrado</string>
     <string name="empty_description">Produto sem Descrição</string>
+    <string name="loading_text">Carregando Produtos…</string>
+    <string name="btn_viewProduct">Ver Produto</string>
+
+    <!--Activity ImageView-->
+    <string name="no_availableMakeup">Produto não Identificado</string>
+
+    <!--Activity Details Product-->
+    <string name="title_details">Detalhes do Produto</string>
+    <string name="label_details">Detalhes</string>
+    <string name="formatted_name">&lt;u>%s&lt;/u></string>
+    <string name="formatted_brandType">%1$s - %2$s</string>
+    <string name="formatted_currencyPrice">%1$s %2$s</string>
+    <string name="error_name">Produto sem Nome</string>
+    <string name="error_brandType">Produto sem Marca e Tipo</string>
+    <string name="error_price">Produto sem Preço</string>
+    <string name="error_description">Produto sem Descrição</string>
 
     <!-- Activity Location (&lt; = '<' em HTML)-->
     <string name="txt_titleLocation"><b>Localização Atual</b></string>
@@ -74,5 +310,33 @@
     <string name="txt_brandTypeFormat">%1$s</string>
     <string name="txt_divider">/</string>
     <string name="description_imageButton">Atualizar Widget</string>
+
+    <!--Configuration Activity-->
+    <string name="toolbar_configuration">Configurações</string>
+    <string name="dialog_idiom">Sua Opção de Idioma foi Salva. Entretanto, no momento ainda não
+        Traduzimos o Aplicativo, aguarde que em breve será disponibilizada essa Linguagem</string>
+    <string name="title_changeIdiom">Idioma Alterado com Sucesso</string>
+    <string name="text_changeIdiom">Alterar Idioma</string>
+    <string name="text_changeTheme">Alterar Tema</string>
+    <string name="text_darkTheme">Tema Escuro</string>
+
+    <!--Data Aplication Activity-->
+    <string name="toolbar_dataApplication">Dados do Uso</string>
+
+    <!--Profile Activity-->
+    <string name="toolbar_profile">Perfil</string>
+    <string name="text_change">Alterar</string>
+    <string name="text_abort">Cancelar</string>
+
+    <!--Recycler ListMakeup-->
+    <string name="txt_quantityFavorite">%d Favoritos</string>
+
+    <!--Header ListMakeup-->
+    <string name="title_favoriteList">Minhas Makes</string>
+    <string name="title_historicList">Maquiagens Buscadas</string>
+    <string name="title_moreLikedList">As mais Queridinhas</string>
+    <string name="subtitle_favoriteList">Confira as suas maquiagens Favoritas</string>
+    <string name="subtitle_historicList">Confira as suas buscas de Maquiagens</string>
+    <string name="subtitle_moreLikedList">Confira as maquiagens Favoritas dos Usuarios</string>
 
 </resources>

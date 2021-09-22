@@ -27,10 +27,8 @@ public class SearchInternet {
             urlConnection.setRequestMethod(method);
             urlConnection.connect();
 
-            //Inicia o InputStream
+            //Inicia o InputStream e Verifica se há dados p/ acessar
             InputStream inputStream = urlConnection.getInputStream();
-
-            //Caso não tenha dados para Acessar
             if (inputStream == null) return "";
 
             // Cria um Leitor dos Dados e uma String para armazenar

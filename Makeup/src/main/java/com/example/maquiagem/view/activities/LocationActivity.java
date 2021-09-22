@@ -6,7 +6,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,10 +21,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.model.DataBaseMakeup;
+import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.model.Location;
-import com.example.maquiagem.view.AlertDialogs;
-import com.example.maquiagem.view.FeedbackLocation;
+import com.example.maquiagem.view.fragments.FeedbackLocation;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
@@ -33,8 +31,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import static android.text.Html.FROM_HTML_MODE_LEGACY;
 
 public class LocationActivity extends AppCompatActivity {
 
@@ -59,7 +55,7 @@ public class LocationActivity extends AppCompatActivity {
     static final String STATE_FRAGMENT = "STATE FRAGMENT";
 
     private com.example.maquiagem.model.Location classLocation;
-    private DataBaseMakeup dataBaseMakeup;
+    private DataBaseHelper dataBaseHelper;
     private int actualId;
 
     @Override
@@ -71,13 +67,13 @@ public class LocationActivity extends AppCompatActivity {
         recoveryId();
 
         classLocation = new com.example.maquiagem.model.Location();
-        dataBaseMakeup = new DataBaseMakeup(this);
+        dataBaseHelper = new DataBaseHelper(this);
 
         loading_location.setMax(10);
         loading_location.setProgress(0);
 
         // Obtem a ultima localização inserida
-        int lastIdLocation = dataBaseMakeup.amountLocation();
+        int lastIdLocation = dataBaseHelper.amountLocation();
         actualId = lastIdLocation + 1;
 
         getLastLocation();
@@ -192,7 +188,7 @@ public class LocationActivity extends AppCompatActivity {
                             );
 
                             // Insere a Localização no BD e Exibe o Endereço
-                            dataBaseMakeup.insertLocation(classLocation);
+                            dataBaseHelper.insertLocation(classLocation);
 
                         } catch (IOException e) {
                             // Tratamento de Erro da Localização ---> Erro no Processo

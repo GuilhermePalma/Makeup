@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.maquiagem">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -12,11 +13,38 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Maquiagem">
-        <activity android:name=".view.activities.ResultActivity"/>
+        android:usesCleartextTraffic="true"
+        android:theme="@style/Theme.Maquiagem"
+        tools:targetApi="m">
+
+        <activity android:name=".view.activities.SingUpActivity" />
+        <activity android:name=".view.activities.LoginActivity" />
+        <activity android:name=".view.activities.SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.activities.SlideScreen" />
+        <activity android:name=".view.activities.MainActivity" />
+        <activity
+            android:name=".view.activities.LocationActivity"
+            android:parentActivityName=".view.activities.MainActivity" />
+        <activity android:name=".view.activities.ResultActivity" />
+        <activity
+            android:name=".view.activities.ProfileActivity"
+            android:parentActivityName=".view.activities.MainActivity" />
         <activity
             android:name=".view.activities.SensorActivity"
             android:parentActivityName=".view.activities.MainActivity" />
+        <activity
+            android:name=".view.activities.DataApplicationActivity"
+            android:parentActivityName=".view.activities.MainActivity" />
+        <activity
+            android:name=".view.activities.ConfigurationActivity"
+            android:parentActivityName=".view.activities.MainActivity" />
+        <activity android:name=".view.activities.MakeupDetailsActivity" />
 
         <receiver android:name=".view.WidgetApp">
             <intent-filter>
@@ -28,16 +56,9 @@
                 android:resource="@xml/widget_app_info" />
         </receiver>
 
-        <activity
-            android:name=".view.activities.LocationActivity"
-            android:parentActivityName=".view.activities.MainActivity" />
-        <activity android:name=".view.activities.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

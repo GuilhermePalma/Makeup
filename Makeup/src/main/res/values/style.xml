@@ -19,4 +19,16 @@
         <item name="android:textColor">@android:color/black</item>
     </style>
 
+    <!--Personaliza os Textos do Navigation-->
+    <style name="NavigationItemAppearance">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/ubuntu_medium</item>
+    </style>
+
+    <!--Customiza o Icone do Navigation-->
+    <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/white</item>
+    </style>
+
 </resources>

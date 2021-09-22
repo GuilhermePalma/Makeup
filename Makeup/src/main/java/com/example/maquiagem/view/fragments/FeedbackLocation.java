@@ -1,4 +1,4 @@
-package com.example.maquiagem.view;
+package com.example.maquiagem.view.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,15 +12,16 @@ import android.widget.RadioButton;
 import androidx.fragment.app.Fragment;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.model.DataBaseMakeup;
+import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.view.PersonAlertDialogs;
 
 public class FeedbackLocation extends Fragment {
 
-    private final DataBaseMakeup helperDatabase;
+    private final DataBaseHelper helperDatabase;
 
     // Construtor que recebe context p/ usar no BD
     public FeedbackLocation(Context context) {
-        helperDatabase = new DataBaseMakeup(context);
+        helperDatabase = new DataBaseHelper(context);
     }
 
 
@@ -49,9 +50,11 @@ public class FeedbackLocation extends Fragment {
                 // Caso a posição seja correta, insere no Banco de Dados 'True', se não = 'False'
                 helperDatabase.insertTypeLocation(lastIdLocation, rbtn_correct.isChecked());
             } else {
-                AlertDialogs alertDialogs = new AlertDialogs();
-                alertDialogs.message(view.getContext(), getString(R.string.title_invalidData),
-                        Html.fromHtml(getString(R.string.error_selected)).toString()).show();
+                PersonAlertDialogs personAlertDialogs = new PersonAlertDialogs(
+                        view.getContext());
+                personAlertDialogs.message(getString(R.string.title_invalidData), Html.fromHtml(
+                        getString(R.string.error_selected)).toString())
+                        .show();
             }
         });
 

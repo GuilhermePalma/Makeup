@@ -10,7 +10,7 @@ import android.text.Html;
 import android.widget.RemoteViews;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.model.DataBaseMakeup;
+import com.example.maquiagem.controller.DataBaseHelper;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -57,7 +57,7 @@ public class WidgetApp extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_app);
 
         // Instancia o HelperDatabase
-        DataBaseMakeup database = new DataBaseMakeup(context);
+        DataBaseHelper database = new DataBaseHelper(context);
 
         int correct = database.amountCorrectLocation();
         int wrong = database.amountWrongLocation();

@@ -154,17 +154,21 @@ As seguintes ferramentas foram usadas na construção do projeto:
 
 -   Protótipo:  **[Winsical](https://whimsical.com/)**  →  **[Protótipo (Maquiagem)](https://whimsical.com/mobile-UmVv4wcQh1YZLBppfhptCm)**
 -   API:  **[API Makeup](http://makeup-api.herokuapp.com/)**  →  **[API de Tipos](makeup-api.herokuapp.com/api/v1/products.json?product_type=)**,  **[API de Marcas](http://makeup-api.herokuapp.com/api/v1/products.json?brand=)**
--   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extenção:  **[ToolBar](https://developer.android.com/reference/android/widget/Toolbar)**
--   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extenção:  **[Tarefas Assincronas](https://developer.android.com/reference/android/os/AsyncTask)**
--   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extenção:  **[SQLite](https://developer.android.com/training/data-storage/sqlite?hl=pt-br)**
--   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extenção:  **[Localização](https://developer.android.com/training/location/retrieve-current?hl=pt-br)**
--   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extenção:  **[Sensores](https://developer.android.com/guide/topics/sensors/sensors_overview?hl=pt-br)**
--   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extenção:  **[Widget](https://developer.android.com/guide/topics/appwidgets/overview)**
--   Editor:  **[Android Studio](https://developer.android.com/studio/)**  → Extenção:  **[AlertDialog](https://developer.android.com/guide/topics/ui/dialogs?hl=pt-br)**
+-   Editor:  **[Android Developer](https://developer.android.com/studio/)**  → Extenção:  **[ToolBar](https://developer.android.com/reference/android/widget/Toolbar)**
+-   Editor:  **[Android Developer](https://developer.android.com/studio/)**  → Extenção:  **[Handler - Tarefa Assincrona](https://developer.android.com/reference/android/os/Handler)**
+-   Editor:  **[Android Developer](https://developer.android.com/studio/)**  → Extenção:  **[SQLite](https://developer.android.com/training/data-storage/sqlite?hl=pt-br)**
+-   Editor:  **[Android Developer](https://developer.android.com/studio/)**  → Extenção:  **[Localização](https://developer.android.com/training/location/retrieve-current?hl=pt-br)**
+-   Editor:  **[Android Developer](https://developer.android.com/studio/)**  → Extenção:  **[Sensores](https://developer.android.com/guide/topics/sensors/sensors_overview?hl=pt-br)**
+-   Editor:  **[Android Developer](https://developer.android.com/studio/)**  → Extenção:  **[Widget](https://developer.android.com/guide/topics/appwidgets/overview)**
+-   Editor:  **[Android Developer](https://developer.android.com/studio/)**  → Extenção:  **[AlertDialog](https://developer.android.com/guide/topics/ui/dialogs?hl=pt-br)**
+-   Editor:  **[Android Developer](https://developer.android.com/studio/)**  → Extenção:  **[PagerView](https://developer.android.com/training/animation/screen-slide?hl=pt-br)**, **[Exemplo - PagerView](https://www.androidhive.info/2016/05/android-build-intro-slider-app/)**
 -   Teste de API:  **[Swagger](https://editor.swagger.io/)**
 -   Biblioteca Picasso:  **[Documentação Picasso](https://square.github.io/picasso/)** 
 	> Conversão de URLs para Imagens
 -   Icone: **[Freepik](https://www.freepik.com)**  → Retirado de: [FlatIcon](href="https://www.flaticon.com/br/)
+-   Imagens View Pager (Tela com Deslizamento Lateral): [Fundo Branco com Quadrados](https://br.freepik.com/coolvector), [Maquiagens](https://www.flaticon.com/authors/photo3idea-studio), [Icone Idiomas](https://www.freepik.com), [Icone Backup](https://www.freepik.com)
+-   Imagem de Fundo do Navigation Drawer: [Fundo abstrato](https://www.pexels.com/pt-br/foto/arte-abstrata-roxa-3109807/?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels)
+
 ---
 
 
