@@ -128,6 +128,7 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
                 header_subtitle.setText(R.string.txt_subtitleCatalog);
                 break;
             default:
+                header_view = null;
                 break;
         }
     }
