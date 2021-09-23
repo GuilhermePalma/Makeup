@@ -80,19 +80,13 @@ public class ConfigurationActivity extends AppCompatActivity {
             database.close();
 
             String messageTheme_api = updateThemeAPI(user);
-            if (messageTheme_api.equals("")){
+            if (messageTheme_api.equals("")) {
                 // todo: enviar o theme alterado p/ api local
-                String theme = isChecked ? "Dark/Escuro" : "Light/Claro";
+                int theme_app = isChecked ? AppCompatDelegate.MODE_NIGHT_YES :
+                        AppCompatDelegate.MODE_NIGHT_NO;
 
                 // Define o Theme no APP
-                if (isChecked) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                }
-
-                new PersonAlertDialogs(this).message(getString(R.string.title_updateUser),
-                        getString(R.string.text_idiomUpdate, theme)).show();
+                AppCompatDelegate.setDefaultNightMode(theme_app);
             } else {
                 new PersonAlertDialogs(this).message(
                         getString(R.string.title_errorAPI), messageTheme_api).show();
