@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -27,6 +28,7 @@ import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.model.Makeup;
 import com.example.maquiagem.model.SearchInternet;
 import com.example.maquiagem.model.SerializationData;
+import com.example.maquiagem.model.User;
 import com.example.maquiagem.view.PersonAlertDialogs;
 import com.example.maquiagem.view.fragments.FragmentListMakeup;
 import com.example.maquiagem.view.fragments.FragmentSearchMakeup;
@@ -92,6 +94,36 @@ public class MainActivity extends AppCompatActivity {
         // Mostra o Conteudo da Tela Inicial (Catalogo)
         asyncTask(OPTION_HOME_MAKEUP);
         setUpListFragment(listMakeup, FragmentListMakeup.TYPE_CATALOG);
+
+        //Configura o Header do Navigation View
+        View headerView = navigationView.getHeaderView(0);
+
+        // Obtém a referência do nome do usuário e altera seu nome
+        TextView txt_nameHeader = headerView.findViewById(R.id.text_nameHeader);
+        TextView txt_nicknameHeader = headerView.findViewById(R.id.text_nicknameHeader);
+
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
+        User user = dataBaseHelper.selectUser(this);
+        if (user != null) {
+            // Configuração no Tamanho do Nome e Nickname no Header do Menu Lateral
+            String name_formatted, nickname_formatted;
+            String name = user.getName();
+            String nickname = user.getNickname();
+            if (name.length() > 21) {
+                name_formatted = name.substring(0, 20);
+            } else name_formatted = name;
+
+            if (nickname.length() > 21) {
+                nickname_formatted = nickname.substring(0, 20);
+            } else nickname_formatted = nickname;
+
+            txt_nameHeader.setText(name_formatted);
+            txt_nicknameHeader.setText(
+                    getString(R.string.text_nicknameFormatted, nickname_formatted));
+        } else {
+            txt_nameHeader.setText("");
+            txt_nicknameHeader.setText("");
+        }
     }
 
     /**
@@ -299,7 +331,13 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case OPTION_EXIT:
-                    // todo: deslogar ---> Implementar depois do Cadastro/Login
+                    // Limpa o Banco Local do Usuario
+                    DataBaseHelper database = new DataBaseHelper(this);
+                    database.deleteAllUsers();
+                    database.close();
+                    // Inicia a SplashScreen
+                    startActivity(new Intent(this, SplashScreen.class));
+                    finish();
                     break;
 
                 default:

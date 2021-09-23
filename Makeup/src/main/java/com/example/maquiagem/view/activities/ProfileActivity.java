@@ -20,7 +20,6 @@ import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private String VALIDATION_OK;
     private String HINT_NAME;
     private String HINT_EMAIL;
     private String HINT_PASSWORD;
@@ -46,8 +45,6 @@ public class ProfileActivity extends AppCompatActivity {
     private TextInputEditText editText_update;
 
     private LinearLayout layout_buttons;
-
-    private DataBaseHelper dataBaseHelper;
     private User user;
 
     @Override
@@ -69,7 +66,6 @@ public class ProfileActivity extends AppCompatActivity {
         HINT_EMAIL = getString(R.string.hint_email);
         HINT_PASSWORD = getString(R.string.hint_password);
         HINT_NICKNAME = getString(R.string.hint_nickname);
-        VALIDATION_OK = getString(R.string.validation_ok);
 
         txt_nickname = findViewById(R.id.txt_nickname);
         txt_name = findViewById(R.id.txt_name);
@@ -89,6 +85,9 @@ public class ProfileActivity extends AppCompatActivity {
         layout_buttons = findViewById(R.id.linearLayout_buttons);
         inputLayout_update = findViewById(R.id.inputLayout_updateUser);
         editText_update = findViewById(R.id.editText_updateUser);
+
+        DataBaseHelper database = new DataBaseHelper(this);
+        user = database.selectUser(this);
     }
 
     /**
@@ -112,8 +111,8 @@ public class ProfileActivity extends AppCompatActivity {
         // Obtem os Dados Salvos da API no Banco de Dados (SQLIte)
         // Verifica se Existe Dados ---> Se não = Mensagem Erro
 
-        //showDataUser();
-        noDataUser();
+        if (user == null) noDataUser();
+        showDataUser();
     }
 
     /**
@@ -166,6 +165,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             title_inputChange.setText(HINT_PASSWORD);
             inputLayout_update.setHint(HINT_PASSWORD);
+            editText_update.setText(user.getPassword());
         });
         btn_nickname.setOnClickListener(v -> {
             title_inputChange.setVisibility(View.VISIBLE);
@@ -197,51 +197,74 @@ public class ProfileActivity extends AppCompatActivity {
                 String valueTitleChange = title_inputChange.getText().toString();
                 PersonAlertDialogs dialog = new PersonAlertDialogs(this);
 
-                //todo incluir metodos da api
                 if (valueTitleChange.equals(HINT_NAME)) {
                     // Valida o novo Nome Inserido
-                    String resultValidation = user.validationName(valueInput);
-                    if (resultValidation.equals(VALIDATION_OK)) {
-                        user.setName(valueInput);
-                        dialog.message("Nome Alterado", "Nome Alterado para: "
-                                + user.getName()).show();
+                    if (user.validationName(valueInput)) {
 
-                        // Recarrega os Dados e Layout na Tela
-                        showDataUser();
-                    } else editText_update.setError(resultValidation, null);
+                        // Atualiza o Nome e Tenta Atualizar na API e Banco Local (SQLite)
+                        user.setName(valueInput);
+                        String message_updateAPI = updateDataAPI(user);
+                        if (message_updateAPI.equals("")) {
+                            dialog.message("Nome Alterado", "Nome Alterado para: "
+                                    + user.getName()).show();
+                            showDataUser();
+                        } else {
+                            dialog.message(getString(R.string.title_errorAPI),
+                                    message_updateAPI).show();
+                        }
+                    } else editText_update.setError(user.getError_Validation(), null);
                 } else if (valueTitleChange.equals(HINT_EMAIL)) {
                     // Valida o Novo Email Inserido
-                    String resultValidation = user.validationEmail(valueInput);
-                    if (resultValidation.equals(VALIDATION_OK)) {
-                        user.setEmail(valueInput);
-                        dialog.message("Email Alterado", "Email Alterado para: "
-                                + user.getEmail()).show();
+                    if (user.validationEmail(valueInput)) {
 
-                        // Recarrega os Dados e Layout na Tela
-                        showDataUser();
-                    } else editText_update.setError(resultValidation, null);
+                        // Atualiza o Email e Tenta Atualizar na API e Banco Local (SQLite)
+                        user.setEmail(valueInput);
+                        String message_updateAPI = updateEmailAPI(user);
+                        if (message_updateAPI.equals("")) {
+                            dialog.message("Email Alterado", "Email Alterado para: "
+                                    + user.getEmail()).show();
+                            showDataUser();
+                        } else {
+                            dialog.message(getString(R.string.title_errorAPI),
+                                    message_updateAPI).show();
+                        }
+
+                    } else editText_update.setError(user.getError_Validation(), null);
                 } else if (valueTitleChange.equals(HINT_PASSWORD)) {
                     // Valida a Nova Senha inserida
-                    String resultValidation = user.validationPassword(valueInput);
-                    if (resultValidation.equals(VALIDATION_OK)) {
+                    if (user.validationPassword(valueInput)) {
+
+                        // Atualiza o Nome e Tenta Atualizar na API e Banco Local (SQLite)
                         user.setPassword(valueInput);
-                        dialog.message("Senha Alterada", "Senha Alterado para: "
-                                + user.getPassword()).show();
+                        String message_updateAPI = updateDataAPI(user);
+                        if (message_updateAPI.equals("")) {
+                            dialog.message("Senha Alterado", "Senha Alterada para: "
+                                    + user.getEmail()).show();
+                            showDataUser();
+                        } else {
+                            dialog.message(getString(R.string.title_errorAPI),
+                                    message_updateAPI).show();
+                        }
 
-                        // Recarrega os Dados e Layout na Tela
-                        showDataUser();
-                    } else editText_update.setError(resultValidation, null);
+                    } else editText_update.setError(user.getError_Validation(), null);
                 } else if (valueTitleChange.equals(HINT_NICKNAME)) {
-                    // Valida o Novo Nickname Inserido
-                    String resultValidation = user.validationNickname(valueInput);
-                    if (resultValidation.equals(VALIDATION_OK)) {
-                        user.setNickname(valueInput);
-                        dialog.message("Nickname Alterado", "Nickname Alterado para: "
-                                + user.getNickname()).show();
 
-                        // Recarrega os Dados e Layout na Tela
-                        showDataUser();
-                    } else editText_update.setError(resultValidation, null);
+                    // Valida o Novo Nickname Inserido
+                    if (user.validationNickname(valueInput)) {
+
+                        // Atualiza o Nickname e Tenta Atualizar na API e Banco Local (SQLite)
+                        user.setNickname(valueInput);
+                        String message_updateAPI = updateNicknameAPI(user);
+                        if (message_updateAPI.equals("")) {
+                            dialog.message("Nickname Alterado", "Nickname Alterado para: "
+                                    + user.getEmail()).show();
+                            showDataUser();
+                        } else {
+                            dialog.message(getString(R.string.title_errorAPI),
+                                    message_updateAPI).show();
+                        }
+
+                    } else editText_update.setError(user.getError_Validation(), null);
                 } else {
                     dialog.message(getString(R.string.title_invalidData),
                             getString(R.string.error_api)).show();
@@ -251,6 +274,45 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    //todo: atualiza o nome do usuario na API
+    private String updateDataAPI(User user) {
+        // Operação sem erro = Retorno ""
+
+        // Atualizar o dado no Banco de Dados Local
+        DataBaseHelper database = new DataBaseHelper(this);
+        database.updateUser(user);
+
+        return "";
+    }
+
+    //todo: atualiza o nome do usuario na API
+    private String updateEmailAPI(User user) {
+        // Operação sem erro = Retorno ""
+        // Gerar programaticamente um novo Token
+        String remove_newJWT = "JWT New";
+        user.setToken_user(remove_newJWT);
+
+        // Atualiza o Usario no Banco Local
+        DataBaseHelper database = new DataBaseHelper(this);
+        database.updateUser(user);
+
+        return "";
+    }
+
+    //todo: atualiza o nome do usuario na API
+    private String updateNicknameAPI(User user) {
+        // Operação sem erro = Retorno ""
+        // API irá gerar automaticamente um novo JWT
+        String generated_newJWT = "JWT New";
+        user.setToken_user(generated_newJWT);
+
+        // Atualiza o Usario no Banco Local
+        DataBaseHelper database = new DataBaseHelper(this);
+        database.updateUser(user);
+
+        return "";
     }
 
     /**

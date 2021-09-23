@@ -26,36 +26,25 @@ public class SingUpActivity extends AppCompatActivity {
     private TextInputEditText edit_email;
     private TextInputEditText edit_password;
     private TextInputEditText edit_confirmPassword;
-
     private AutoCompleteTextView autoComplete_idioms;
     private Button btn_singUp;
     private Button btn_goLogin;
     private MaterialCheckBox checkBox_remember;
-
     private ManagerKeyboard managerKeyboard;
-    private SharedPreferences preferences;
     private PersonAlertDialogs dialog;
-    private DataBaseHelper database;
-
-    private final String FILE_PREFERENCE = "com.example.maquiagem";
-    private final String LOGIN_NOT_REMEMBER = "not_remember_login";
-
-    private String name, nickname, email, password, confirmPassword, idioms;
-    private String[] array_idioms;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sing_up);
 
+        // Instancia os Itens que serão Usados e Configura o AutoCompleteText Idioms
         instanceItens();
-
-        array_idioms = getResources().getStringArray(R.array.array_idioms);
         setInputIdioms();
-        listenerInputIdioms();
 
-        btn_singUp.setOnClickListener(v -> registerUser());
-
+        // Listener dos cliques no Botão "Cadastrar" e "Login"
+        executeSingUp();
         btn_goLogin.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
@@ -74,138 +63,145 @@ public class SingUpActivity extends AppCompatActivity {
         btn_singUp = findViewById(R.id.btn_singUp);
         btn_goLogin = findViewById(R.id.btn_goLogin);
 
-        preferences = getSharedPreferences(FILE_PREFERENCE, 0);
         managerKeyboard = new ManagerKeyboard(SingUpActivity.this);
         dialog = new PersonAlertDialogs(this);
-        database = new DataBaseHelper(getApplicationContext());
-
-        idioms = "";
+        user = new User(this);
     }
 
+    /**
+     * Configuração e Listener do AutoCompleteText de Idioms
+     */
     private void setInputIdioms() {
+        // Configura o AutoCompleteText e suas opções
+        String[] array_idioms = getResources().getStringArray(R.array.array_idioms);
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_dropdown_item_1line, array_idioms);
         autoComplete_idioms.setAdapter(adapter);
-    }
 
-    private void listenerInputIdioms() {
+        // Obtem o Item selecionado do AutoCompleteText
         autoComplete_idioms.setOnItemClickListener((parent, view, position, id) ->
-                idioms = array_idioms[position]);
+                user.setIdiom(array_idioms[position])
+        );
     }
 
-    private void registerUser() {
+    /**
+     * Valida os Inputs(Campos) e trata os Erros se Houverem
+     */
+    private boolean validationInputs() {
+        String name = Objects.requireNonNull(edit_name.getText()).toString();
+        String nickname = Objects.requireNonNull(edit_nickname.getText()).toString();
+        String email = Objects.requireNonNull(edit_email.getText()).toString();
+        String password = Objects.requireNonNull(edit_password.getText()).toString();
+        String confirmPassword = Objects.requireNonNull(edit_confirmPassword.getText()).toString();
 
-        getValuesInputs();
-
-        if (filledInputs() && lengthInputs() && passwordEquals()) {
-
-            User user = new User(name, nickname, email, password);
-
-            if (!existUserApi(user)) {
-                if (insertInApi()) {
-
-                    // todo: inserir idioma em uma preferences
-                    // Limpa a Tabela Usuario e Insere um Novo Usuario
-                    database.deleteAllUsers();
-                    database.insertUser(user);
-
-                    preferences.edit().putBoolean(LOGIN_NOT_REMEMBER, checkBox_remember.isChecked())
-                            .apply();
-
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finishAffinity();
-                } else {
-                    // Não foi Possivel inserir na API o Usuario
-                    dialog.message(getString(R.string.title_errorAPI),
-                            getString(R.string.error_api)).show();
-                }
-            } else {
-                // Usuario já cadastrado
-                dialog.message(getString(R.string.title_existUser),
-                        getString(R.string.error_existUser, user.getName())).show();
-            }
-        }
-    }
-
-    private void getValuesInputs() {
-        name = Objects.requireNonNull(edit_name.getText()).toString();
-        nickname = Objects.requireNonNull(edit_nickname.getText()).toString();
-        email = Objects.requireNonNull(edit_email.getText()).toString();
-        password = Objects.requireNonNull(edit_password.getText()).toString();
-        confirmPassword = Objects.requireNonNull(edit_confirmPassword.getText()).toString();
-    }
-
-    private boolean filledInputs() {
-        if (name.equals("")) {
-            errorInput(edit_name, getString(R.string.error_valueRequired));
+        if (!user.validationName(name)) {
+            errorInput(edit_name, user.getError_Validation());
             return false;
-        } else if (idioms.equals("")) {
+        } else if (!user.validationNickname(nickname)) {
+            errorInput(edit_nickname, user.getError_Validation());
+            return false;
+        } else if (!user.validationEmail(email)) {
+            errorInput(edit_email, user.getError_Validation());
+            return false;
+        } else if (!user.validationName(name)) {
+            errorInput(edit_name, user.getError_Validation());
+            return false;
+        } else if (!user.validationPassword(password)) {
+            errorInput(edit_password, user.getError_Validation());
+            return false;
+        } else if (!password.equals(confirmPassword)) {
+            // Password já validado acima, se forem iguais, a validação de 1 já é o suficiente
+            errorInput(edit_confirmPassword, getString(R.string.incorrect_password));
+            return false;
+        } else if (!user.validationIdiom(user.getIdiom())) {
             autoComplete_idioms.setError(getString(R.string.error_valueRequired), null);
             autoComplete_idioms.requestFocus();
             managerKeyboard.openKeyboard(autoComplete_idioms);
             return false;
-        } else if (nickname.equals("")) {
-            errorInput(edit_nickname, getString(R.string.error_valueRequired));
-            return false;
-        } else if (email.equals("")) {
-            errorInput(edit_email, getString(R.string.error_valueRequired));
-            return false;
-        } else if (password.equals("")) {
-            errorInput(edit_password, getString(R.string.error_valueRequired));
-            return false;
-        } else if (confirmPassword.equals("")) {
-            errorInput(edit_confirmPassword, getString(R.string.error_valueRequired));
-            return false;
         } else {
+            // Reatribui um novo Valor à Classe user e Define por Padrão o Tema Claro
+            user = new User(this, name, nickname, email, password, user.getIdiom(), false);
             return true;
         }
     }
 
-    private boolean lengthInputs() {
-        if (name.length() > 65) {
-            errorInput(edit_name, String.format(getString(R.string.error_wrongInput),
-                    "Nome e Sobrenome"));
-            return false;
-        } else if (nickname.length() > 35) {
-            errorInput(edit_nickname, String.format(getString(R.string.error_wrongInput),
-                    "Nome de Usuario"));
-            return false;
-        } else if (email.length() > 120) {
-            errorInput(edit_email, String.format(getString(R.string.error_wrongInput),
-                    "Email"));
-            return false;
-        } else if (password.length() > 40) {
-            errorInput(edit_password, String.format(getString(R.string.error_wrongInput),
-                    "Senha"));
-            return false;
-        } else if (confirmPassword.length() > 40) {
-            errorInput(edit_confirmPassword, String.format(getString(R.string.error_wrongInput),
-                    "Confirmar Senha"));
-            return false;
-        } else {
-            return true;
-        }
+    /**
+     * Listener do Botão "Cadastrar". Cadastra um novo Usuario se passar pelas Validações
+     */
+    private void executeSingUp() {
+        btn_singUp.setOnClickListener(v -> {
+            if (validationInputs()) {
+                // Obtem a Mensagem de erro (caso exista) da API
+                String insert_Api = insertInApi(user);
+                if (insert_Api.equals("")) {
+
+                    // Obtem as Informações do Usuario da API
+                    User userInformation = getInformationUser(user);
+
+                    // Obtem e Define o JWT na API
+                    String jsonWebToken = getJsonWebToken(userInformation);
+                    if (jsonWebToken.equals("")) {
+                        new PersonAlertDialogs(this).message(
+                                getString(R.string.title_errorAPI),
+                                getString(R.string.error_JWT)).show();
+                        return;
+                    }
+
+                    // Define o Token e Insere o Usuario no Banco de Dados
+                    userInformation.setToken_user(jsonWebToken);
+                    insertUserDatabase(userInformation);
+
+                    insertUserDatabase(user);
+
+                    // Define nas Preferences se o Usuario terá ou não que fazer Login a cada Acesso
+                    SharedPreferences preferences =
+                            getSharedPreferences(LoginActivity.FILE_PREFERENCE, 0);
+                    preferences.edit().putBoolean(LoginActivity.LOGIN_NOT_REMEMBER,
+                            checkBox_remember.isChecked()).apply();
+
+                    // Inicia a Nova Acticity e Limpa as Activities da Pilha
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    finishAffinity();
+                } else {
+                    // Erro no Cadastro do Usuario na API
+                    dialog.message(getString(R.string.title_existUser), insert_Api).show();
+                }
+            }
+            // O metodo de Validação dos Inputs já Trata os Possiveis Erros
+        });
     }
 
-    private boolean passwordEquals() {
-        if (!password.equals(confirmPassword)) {
-            errorInput(edit_confirmPassword, getString(R.string.error_noMatchPassword));
-            return false;
-        }
-        return true;
+    // todo: impementar inserção do usuario na API
+    private String insertInApi(User user) {
+        return "";
     }
 
-    // todo: implementar busca na API se o usuario já existe
-    private boolean existUserApi(User user) {
-        // Implementar: Caso exista na API retorna TRUE e impede o novo cadastro do Usuario
-        return false;
+
+    // todo: implementar obter informações
+    private User getInformationUser(User user) {
+        return user;
     }
 
-    // todo: insert User in API
-    private boolean insertInApi() {
-        return true;
+    // todo implementar obtenção do JWT
+    public String getJsonWebToken(User user) {
+        return "JWT";
     }
 
+    /**
+     * Insere o Usuario no Banco de Dados Local(SQLite)
+     */
+    private void insertUserDatabase(User user) {
+        DataBaseHelper database = new DataBaseHelper(this);
+        // Exclui dados do Banco de Dados se houverem e Insere o Novo Usuario
+        database.deleteAllUsers();
+        database.insertUser(user);
+        database.close();
+    }
+
+    /**
+     * Configura como os Erros serão mostrados nos Inputs
+     */
     private void errorInput(TextInputEditText inputEditText, String error) {
         inputEditText.setError(error, null);
         inputEditText.requestFocus();

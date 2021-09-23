@@ -10,6 +10,7 @@
 
     <!--Strings Usadas na Forma de Texto somente p/ visualizar o Design-->
     <TextView
+        android:id="@+id/text_nameHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -20,13 +21,13 @@
         tools:ignore="HardcodedText" />
 
     <TextView
+        android:id="@+id/text_nicknameHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="5dp"
-        android:text="\@nickname"
-        android:textColor="@color/snow"
-        tools:ignore="HardcodedText" />
+        android:text="@string/text_nicknameFormatted"
+        android:textColor="@color/snow" />
 
 </LinearLayout>

@@ -19,117 +19,147 @@ import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
+    public final static String FILE_PREFERENCE = "com.example.maquiagem";
+    public final static String LOGIN_NOT_REMEMBER = "not_remember_login";
     private TextInputEditText edit_nickname;
     private TextInputEditText edit_password;
     private MaterialCheckBox checkBox_rememberUser;
     private Button btn_singUp;
     private Button btn_login;
-
-    private String nickname, password;
-
-    private DataBaseHelper database;
+    private User user;
     private ManagerKeyboard managerKeyboard;
-    private SharedPreferences preferences;
-    private PersonAlertDialogs dialog;
-
-    private final String FILE_PREFERENCE = "com.example.maquiagem";
-    private final String LOGIN_NOT_REMEMBER = "not_remember_login";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        instanceItens();
+        // Instancia os Widgets E Classes que serão Usados
+        instanceItems();
 
+        // Listener no Botão "Cadastrar" e "Login"
         btn_singUp.setOnClickListener(v -> startActivity(new Intent(
                 LoginActivity.this, SingUpActivity.class)));
-
-        btn_login.setOnClickListener(v -> userLogin());
+        executeLogin();
     }
 
-    private void instanceItens() {
+    /**
+     * Instancia os Widgets/Classes que serão usadas na Activity
+     */
+    private void instanceItems() {
         edit_nickname = findViewById(R.id.editText_loginNickname);
         edit_password = findViewById(R.id.editText_loginPassword);
         checkBox_rememberUser = findViewById(R.id.checkbox_rememberUser);
         btn_singUp = findViewById(R.id.btn_goSingUp);
         btn_login = findViewById(R.id.btn_login);
 
-        database = new DataBaseHelper(getApplicationContext());
         managerKeyboard = new ManagerKeyboard(LoginActivity.this);
-        preferences = getSharedPreferences(FILE_PREFERENCE, 0);
-        dialog = new PersonAlertDialogs(this);
     }
 
-    private void userLogin() {
+    /**
+     * Listener do Botão Login. Se passar pelas Validações, realiza o Login do Usuario
+     */
+    private void executeLogin() {
 
-        getValuesInputs();
-        if (filledInputs() && lengthInputs()) {
-            User user = new User(nickname, password);
-            if (existUserApi(user)) {
+        btn_login.setOnClickListener(v -> {
+            if (validationInputs()) {
+                String apiMessage = existUserApi(user);
+                if (apiMessage.equals("")) {
 
-                // todo: alterar p/ a passagem do Json recebido da API
-                syncSqlite(user);
+                    // Obtem as Informações do Usuario da API
+                    User userInformation = getInformationUser(user);
 
-                // Define nas Preferences se o Usuario terá ou não que fazer Login a cada Acesso
-                preferences.edit().putBoolean(LOGIN_NOT_REMEMBER,
-                        checkBox_rememberUser.isChecked()).apply();
+                    // Obtem e Define o JWT na API
+                    String jsonWebToken = getJsonWebToken(userInformation);
+                    if (jsonWebToken.equals("")) {
+                        new PersonAlertDialogs(this).message(
+                                getString(R.string.title_errorAPI),
+                                getString(R.string.error_JWT)).show();
+                        return;
+                    }
 
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                finishAffinity();
-            } else {
-                // Usuario não Existe na API
-                dialog.message(getString(R.string.title_noExistUser),
-                        getString(R.string.error_noExistUser, user.getNickname())).show();
+                    // Define o Token e Insere o Usuario no Banco de Dados
+                    userInformation.setToken_user(jsonWebToken);
+                    insertUserDatabase(userInformation);
+
+                    // Define nas Preferences se o Usuario terá ou não que fazer Login a cada Acesso
+                    SharedPreferences preferences = getSharedPreferences(FILE_PREFERENCE, 0);
+                    preferences.edit().putBoolean(
+                            LOGIN_NOT_REMEMBER, checkBox_rememberUser.isChecked()).apply();
+
+                    // Inicia a Nova Acticity e Limpa as Activities da Pilha
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finishAffinity();
+                } else {
+                    // Mensagem de Erro de Usuario não Cadastrado
+                    new PersonAlertDialogs(this).message(getString(R.string.title_invalidData), apiMessage).show();
+                }
             }
-        }
+            // Erro dos Inputs já são tratados no proprio metodo
+        });
     }
 
-    private void getValuesInputs() {
-        nickname = Objects.requireNonNull(edit_nickname.getText()).toString();
-        password = Objects.requireNonNull(edit_password.getText()).toString();
-    }
+    /**
+     * Realiza a Validação dos Inputs do Login (Nickname e Senha)
+     */
+    private boolean validationInputs() {
+        // Obtem os Valores
+        String nickname = Objects.requireNonNull(edit_nickname.getText()).toString();
+        String password = Objects.requireNonNull(edit_password.getText()).toString();
 
-    private boolean filledInputs() {
-        if (nickname.equals("")) {
-            errorInput(edit_nickname, getString(R.string.error_valueRequired));
+        // Valida os Valores e retorna caso tenha algum erro
+        user = new User(this);
+        if (!user.validationNickname(nickname)) {
+            errorInput(edit_nickname, user.getError_Validation());
             return false;
-        } else if (password.equals("")) {
-            errorInput(edit_password, getString(R.string.error_valueRequired));
+        } else if (!user.validationPassword(password)) {
+            errorInput(edit_password, user.getError_Validation());
             return false;
         } else {
-            return true;
-        }
-    }
-
-    private boolean lengthInputs() {
-        if (nickname.length() > 35) {
-            errorInput(edit_nickname,
-                    getString(R.string.error_wrongInput, "Nome de Usuario"));
-            return false;
-        } else if (password.length() > 40) {
-            errorInput(edit_password, getString(R.string.error_wrongInput, "Senha"));
-            return false;
-        } else {
+            // Instancia o Nickname e Senha do Usario
+            user.setNickname(nickname);
+            user.setPassword(password);
             return true;
         }
     }
 
     // todo: implementar metodo da API
-    private boolean existUserApi(User user) {
-        // Caso exista na API retorna TRUE e permite o login
-        return true;
+    private String existUserApi(User user) {
+        // Realiza a a VAlidação se O Usuario existe no Banco de Dados
+
+        // Obtem o JsonWebToken
+
+        return "";
     }
 
-    // Sincroniza os Dados do BD Local
-    private void syncSqlite(User user) {
-        if (!database.existsInUser(user)) {
-            database.deleteAllUsers();
-            database.insertUser(user);
-        }
+    //todo implementar = obter informações
+    private User getInformationUser(User user) {
+        return user;
     }
 
+
+    /**
+     * Obtem um JWT Valioo para usar nas Opreações da API
+     */
+    private String getJsonWebToken(User user) {
+        // retorna o jwt p/ salvar no banco de dados
+        return "JWT";
+    }
+
+    /**
+     * Insere o Usuario no Banco de Dados Local(SQLite)
+     */
+    private void insertUserDatabase(User user) {
+        DataBaseHelper database = new DataBaseHelper(this);
+        // Exclui dados do Banco de Dados se houverem e Insere o Novo Usuario
+        database.deleteAllUsers();
+        database.insertUser(user);
+        database.close();
+    }
+
+    /**
+     * Configuração do Erro nos Inputs Invalidos
+     */
     private void errorInput(TextInputEditText inputEditText, String error) {
         inputEditText.setError(error, null);
         inputEditText.requestFocus();
