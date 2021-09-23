@@ -64,11 +64,17 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerListMakeup.
     @Override
     public void onBindViewHolder(@NonNull ViewHolderListMakeup holder, int position) {
 
-        // Caso o Layout Superior Exista, não configura um Item do RecyclerView
-        if (header != null && isHeader(position)) return;
+        // Subtrai 1 da Posição se o Header for != null Header
+        int position_real = position;
+        if (header != null) {
+            if (isHeader(position)) {
+                // Caso o Layout Superior Exista, não configura um Item do RecyclerView
+                return;
+            } else {
+                position_real = position - 1;
+            }
+        }
 
-        // Subtrai 1 da Posição por conta do Header
-        int position_real = position - 1;
         Makeup makeup = makeupList.get(position_real);
 
         String name = makeup.getName();
@@ -124,6 +130,7 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerListMakeup.
     @Override
     public int getItemCount() {
         if (makeupList != null && !makeupList.isEmpty()) {
+            if(header != null) return makeupList.size() + 1;
             return makeupList.size();
         } else return 0;
     }

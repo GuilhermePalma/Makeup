@@ -175,6 +175,8 @@ public class MainActivity extends AppCompatActivity {
             case OPTION_MENU_TOP_SEARCH:
                 //Desseleciona o Menu Lateral e Altera a Visibilidade do Icone Superior
                 unselectedItemsMenu();
+                listMakeup.clear();
+
                 menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(false);
                 menu.getItem(POSITION_TOP_MENU_HOME).setVisible(true);
 
@@ -188,6 +190,8 @@ public class MainActivity extends AppCompatActivity {
             case OPTION_MENU_TOP_HOME:
                 //Desseleciona o Menu Lateral e Altera a Visibilidade do Icone Superior
                 unselectedItemsMenu();
+                listMakeup.clear();
+
                 menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(true);
                 menu.getItem(POSITION_TOP_MENU_HOME).setVisible(false);
 
@@ -282,6 +286,7 @@ public class MainActivity extends AppCompatActivity {
                     String select_favorite = String.format("SELECT * FROM %1$s WHERE %2$s=1",
                             DataBaseHelper.TABLE_MAKEUP, DataBaseHelper.IS_FAVORITE_MAKEUP);
 
+                    listMakeup.clear();
                     listMakeup.addAll(serializationData.serializationSelectMakeup(select_favorite));
                     setUpListFragment(listMakeup, FragmentListMakeup.TYPE_FAVORITE);
                     break;
@@ -299,6 +304,8 @@ public class MainActivity extends AppCompatActivity {
                     // Todo: Implementar metodo da API_local
                     String select_popular = String.format("SELECT * FROM %s",
                             DataBaseHelper.TABLE_MAKEUP);
+
+                    listMakeup.clear();
                     listMakeup = serializationData.serializationSelectMakeup(select_popular);
                     setUpListFragment(listMakeup, FragmentListMakeup.TYPE_MORE_LIKED);
                     break;
@@ -306,6 +313,8 @@ public class MainActivity extends AppCompatActivity {
                 case OPTION_HISTORIC_MAKEUP:
                     String select_historic = String.format("SELECT * FROM %s",
                             DataBaseHelper.TABLE_MAKEUP);
+
+                    listMakeup.clear();
                     listMakeup = serializationData.serializationSelectMakeup(select_historic);
                     setUpListFragment(listMakeup, FragmentListMakeup.TYPE_HISTORIC);
                     break;
