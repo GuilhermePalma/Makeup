@@ -1,6 +1,5 @@
 package com.example.maquiagem.view.activities;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -10,18 +9,17 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.maquiagem.R;
+import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.model.User;
 import com.example.maquiagem.view.PersonAlertDialogs;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class ConfigurationActivity extends AppCompatActivity {
 
-    private final String FILE_PREFERENCE = "com.example.maquiagem";
-    private final String NIGHT_MODE = "night_mode";
-
     private AutoCompleteTextView autoCompleteIdioms;
     private SwitchMaterial switchDarkTheme;
     private String[] array_idioms;
-    private String idiom;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +54,11 @@ public class ConfigurationActivity extends AppCompatActivity {
         autoCompleteIdioms = findViewById(R.id.autoComplete_changeIdioms);
         switchDarkTheme = findViewById(R.id.switch_darkTheme);
         array_idioms = getResources().getStringArray(R.array.array_idioms);
+
+        // Obtem a Instancia do Usuario
+        DataBaseHelper database = new DataBaseHelper(this);
+        user = database.selectUser(this);
+        database.close();
     }
 
     /**
@@ -70,14 +73,29 @@ public class ConfigurationActivity extends AppCompatActivity {
         // Configura o Switch Dark e Light Theme
         switchDarkTheme.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            SharedPreferences preferences = getSharedPreferences(FILE_PREFERENCE, 0);
-            preferences.edit().putBoolean(NIGHT_MODE, isChecked).apply();
+            // Define o Novo valor ao Theme e Atualiza no Banco de Dados
+            DataBaseHelper database = new DataBaseHelper(this);
+            user.setTheme_is_night(isChecked);
+            database.updateUser(user);
+            database.close();
 
-            // todo: adicionar envio da alteração p/ a API Local
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            String messageTheme_api = updateThemeAPI(user);
+            if (messageTheme_api.equals("")){
+                // todo: enviar o theme alterado p/ api local
+                String theme = isChecked ? "Dark/Escuro" : "Light/Claro";
+
+                // Define o Theme no APP
+                if (isChecked) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                }
+
+                new PersonAlertDialogs(this).message(getString(R.string.title_updateUser),
+                        getString(R.string.text_idiomUpdate, theme)).show();
             } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                new PersonAlertDialogs(this).message(
+                        getString(R.string.title_errorAPI), messageTheme_api).show();
             }
         });
     }
@@ -93,15 +111,39 @@ public class ConfigurationActivity extends AppCompatActivity {
 
         // Listener do AutoCompleteIdioms
         autoCompleteIdioms.setOnItemClickListener((parent, view, position, id) -> {
-            idiom = array_idioms[position];
+            String idiom = array_idioms[position];
+            if (!user.validationIdiom(idiom)) {
+                // Coloca o Erro no Input Idiom
+                autoCompleteIdioms.setError(getString(R.string.error_valueRequired), null);
+                autoCompleteIdioms.requestFocus();
+                return;
+            }
 
-            // todo: enviar o idioma alterado p/ api local
-            // Todo: implementar outras versões de idioma no app
-            // Exibe a Mensagem sobre a Alteração do Idioma
-            new PersonAlertDialogs(this).message(getString(R.string.title_changeIdiom),
-                    getString(R.string.dialog_idiom)).show();
+            // Atualiza os Valores no Banco de Dados
+            DataBaseHelper database = new DataBaseHelper(this);
+            user.setIdiom(idiom);
+            database.updateUser(user);
+            database.close();
 
+            String messageIdiom_api = updateIdiomAPI(user);
+            if (messageIdiom_api.equals("")) {
+                // todo: enviar o idioma alterado p/ api local
+                new PersonAlertDialogs(this).message(
+                        getString(R.string.title_updateUser),
+                        getString(R.string.text_idiomUpdate, idiom)).show();
+            } else {
+                new PersonAlertDialogs(this).message(
+                        getString(R.string.title_errorAPI), messageIdiom_api).show();
+            }
         });
+    }
+
+    private String updateThemeAPI(User user) {
+        return "";
+    }
+
+    private String updateIdiomAPI(User user) {
+        return "";
     }
 
 }
