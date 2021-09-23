@@ -4,80 +4,116 @@ import android.content.Context;
 
 import com.example.maquiagem.R;
 
-
 public class User {
 
-    // todo: adicionar mais itens da classe User
-    private String name;
-    private String nickname;
-    private String email;
-    private String password;
+    // Context é usado p/ obter as Strings de Validação do String.xml
     private Context context;
+    // Atributos já Iniciados para não serem null
+    private String name = "";
+    private String nickname = "";
+    private String email = "";
+    private String password = "";
+    private String idiom = "";
+    private String token_user = "";
+    private boolean theme_is_night = false;
+    private String error_Validation = "";
 
-    public User(Context context, String name, String nickname, String email, String password) {
+    // Construror vazio ----> Manipulação no Banco de Dados
+    public User() {
+    }
+
+    // Instancia somente com o Context para Validar os Inputs
+    public User(Context context) {
+        this.context = context;
+    }
+
+    public User(Context context, String name, String nickname, String email, String password,
+                String idiom, boolean theme_is_night) {
         this.context = context;
         this.name = name;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
+        this.idiom = idiom;
+        this.theme_is_night = theme_is_night;
     }
 
-    // TODO: DESCONTINUAR METODO ABAIXO
-    public User(String name, String nickname, String email, String password) {
-        this.name = name;
-        this.nickname = nickname;
-        this.email = email;
-        this.password = password;
-    }
-
-    public User(String nickname, String password) {
-        this.nickname = nickname;
-        this.password = password;
-    }
-
-    public String validationName(String name) {
+    public boolean validationName(String name) {
         if (name == null || name.isEmpty()) {
-            return context.getString(R.string.validation_empty, "Nome");
+            error_Validation = context.getString(R.string.validation_empty,
+                    "Nome");
+            return false;
         } else if (name.length() < 3 || name.length() > 120) {
-            return context.getString(R.string.validation_length, "Nome", "3", "120");
+            error_Validation = context.getString(R.string.validation_length,
+                    "Nome", "3", "120");
+            return false;
         } else if (!name.matches("^[A-ZÀ-úà-úa-zçÇ\\s]*")) {
-            return context.getString(R.string.validation_noFormmat, "Nome", "Letras");
-        } else return context.getString(R.string.validation_ok);
+            error_Validation = context.getString(R.string.validation_noFormmat,
+                    "Nome", "Letras");
+            return false;
+        } else return true;
     }
 
-    public String validationNickname(String nickname) {
-        if (nickname == null || nickname.isEmpty()) {
-            return context.getString(R.string.validation_empty,
+    public boolean validationNickname(String nicknameReceived) {
+        if (nicknameReceived == null || nicknameReceived.isEmpty()) {
+            error_Validation = context.getString(R.string.validation_empty,
                     "Nome de Usuario (Nickname)");
-        } else if (nickname.length() < 3 || nickname.length() > 40) {
-            return context.getString(R.string.validation_length,
+            return false;
+        } else if (nicknameReceived.length() < 3 || nicknameReceived.length() > 40) {
+            error_Validation = context.getString(R.string.validation_length,
                     "Nome de Usuario (Nickname)", "3", "40");
-        } else if (!nickname.matches("^[A-Za-z._\\s]*")) {
-            return context.getString(R.string.validation_noFormmat,
+            return false;
+        } else if (!nicknameReceived.matches("^[A-Za-z._\\S]*")) {
+            error_Validation = context.getString(R.string.validation_noFormmat,
                     "Nome de Usuario (Nickname)", "Letras");
-        } else return context.getString(R.string.validation_ok);
+            return false;
+        } else return true;
     }
 
-    public String validationEmail(String email) {
-        if (email == null || email.isEmpty()) {
-            return context.getString(R.string.validation_empty, "Email");
-        } else if (email.length() < 8 || email.length() > 150) {
-            return context.getString(R.string.validation_length, "Email", "8", "150");
-        } else if (!email.matches("^[A-Za-z\\S\\d._\\-@#]*")) {
-            return context.getString(R.string.validation_noFormmat, "Email",
+    public boolean validationEmail(String emailReceived) {
+        if (emailReceived == null || emailReceived.isEmpty()) {
+            error_Validation = context.getString(R.string.validation_empty, "Email");
+            return false;
+        } else if (emailReceived.length() < 8 || emailReceived.length() > 150) {
+            error_Validation = context.getString(R.string.validation_length, "Email", "8", "150");
+            return false;
+        } else if (!emailReceived.matches("^[A-Za-z\\S\\d._\\-@#]*")) {
+            error_Validation = context.getString(R.string.validation_noFormmat, "Email",
                     "Letras, Numeros, e alguns caracteres (Hifen, Ponto, Underline, # e @)");
-        } else return context.getString(R.string.validation_ok);
+            return false;
+        } else return true;
     }
 
-    public String validationPassword(String password) {
-        if (password == null || password.isEmpty()) {
-            return context.getString(R.string.validation_empty, "Senha (Password)");
-        } else if (password.length() < 3 || password.length() > 40) {
-            return context.getString(R.string.validation_length, "Senha", "3", "40");
-        } else if (!password.matches("^[A-Za-z\\S\\d´`^~.,_\\-?@!*&+=#/|]*")) {
-            return context.getString(R.string.validation_noFormmat, "Senha",
-                    "Letras, Numeros, Acentos e Caracteres Especiais Validos");
-        } else return context.getString(R.string.validation_ok);
+    public boolean validationPassword(String passwordReceived) {
+        if (passwordReceived == null || passwordReceived.isEmpty()) {
+            error_Validation = context.getString(R.string.validation_empty, "Senha");
+            return false;
+        } else if (passwordReceived.length() < 3 || passwordReceived.length() > 40) {
+            error_Validation = context.getString(R.string.validation_length,
+                    "Senha", "3", "40");
+            return false;
+        } else if (!passwordReceived.matches("^[A-Za-z\\S\\d´`^~.,_\\-?@!*&+=#/|]*")) {
+            error_Validation = context.getString(R.string.validation_noFormmat,
+                    "Senha", "Letras, Numeros, Acentos e Caracteres Especiais Validos");
+            return false;
+        } else return true;
+    }
+
+    public boolean validationIdiom(String idiomReceived) {
+        if (idiomReceived == null || idiomReceived.equals("")) {
+            error_Validation = context.getString(R.string.validation_empty, "Idioma");
+            return false;
+        }
+
+        // Obtem um Array dos Idiomas Validos
+        String[] idiomsValid = context.getResources().getStringArray(R.array.array_idioms);
+        for (String itemArray : idiomsValid) {
+            if (idiomReceived.equals(itemArray)) return true;
+        }
+
+        error_Validation = context.getString(R.string.validation_noFormmat,
+                "Idioma", "os Idiomas da Lista");
+        return false;
     }
 
     public String getName() {
@@ -110,5 +146,45 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getIdiom() {
+        return idiom;
+    }
+
+    public void setIdiom(String idiom) {
+        this.idiom = idiom;
+    }
+
+    public boolean isTheme_is_night() {
+        return theme_is_night;
+    }
+
+    public void setTheme_is_night(boolean theme_is_night) {
+        this.theme_is_night = theme_is_night;
+    }
+
+    public String getError_Validation() {
+        return error_Validation;
+    }
+
+    public void setError_Validation(String error_validation) {
+        this.error_Validation = error_validation;
+    }
+
+    public String getToken_user() {
+        return token_user;
+    }
+
+    public void setToken_user(String token_user) {
+        this.token_user = token_user;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 }

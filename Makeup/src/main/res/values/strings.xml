@@ -49,6 +49,7 @@
         <item>Espanhol</item>
         <item>Frances</item>
     </string-array>
+    <string name="incorrect_password">As Senhas não são Iguais</string>
 
     <!--Strings do Menu Lateral-->
     <string name="option_profile">Seu Perfil</string>
@@ -68,6 +69,7 @@
     <string name="option_dataUse">Dados de Uso</string>
     <string name="open_menu">Abrir o Menu Lateral</string>
     <string name="close_menu">Fechar o Menu Lateral</string>
+    <string name="text_nicknameFormatted">\@%s</string>
 
     <!-- Fragment SearchMakeup-->
     <string name="hint_brand">Marca</string>
@@ -249,6 +251,7 @@
         Tipo de Produto. &lt;br />&lt;br /> * Mascara e Nail Polish não possuem categorias</string>
     <string name="error_notArgsSearch">É necessario ao menos UMA opção escolhida para realizar
         a busca</string>
+    <string name="error_JWT">Não foi Possivel realizar o Login no Aplicativo</string>
 
     <!-- Validação dos Formularios -->
     <string name="validation_ok">Campo Validado</string>
@@ -319,6 +322,9 @@
     <string name="text_changeIdiom">Alterar Idioma</string>
     <string name="text_changeTheme">Alterar Tema</string>
     <string name="text_darkTheme">Tema Escuro</string>
+    <string name="title_updateUser">Usuario Atualizado com Sucesso</string>
+    <string name="text_idiomUpdate">Idioma Atualizado para %s com Sucesso !</string>
+    <string name="text_themeUpdate">Tema Atualizado para %s com Sucesso !</string>
 
     <!--Data Aplication Activity-->
     <string name="toolbar_dataApplication">Dados do Uso</string>
