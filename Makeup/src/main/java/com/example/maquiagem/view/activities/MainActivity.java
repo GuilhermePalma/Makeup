@@ -100,14 +100,26 @@ public class MainActivity extends AppCompatActivity {
 
         // Obtém a referência do nome do usuário e altera seu nome
         TextView txt_nameHeader = headerView.findViewById(R.id.text_nameHeader);
-        TextView txt_nicknameHeader = headerView.findViewById(R.id.txt_nicknameHeader);
+        TextView txt_nicknameHeader = headerView.findViewById(R.id.text_nicknameHeader);
 
         DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
         User user = dataBaseHelper.selectUser(this);
         if (user != null) {
-            txt_nameHeader.setText(user.getName());
+            // Configuração no Tamanho do Nome e Nickname no Header do Menu Lateral
+            String name_formatted, nickname_formatted;
+            String name = user.getName();
+            String nickname = user.getNickname();
+            if (name.length() > 21) {
+                name_formatted = name.substring(0, 20);
+            } else name_formatted = name;
+
+            if (nickname.length() > 21) {
+                nickname_formatted = nickname.substring(0, 20);
+            } else nickname_formatted = nickname;
+
+            txt_nameHeader.setText(name_formatted);
             txt_nicknameHeader.setText(
-                    getString(R.string.text_nicknameFormatted,user.getNickname()));
+                    getString(R.string.text_nicknameFormatted, nickname_formatted));
         } else {
             txt_nameHeader.setText("");
             txt_nicknameHeader.setText("");
