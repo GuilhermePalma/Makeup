@@ -2,10 +2,9 @@
 
 <h2 align="center" id="title">Fotos da Versão Antiga</h2>
 
-### Infelizmente esse Commit foi feito após o horarios
 - Codigo Atualizado na **Branch Feature/implement-local-api**
 - Demonstração do APP:  [Youtube](https://youtu.be/JsrS6sNn29A)
-- Explicação Mobile : [Youtube](https://youtu.be/TlZ9UIDXmW8)
+- Explicação Projeto : [Youtube](https://youtu.be/yduOTxp_DCk)
 
 
 <h3 align="center">
