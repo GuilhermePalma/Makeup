@@ -71,7 +71,6 @@ public class SearchInternet {
                 }
             }
         }
-        Log.i("RESULT SEARCH", json_string);
         return json_string;
     }
 

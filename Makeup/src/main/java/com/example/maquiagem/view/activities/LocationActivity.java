@@ -95,10 +95,14 @@ public class LocationActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolBar);
         toolbar.setTitle(R.string.app_name);
         setSupportActionBar(toolbar);
-        // Icon de voltar para a Tela Home
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_return_home);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        if (getSupportActionBar() != null) {
+            // Icon de voltar para a Tela Home
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_return_home);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        }
     }
 
     // Recupera os ID dos Itens

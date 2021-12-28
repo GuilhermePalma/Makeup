@@ -88,6 +88,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         DataBaseHelper database = new DataBaseHelper(this);
         user = database.selectUser(this);
+        database.close();
     }
 
     /**
@@ -98,10 +99,14 @@ public class ProfileActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar2);
         toolbar.setTitle(R.string.toolbar_profile);
         setSupportActionBar(toolbar);
-        // Icon de voltar para a Tela Home
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_return_home);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        if (getSupportActionBar() != null) {
+            // Icon de voltar para a Tela Home
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_return_home);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        }
     }
 
     /**
@@ -283,6 +288,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Atualizar o dado no Banco de Dados Local
         DataBaseHelper database = new DataBaseHelper(this);
         database.updateUser(user);
+        database.close();
 
         return "";
     }
@@ -297,6 +303,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Atualiza o Usario no Banco Local
         DataBaseHelper database = new DataBaseHelper(this);
         database.updateUser(user);
+        database.close();
 
         return "";
     }
@@ -311,6 +318,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Atualiza o Usario no Banco Local
         DataBaseHelper database = new DataBaseHelper(this);
         database.updateUser(user);
+        database.close();
 
         return "";
     }

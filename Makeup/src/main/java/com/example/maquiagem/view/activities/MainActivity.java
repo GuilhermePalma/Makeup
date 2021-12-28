@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
         User user = dataBaseHelper.selectUser(this);
+        dataBaseHelper.close();
         if (user != null) {
             // Configuração no Tamanho do Nome e Nickname no Header do Menu Lateral
             String name_formatted, nickname_formatted;
@@ -262,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
             unselectedItemsMenu();
             item.setChecked(true);
             item.setCheckable(true);
+            drawer.closeDrawer(GravityCompat.START);
 
             // SwitchCase para verificar qual item foi selecionado
             switch (id_item) {
@@ -333,11 +335,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(this, SplashScreen.class));
                     finish();
                     break;
-
-                default:
-                    return true;
             }
-            drawer.closeDrawer(GravityCompat.START);
             return true;
         });
     }
@@ -419,49 +417,44 @@ public class MainActivity extends AppCompatActivity {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 
         // Configura a Execução da Tarefa Assincrona
-        Set<Callable<List<Makeup>>> callableTask = new HashSet<>();
-        callableTask.add(() -> {
+        Set<Callable<String>> callableTaskAPI = new HashSet<>();
+        callableTaskAPI.add(() -> {
             // Obtem o JSON e Quantidade de Resultados
             String json;
-            int quantity_result;
             switch (option_search) {
                 case OPTION_HOME_MAKEUP:
                     json = getJsonCatalog();
-                    quantity_result = MAX_RESULT_CATALOG;
                     break;
 
                 case OPTION_FAVORITE_MAKEUPS:
                     json = getJsonFavorite();
-                    quantity_result = SerializationData.ALL_ITEMS_JSON;
                     break;
 
                 case OPTION_MORE_FAVORITES:
                     json = getJsonMoreLiked();
-                    quantity_result = SerializationData.DEFAULT_QUANTITY_RESULT;
                     break;
+
                 default:
                     json = "";
-                    quantity_result = 0;
                     break;
             }
-
-            try {
-                // Retorna o JSON Serializado ou null
-                if (json == null || json.equals("")) return null;
-                return new SerializationData(getApplicationContext()).serializationJsonMakeup(json, quantity_result);
-            } catch (Exception ex) {
-                Log.e("Error", "Erro ao adicionar o JSON Serializado à Lista. " + ex);
-                ex.printStackTrace();
-                return null;
-            }
+            return json;
         });
 
         try {
             // Obtem o Resultado da Busca Assincrona
-            List<Future<List<Makeup>>> futureTasksList = executorService.invokeAll(callableTask);
-            return futureTasksList.get(0).get();
+            List<Future<String>> futureTasksList = executorService.invokeAll(callableTaskAPI);
+            String json = futureTasksList.get(0).get();
+
+            if (json == null || json.equals("")) return null;
+
+            int quantity_result = option_search == OPTION_FAVORITE_MAKEUPS
+                    ? SerializationData.ALL_ITEMS_JSON : MAX_RESULT_CATALOG;
+
+            // Retorna o JSON Serializado ou null
+            return new SerializationData(getApplicationContext()).serializationJsonMakeup(json, quantity_result);
         } catch (Exception ex) {
-            Log.e("Error", "Erro ao Obter as Makeups Serializadas. " + ex);
+            Log.e("Error", "Erro ao manipular o JSON ou na sua Serialização. " + ex);
             ex.printStackTrace();
             return null;
         }

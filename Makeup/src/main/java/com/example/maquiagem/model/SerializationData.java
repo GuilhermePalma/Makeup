@@ -17,7 +17,6 @@ import java.util.List;
 
 public class SerializationData {
 
-    public static final int DEFAULT_QUANTITY_RESULT = 30;
     public static final int ALL_ITEMS_JSON = -1;
     private static final String URL_NO_IMAGE = "https://github.com/GuilhermeCallegari/Maquiagem/blob" +
             "/main/app/src/main/res/drawable/makeup_no_image.jpg";
@@ -41,16 +40,7 @@ public class SerializationData {
             int max_result;
 
             // Define a Quantidade de Resultados
-            if (quantity_show == DEFAULT_QUANTITY_RESULT) {
-                // Pega o menor Valor entre: o valor passado e 30
-                max_result = Math.min(quantity_array, DEFAULT_QUANTITY_RESULT);
-            } else if (quantity_show == ALL_ITEMS_JSON) {
-                // Obtem todos os Itens do Array
-                max_result = quantity_array;
-            } else {
-                // Obtem o Valor Informado
-                max_result = quantity_array;
-            }
+            max_result = quantity_show == ALL_ITEMS_JSON ? quantity_array : quantity_show;
 
             for (int i = 0; i < max_result; i++) {
                 // Pega um objeto de acordo com a Posição (Posição = Item/Produto)
@@ -125,7 +115,6 @@ public class SerializationData {
 
     // Tratamento/Serialização de Dados do Banco Local (SQLite)
     public List<Makeup> serializationSelectMakeup(String select) {
-
         DataBaseHelper database = new DataBaseHelper(context);
         Cursor cursor = database.selectMakeup(select);
         List<Makeup> list_resultSelect = new ArrayList<>();
@@ -166,8 +155,8 @@ public class SerializationData {
             return null;
         }
 
-        if (cursor != null) cursor.close();
-        if (database != null) database.close();
+        cursor.close();
+        database.close();
 
         return list_resultSelect.isEmpty() ? null : list_resultSelect;
     }
