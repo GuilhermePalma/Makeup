@@ -112,7 +112,7 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerListMakeup.
         holder.checkBox_favorite.setChecked(makeup.isFavorite());
 
         // Biblioteca Picasso (Converte URL da IMG ---> IMG)
-        Picasso.with(context).load(makeup.getUrlImage())
+        Picasso.get().load(makeup.getUrlImage())
                 .error(R.drawable.makeup_no_image)
                 .into(holder.image);
 

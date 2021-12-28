@@ -95,7 +95,7 @@ public class MakeupDetailsActivity extends AppCompatActivity {
 
     private void showWindowData() {
         // Biblioteca Picasso (Converte URL da IMG ---> IMG)
-        Picasso.with(getApplicationContext()).load(makeup.getUrlImage())
+        Picasso.get().load(makeup.getUrlImage())
                 .error(R.drawable.makeup_no_image)
                 .into(image_product);
 
