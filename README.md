@@ -27,6 +27,8 @@
 	🚧   Em Construção 🚀 🚧
 </h4>
 
+<br />
+<h4>Obs: Fotos Desatualizadas</h4>
 <p align="center">
   <img alt="Imagem da Tela Principal" title="Inicio" src="./printscreen/LightMode/Index.jpeg" width="200px">
 	
