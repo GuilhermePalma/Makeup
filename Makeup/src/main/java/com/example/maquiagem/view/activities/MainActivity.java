@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     private final int OPTION_MORE_FAVORITES = R.id.option_moreFavorites;
     private final int OPTION_HOME_MAKEUP = R.id.option_homeMakeup;
     private final int OPTION_LOCATION = R.id.option_location;
-    private final int OPTION_SENSOR = R.id.option_sensor;
     private final int POSITION_TOP_MENU_SEARCH = 0;
     private final int POSITION_TOP_MENU_HOME = 1;
     private final int OPTION_MENU_TOP_HOME = R.id.topMenu_home;
@@ -322,11 +321,6 @@ public class MainActivity extends AppCompatActivity {
                 case OPTION_LOCATION:
                     // Já foi Validado Internet e GPS
                     startActivity(new Intent(this, LocationActivity.class));
-                    break;
-
-                case OPTION_SENSOR:
-                    startActivity(new Intent(MainActivity.this,
-                            SensorActivity.class));
                     break;
 
                 case OPTION_CONFIG:

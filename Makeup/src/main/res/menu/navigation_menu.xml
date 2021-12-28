@@ -37,14 +37,6 @@
         </menu>
     </item>
 
-    <item android:title="@string/option_titleResources">
-        <menu>
-            <item
-                android:id="@+id/option_sensor"
-                android:title="@string/option_sensorProximity" />
-        </menu>
-    </item>
-
     <item android:title="@string/option_titleConfig">
         <menu>
             <item
