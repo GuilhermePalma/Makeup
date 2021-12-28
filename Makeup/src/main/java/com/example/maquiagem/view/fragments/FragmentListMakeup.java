@@ -17,6 +17,7 @@ import com.example.maquiagem.controller.ClickRecyclerView;
 import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.controller.RecyclerListMakeup;
 import com.example.maquiagem.model.Makeup;
+import com.example.maquiagem.view.CustomAlertDialog;
 import com.example.maquiagem.view.activities.MakeupDetailsActivity;
 
 import java.util.List;
@@ -34,20 +35,19 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
     private String type_fragment;
     private Context context;
     private List<Makeup> makeupList;
-    private DataBaseHelper database;
 
     // Contrutor Vazio do Fragment
     public FragmentListMakeup() {
     }
 
     // Contrutor passando a List (RecyclerView) e Context (DataBase)
-    public FragmentListMakeup(Context context, List<Makeup> makeups) {
+    public FragmentListMakeup(List<Makeup> makeups) {
         this.makeupList = makeups;
     }
 
     // Intancia do Fragment ---> Inserindo o Valor Instanciado do Titulo, Context e List Usada
-    public static FragmentListMakeup newInstance(Context context, List<Makeup> makeups, String type) {
-        FragmentListMakeup fragment = new FragmentListMakeup(context, makeups);
+    public static FragmentListMakeup newInstance(List<Makeup> makeups, String type) {
+        FragmentListMakeup fragment = new FragmentListMakeup(makeups);
         Bundle args = new Bundle();
         args.putString(TYPE, type);
         fragment.setArguments(args);
@@ -69,10 +69,15 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
         View view = inflater.inflate(R.layout.fragment_list_makeup, container, false);
 
         context = view.getContext();
-        recyclerView = view.findViewById(R.id.recycler_listMakeup);
 
-        // Cofigura o Recycler e Header do RecyclerView
-        setUpRecyclerList();
+        if (makeupList == null || makeupList.isEmpty()) {
+            CustomAlertDialog customDialog = new CustomAlertDialog(context);
+            customDialog.message(getString(R.string.title_noData),getString(R.string.txt_maintenance)).show();
+       } else {
+            // Cofigura o Recycler e Header do RecyclerView
+            recyclerView = view.findViewById(R.id.recycler_listMakeup);
+            setUpRecyclerList();
+        }
 
         // Retorna a View Configurada
         return view;
@@ -87,7 +92,6 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
         setUpHeader();
 
         // Define o adapter (Classe que configura o RecyclerView) do RecyclerView
-        //recyclerListMakeup = new RecyclerListMakeup(context, header_view, makeupList, this);
         recyclerListMakeup = new RecyclerListMakeup(context, header_view, makeupList, this);
         recyclerView.setAdapter(recyclerListMakeup);
 
@@ -154,7 +158,7 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
         // Obtem a Posição do Item na Lista
         int indexItem = makeupList.indexOf(makeup_click);
         makeup_click.setFavorite(!makeup_click.isFavorite());
-        database = new DataBaseHelper(context);
+        DataBaseHelper database = new DataBaseHelper(context);
 
         if (type_fragment.equals(TYPE_CATALOG)) {
             database.insertMakeup(makeup_click);
@@ -169,7 +173,8 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
         }
 
         database.close();
-        // Atualiza o Recycler com a Nova List
-        recyclerListMakeup.notifyDataSetChanged();
+
+        // Atualiza o Item que foi Favoritado/Desfavoritado
+        recyclerListMakeup.notifyItemChanged(indexItem);
     }
 }

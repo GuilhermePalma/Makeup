@@ -13,7 +13,7 @@ import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.model.Makeup;
 import com.example.maquiagem.model.SearchInternet;
 import com.example.maquiagem.model.SerializationData;
-import com.example.maquiagem.view.PersonAlertDialogs;
+import com.example.maquiagem.view.CustomAlertDialog;
 import com.example.maquiagem.view.fragments.FragmentListMakeup;
 import com.example.maquiagem.view.fragments.FragmentSearchMakeup;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -28,7 +28,7 @@ public class ResultActivity extends AppCompatActivity {
     private TextView title_loading;
     private CircularProgressIndicator progressIndicator_loading;
     private String uri_received;
-    private PersonAlertDialogs dialogs;
+    private CustomAlertDialog dialogs;
     private List<Makeup> makeupListSearch;
     private FrameLayout frameLayout_fragment;
 
@@ -65,7 +65,7 @@ public class ResultActivity extends AppCompatActivity {
     private void instanceItems() {
         frameLayout_fragment = findViewById(R.id.frame_forFragmentSearch);
         makeupListSearch = new ArrayList<>();
-        dialogs = new PersonAlertDialogs(this);
+        dialogs = new CustomAlertDialog(this);
         title_loading = findViewById(R.id.txt_titleLoadingSearch);
         progressIndicator_loading = findViewById(R.id.progress_loadingSearch);
     }
@@ -106,8 +106,8 @@ public class ResultActivity extends AppCompatActivity {
                         progressIndicator_loading.setVisibility(View.GONE);
                         frameLayout_fragment.setVisibility(View.VISIBLE);
                         // Instancia e Coloca o Fragment List
-                        FragmentListMakeup fragmentListMakeup = FragmentListMakeup.newInstance(
-                                this, makeupListSearch, "");
+                        FragmentListMakeup fragmentListMakeup = FragmentListMakeup
+                                .newInstance(makeupListSearch, "");
                         getSupportFragmentManager().beginTransaction().replace(
                                 frameLayout_fragment.getId(), fragmentListMakeup).commit();
                     }

@@ -13,7 +13,7 @@ import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.controller.ManagerKeyboard;
 import com.example.maquiagem.model.User;
-import com.example.maquiagem.view.PersonAlertDialogs;
+import com.example.maquiagem.view.CustomAlertDialog;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -31,7 +31,7 @@ public class SingUpActivity extends AppCompatActivity {
     private Button btn_goLogin;
     private MaterialCheckBox checkBox_remember;
     private ManagerKeyboard managerKeyboard;
-    private PersonAlertDialogs dialog;
+    private CustomAlertDialog dialog;
     private User user;
 
     @Override
@@ -64,7 +64,7 @@ public class SingUpActivity extends AppCompatActivity {
         btn_goLogin = findViewById(R.id.btn_goLogin);
 
         managerKeyboard = new ManagerKeyboard(SingUpActivity.this);
-        dialog = new PersonAlertDialogs(this);
+        dialog = new CustomAlertDialog(this);
         user = new User(this);
     }
 
@@ -142,7 +142,7 @@ public class SingUpActivity extends AppCompatActivity {
                     // Obtem e Define o JWT na API
                     String jsonWebToken = getJsonWebToken(userInformation);
                     if (jsonWebToken.equals("")) {
-                        new PersonAlertDialogs(this).message(
+                        new CustomAlertDialog(this).message(
                                 getString(R.string.title_errorAPI),
                                 getString(R.string.error_JWT)).show();
                         return;

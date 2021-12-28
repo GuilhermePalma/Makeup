@@ -11,7 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.model.User;
-import com.example.maquiagem.view.PersonAlertDialogs;
+import com.example.maquiagem.view.CustomAlertDialog;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class ConfigurationActivity extends AppCompatActivity {
@@ -88,7 +88,7 @@ public class ConfigurationActivity extends AppCompatActivity {
                 // Define o Theme no APP
                 AppCompatDelegate.setDefaultNightMode(theme_app);
             } else {
-                new PersonAlertDialogs(this).message(
+                new CustomAlertDialog(this).message(
                         getString(R.string.title_errorAPI), messageTheme_api).show();
             }
         });
@@ -122,11 +122,11 @@ public class ConfigurationActivity extends AppCompatActivity {
             String messageIdiom_api = updateIdiomAPI(user);
             if (messageIdiom_api.equals("")) {
                 // todo: enviar o idioma alterado p/ api local
-                new PersonAlertDialogs(this).message(
+                new CustomAlertDialog(this).message(
                         getString(R.string.title_updateUser),
                         getString(R.string.text_idiomUpdate, idiom)).show();
             } else {
-                new PersonAlertDialogs(this).message(
+                new CustomAlertDialog(this).message(
                         getString(R.string.title_errorAPI), messageIdiom_api).show();
             }
         });

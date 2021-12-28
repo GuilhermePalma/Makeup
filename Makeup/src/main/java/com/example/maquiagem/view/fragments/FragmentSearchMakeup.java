@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.model.Makeup;
-import com.example.maquiagem.view.PersonAlertDialogs;
+import com.example.maquiagem.view.CustomAlertDialog;
 import com.example.maquiagem.view.activities.ResultActivity;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -145,7 +145,7 @@ public class FragmentSearchMakeup extends Fragment {
         btn_search.setOnClickListener(v -> {
             // Verifica se os Dados forma Preenchidos
             if (makeup.getBrand().equals("") && makeup.getType().equals("") && listTags.isEmpty()) {
-                new PersonAlertDialogs(context).message(getString(R.string.error_input),
+                new CustomAlertDialog(context).message(getString(R.string.error_input),
                         getString(R.string.error_notArgsSearch)).show();
             } else {
                 // Inicia a Activity Result com a URL que será consultada
@@ -222,13 +222,13 @@ public class FragmentSearchMakeup extends Fragment {
         autoComplete_category.setOnClickListener(v -> {
             // Exibe uma Mensagem caso a Categoria não esteja disponivel
             if (array_category.length < 1) {
-                new PersonAlertDialogs(context).message(getString(R.string.error_valueRequired),
+                new CustomAlertDialog(context).message(getString(R.string.error_valueRequired),
                         Html.fromHtml(getString(R.string.error_category)).toString()).show();
             }
         });
         inputLayout_category.setEndIconOnClickListener(v -> {
             if (array_category.length < 1) {
-                new PersonAlertDialogs(context).message(getString(R.string.error_valueRequired),
+                new CustomAlertDialog(context).message(getString(R.string.error_valueRequired),
                         Html.fromHtml(getString(R.string.error_category)).toString()).show();
             } else autoComplete_category.showDropDown();
         });

@@ -12,7 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.model.User;
-import com.example.maquiagem.view.PersonAlertDialogs;
+import com.example.maquiagem.view.CustomAlertDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -195,7 +195,7 @@ public class ProfileActivity extends AppCompatActivity {
                 // Obtem o Valor do Campo a Ser Alterado + Novo Valor
                 String valueInput = Objects.requireNonNull(editText_update.getText()).toString();
                 String valueTitleChange = title_inputChange.getText().toString();
-                PersonAlertDialogs dialog = new PersonAlertDialogs(this);
+                CustomAlertDialog dialog = new CustomAlertDialog(this);
 
                 if (valueTitleChange.equals(HINT_NAME)) {
                     // Valida o novo Nome Inserido

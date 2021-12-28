@@ -216,10 +216,6 @@
         <item>Lip stain</item>
     </string-array>
 
-    <!--Fragment Catalog-->
-    <string name="txt_titleCatalog">Olá, Seja Bem-Vindo(a)</string>
-    <string name="txt_subtitleCatalog">Veja alguns de nossos Produtos !</string>
-
     <!-- Mensagens de Erro -->
     <string name="title_noConnection">Sem Internet</string>
     <string name="title_invalidData">Dados Invalidos</string>
@@ -245,7 +241,8 @@
     <string name="error_existUser">O Usuario %s já existe no Sistema. Realize o Login !</string>
     <string name="error_noExistUser">O Usuario %s não existe no Sistema. Realize o Cadastro !</string>
     <string name="error_api">Houve um erro na execução da solicitação. Tente Novamente</string>
-    <string name="error_tableEmpty">Não há registros com os dados Solicitados</string>
+    <string name="error_tableEmpty">Não há registros com os dados Solicitados. &lt;br />
+        Algumas Funções ainda estão sendo desenvolvidas, aguarde.</string>
     <string name="error_dataUser">Infelizmente, não foi possivel obter os Dados do Usuario</string>
     <string name="error_category">Categorias só estarão disponiveis após selecionar um
         Tipo de Produto. &lt;br />&lt;br /> * Mascara e Nail Polish não possuem categorias</string>
@@ -337,12 +334,14 @@
     <!--Recycler ListMakeup-->
     <string name="txt_quantityFavorite">%d Favoritos</string>
 
-    <!--Header ListMakeup-->
+    <!--Fragment ListMakeup-->
     <string name="title_favoriteList">Minhas Makes</string>
     <string name="title_historicList">Maquiagens Buscadas</string>
     <string name="title_moreLikedList">As mais Queridinhas</string>
     <string name="subtitle_favoriteList">Confira as suas maquiagens Favoritas</string>
     <string name="subtitle_historicList">Confira as suas buscas de Maquiagens</string>
     <string name="subtitle_moreLikedList">Confira as maquiagens Favoritas dos Usuarios</string>
-
+    <string name="txt_titleCatalog">Olá, Seja Bem-Vindo(a)</string>
+    <string name="txt_subtitleCatalog">Veja alguns de nossos Produtos !</string>
+    <string name="txt_maintenance">Esse Recurso ainda não está disponivel. Por Favor Aguarde…</string>
 </resources>

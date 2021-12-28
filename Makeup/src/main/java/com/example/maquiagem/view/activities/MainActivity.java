@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,15 +30,18 @@ import com.example.maquiagem.model.Makeup;
 import com.example.maquiagem.model.SearchInternet;
 import com.example.maquiagem.model.SerializationData;
 import com.example.maquiagem.model.User;
-import com.example.maquiagem.view.PersonAlertDialogs;
+import com.example.maquiagem.view.CustomAlertDialog;
 import com.example.maquiagem.view.fragments.FragmentListMakeup;
 import com.example.maquiagem.view.fragments.FragmentSearchMakeup;
 import com.google.android.material.navigation.NavigationView;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,20 +49,13 @@ public class MainActivity extends AppCompatActivity {
     private static final String RATING_GREATER = "rating_greater_than";
     private static final int MAX_RESULT_CATALOG = 60;
 
-    private final int OPTION_PROFILE = R.id.option_profile;
-    private final int OPTION_CONFIG = R.id.option_config;
-    private final int OPTION_DATA_USED = R.id.option_dataUsed;
-    private final int OPTION_EXIT = R.id.option_exit;
     private final int OPTION_SEARCH_MAKEUP = R.id.option_searchMakeup;
-    private final int OPTION_HISTORIC_MAKEUP = R.id.option_historicMakeup;
     private final int OPTION_FAVORITE_MAKEUPS = R.id.option_favoriteMakeup;
     private final int OPTION_MORE_FAVORITES = R.id.option_moreFavorites;
     private final int OPTION_HOME_MAKEUP = R.id.option_homeMakeup;
     private final int OPTION_LOCATION = R.id.option_location;
     private final int POSITION_TOP_MENU_SEARCH = 0;
     private final int POSITION_TOP_MENU_HOME = 1;
-    private final int OPTION_MENU_TOP_HOME = R.id.topMenu_home;
-    private final int OPTION_MENU_TOP_SEARCH = R.id.search_option;
 
     private LinearLayout layout_loading;
     private FrameLayout frame_fragment;
@@ -66,11 +63,8 @@ public class MainActivity extends AppCompatActivity {
     private Menu menu;
     private DrawerLayout drawer;
     private NavigationView navigationView;
-    private List<Makeup> listMakeup;
-
-    private FragmentListMakeup fragmentListMakeup;
     private SerializationData serializationData;
-    private PersonAlertDialogs dialogs;
+    private CustomAlertDialog dialogs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +85,8 @@ public class MainActivity extends AppCompatActivity {
         navigationView.getMenu().findItem(OPTION_HOME_MAKEUP).setCheckable(true);
 
         // Mostra o Conteudo da Tela Inicial (Catalogo)
-        asyncTask(OPTION_HOME_MAKEUP);
-        setUpListFragment(listMakeup, FragmentListMakeup.TYPE_CATALOG);
+        List<Makeup> list_catalogMakeup = asyncGetMakeups(OPTION_HOME_MAKEUP);
+        setUpListFragment(list_catalogMakeup, FragmentListMakeup.TYPE_CATALOG);
 
         //Configura o Header do Navigation View
         View headerView = navigationView.getHeaderView(0);
@@ -135,10 +129,8 @@ public class MainActivity extends AppCompatActivity {
         layout_loading = findViewById(R.id.layout_loadingData);
         frame_fragment = findViewById(R.id.frame_forFragment);
 
-        fragmentListMakeup = new FragmentListMakeup();
-        listMakeup = new ArrayList<>();
         serializationData = new SerializationData(this);
-        dialogs = new PersonAlertDialogs(this);
+        dialogs = new CustomAlertDialog(this);
     }
 
     /**
@@ -170,11 +162,14 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Valores das Opções do Menu Superior (3 Pontinhos)
+        final int OPTION_MENU_TOP_HOME = R.id.topMenu_home;
+        final int OPTION_MENU_TOP_SEARCH = R.id.search_option;
+
         switch (item.getItemId()) {
             case OPTION_MENU_TOP_SEARCH:
                 //Desseleciona o Menu Lateral e Altera a Visibilidade do Icone Superior
                 unselectedItemsMenu();
-                listMakeup.clear();
 
                 menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(false);
                 menu.getItem(POSITION_TOP_MENU_HOME).setVisible(true);
@@ -189,14 +184,13 @@ public class MainActivity extends AppCompatActivity {
             case OPTION_MENU_TOP_HOME:
                 //Desseleciona o Menu Lateral e Altera a Visibilidade do Icone Superior
                 unselectedItemsMenu();
-                listMakeup.clear();
 
                 menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(true);
                 menu.getItem(POSITION_TOP_MENU_HOME).setVisible(false);
 
                 // Instancia o Fragment e Seleciona sua opção no Menu Latera
-                asyncTask(OPTION_HOME_MAKEUP);
-                setUpListFragment(listMakeup, FragmentListMakeup.TYPE_CATALOG);
+                List<Makeup> list_catalogMakeup = asyncGetMakeups(OPTION_HOME_MAKEUP);
+                setUpListFragment(list_catalogMakeup, FragmentListMakeup.TYPE_CATALOG);
 
                 navigationView.getMenu().findItem(OPTION_HOME_MAKEUP).setChecked(true);
                 navigationView.getMenu().findItem(OPTION_HOME_MAKEUP).setCheckable(true);
@@ -234,12 +228,17 @@ public class MainActivity extends AppCompatActivity {
      * Trata o Clique nos Itens do Menu Lateral
      */
     private void listenerNavigation() {
+
+        // Valores dos IDs das Opções do Menu
+        final int OPTION_PROFILE = R.id.option_profile;
+        final int OPTION_CONFIG = R.id.option_config;
+        final int OPTION_DATA_USED = R.id.option_dataUsed;
+        final int OPTION_EXIT = R.id.option_exit;
+        final int OPTION_HISTORIC_MAKEUP = R.id.option_historicMakeup;
+
         // Trata o Clique nos Itens
         navigationView.setNavigationItemSelectedListener(item -> {
-
-            // Reinica a List Makeup
-            listMakeup.clear();
-
+            // Obtem o ID do Item selecionado
             int id_item = item.getItemId();
 
             // Caso seja o Item de Localização ---> Valida Conexão com Internet e GPS
@@ -271,8 +270,8 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case OPTION_HOME_MAKEUP:
-                    asyncTask(OPTION_HOME_MAKEUP);
-                    setUpListFragment(listMakeup, FragmentListMakeup.TYPE_CATALOG);
+                    List<Makeup> list_catalogMakeup = asyncGetMakeups(OPTION_HOME_MAKEUP);
+                    setUpListFragment(list_catalogMakeup, FragmentListMakeup.TYPE_CATALOG);
 
                     //Altera o Icone Superior (Icone Search)
                     menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(true);
@@ -285,9 +284,8 @@ public class MainActivity extends AppCompatActivity {
                     String select_favorite = String.format("SELECT * FROM %1$s WHERE %2$s=1",
                             DataBaseHelper.TABLE_MAKEUP, DataBaseHelper.IS_FAVORITE_MAKEUP);
 
-                    listMakeup.clear();
-                    listMakeup.addAll(serializationData.serializationSelectMakeup(select_favorite));
-                    setUpListFragment(listMakeup, FragmentListMakeup.TYPE_FAVORITE);
+                    List<Makeup> list_favoriteMakeup = serializationData.serializationSelectMakeup(select_favorite);
+                    setUpListFragment(list_favoriteMakeup, FragmentListMakeup.TYPE_FAVORITE);
                     break;
 
                 case OPTION_SEARCH_MAKEUP:
@@ -301,21 +299,14 @@ public class MainActivity extends AppCompatActivity {
 
                 case OPTION_MORE_FAVORITES:
                     // Todo: Implementar metodo da API_local
-                    String select_popular = String.format("SELECT * FROM %s",
-                            DataBaseHelper.TABLE_MAKEUP);
-
-                    listMakeup.clear();
-                    listMakeup = serializationData.serializationSelectMakeup(select_popular);
-                    setUpListFragment(listMakeup, FragmentListMakeup.TYPE_MORE_LIKED);
+                    setUpListFragment(null, FragmentListMakeup.TYPE_MORE_LIKED);
                     break;
 
                 case OPTION_HISTORIC_MAKEUP:
-                    String select_historic = String.format("SELECT * FROM %s",
-                            DataBaseHelper.TABLE_MAKEUP);
+                    String select_historic = String.format("SELECT * FROM %s", DataBaseHelper.TABLE_MAKEUP);
 
-                    listMakeup.clear();
-                    listMakeup = serializationData.serializationSelectMakeup(select_historic);
-                    setUpListFragment(listMakeup, FragmentListMakeup.TYPE_HISTORIC);
+                    List<Makeup> list_historicSearches = serializationData.serializationSelectMakeup(select_historic);
+                    setUpListFragment(list_historicSearches, FragmentListMakeup.TYPE_HISTORIC);
                     break;
 
                 case OPTION_LOCATION:
@@ -354,13 +345,15 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Configura instancias dos Fragment de Lista (Catalogo, Favoritas, Historico)
      */
-    private void setUpListFragment(List<Makeup> makeups, String type_fragment) {
-        if (makeups == null) {
-            dialogs.message(getString(R.string.title_noData),
-                    getString(R.string.error_tableEmpty)).show();
+    private void setUpListFragment(List<Makeup> makeupList, String type_fragment) {
+        if (makeupList == null) {
+            showError();
         } else {
+            // Remove o Layout do "Loading" e exibe o Fragment
+            layout_loading.setVisibility(View.GONE);
+            frame_fragment.setVisibility(View.VISIBLE);
 
-            fragmentListMakeup = FragmentListMakeup.newInstance(this, listMakeup,
+            FragmentListMakeup fragmentListMakeup = FragmentListMakeup.newInstance(makeupList,
                     type_fragment);
             getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
                     fragmentListMakeup).commit();
@@ -417,15 +410,17 @@ public class MainActivity extends AppCompatActivity {
      * <p>
      * Nesse Metodo há tratamento de Possiveis exceções e retornos em caso de Erro.
      */
-    private void asyncTask(int option_search) {
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-
+    private List<Makeup> asyncGetMakeups(int option_search) {
         // Carrega o Circular Progress Indicator
         layout_loading.setVisibility(View.VISIBLE);
         frame_fragment.setVisibility(View.GONE);
 
-        // Executa as Operações em Backgorund
-        executorService.execute(() -> {
+        // Configura uma Atividade Assincrona
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        // Configura a Execução da Tarefa Assincrona
+        Set<Callable<List<Makeup>>> callableTask = new HashSet<>();
+        callableTask.add(() -> {
             // Obtem o JSON e Quantidade de Resultados
             String json;
             int quantity_result;
@@ -450,32 +445,26 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
 
-            // Apresenta o Resultado Background
-            runOnUiThread(() -> {
-                // Caso o Json seja Invalido ou Vazio
-                if (json == null || json.equals("")) {
-                    showError();
-                    return;
-                }
-
-                try {
-                    // Serializa O JSON ---> Retorno = List<Makeup> ou null
-                    listMakeup.addAll(new SerializationData(getApplicationContext()).
-                            serializationJsonMakeup(json, quantity_result));
-
-                    if (listMakeup == null || listMakeup.isEmpty()) {
-                        showError();
-                    } else {
-                        // Carrega o Fragment
-                        layout_loading.setVisibility(View.GONE);
-                        frame_fragment.setVisibility(View.VISIBLE);
-                    }
-                } catch (Exception ex) {
-                    showError();
-                    Log.e("Error", "Erro ao adicionar o JSON Serializado à Lista. " + ex);
-                }
-            });
+            try {
+                // Retorna o JSON Serializado ou null
+                if (json == null || json.equals("")) return null;
+                return new SerializationData(getApplicationContext()).serializationJsonMakeup(json, quantity_result);
+            } catch (Exception ex) {
+                Log.e("Error", "Erro ao adicionar o JSON Serializado à Lista. " + ex);
+                ex.printStackTrace();
+                return null;
+            }
         });
+
+        try {
+            // Obtem o Resultado da Busca Assincrona
+            List<Future<List<Makeup>>> futureTasksList = executorService.invokeAll(callableTask);
+            return futureTasksList.get(0).get();
+        } catch (Exception ex) {
+            Log.e("Error", "Erro ao Obter as Makeups Serializadas. " + ex);
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -516,7 +505,7 @@ public class MainActivity extends AppCompatActivity {
         frame_fragment.setVisibility(View.GONE);
 
         dialogs.message(getString(R.string.title_noData),
-                getString(R.string.error_tableEmpty)).show();
+                Html.fromHtml(getString(R.string.error_tableEmpty)).toString()).show();
     }
 
     /**

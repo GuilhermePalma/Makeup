@@ -6,14 +6,13 @@ import android.content.Context;
 import androidx.appcompat.app.AlertDialog;
 
 
-public class PersonAlertDialogs {
+public class CustomAlertDialog {
 
     private final Context context;
 
-    public PersonAlertDialogs(Context context) {
+    public CustomAlertDialog(Context context) {
         this.context = context;
     }
-
 
     public AlertDialog message(String title, String message) {
 
