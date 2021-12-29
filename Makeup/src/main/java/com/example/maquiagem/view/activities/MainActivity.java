@@ -232,17 +232,17 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Deseleciona o Item seleciona e Coloca a Seleção do Item Clicado
-            unselectedItemsMenu();
-            item.setChecked(true);
-            item.setCheckable(true);
+            if (id_item != OPTION_PROFILE && id_item != OPTION_LOCATION && id_item != OPTION_CONFIG
+                    && id_item != OPTION_DATA_USED) {
+                unselectedItemsMenu();
+                item.setChecked(true);
+                item.setCheckable(true);
+            }
+
             drawer.closeDrawer(GravityCompat.START);
 
             // SwitchCase para verificar qual item foi selecionado
             switch (id_item) {
-                case OPTION_PROFILE:
-                    startActivity(new Intent(context, ProfileActivity.class));
-                    break;
-
                 case OPTION_HOME_MAKEUP:
                     asyncGetMakeups(OPTION_HOME_MAKEUP);
 
@@ -251,6 +251,11 @@ public class MainActivity extends AppCompatActivity {
                     menu.getItem(POSITION_TOP_MENU_HOME).setVisible(false);
 
                     break;
+
+                case OPTION_PROFILE:
+                    startActivity(new Intent(context, ProfileActivity.class));
+                    break;
+
                 case OPTION_MY_FAVORITE_MAKEUPS:
                     if (ManagerResources.hasConnectionInternet(context)) {
                         // Obtem os Dados da API e Sincroniza o Banco de Dados Local
