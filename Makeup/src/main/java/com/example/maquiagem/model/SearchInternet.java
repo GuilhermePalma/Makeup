@@ -1,6 +1,9 @@
 package com.example.maquiagem.model;
 
+import android.content.Context;
 import android.util.Log;
+
+import com.example.maquiagem.controller.ManagerResources;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -15,10 +18,15 @@ public class SearchInternet {
 
     public static final String URL_MAKEUP = "http://makeup-api.herokuapp.com/api/v1/products.json?";
     public static final String PARAM_RATING_GREATER = "rating_greater_than";
-    public  static  final String PARAM_BRAND = "brand";
+    public static final String PARAM_BRAND = "brand";
+    public static final String PARAM_TYPE = "product_type";
+    public static final String PARAM_CATEGORY = "product_category";
+    public static final String PARAM_TAGS = "product_tags";
 
     // Metodo para Buscar em uma API ---> Retorna uma String com o JSON
-    public static String searchByUrl(String url, String method) {
+    public static String searchByUrl(Context context, String url, String method) {
+
+        if (!ManagerResources.hasConnectionInternet(context)) return null;
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;

@@ -2,7 +2,6 @@ package com.example.maquiagem.view.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +41,7 @@ public class FeedbackLocation extends Fragment {
         RadioButton rbtn_wrong = view.findViewById(R.id.rbtn_wrongLocation);
 
         btn_insertDb.setOnClickListener(v -> {
-            if (rbtn_correct.isChecked() || rbtn_wrong.isChecked()){
+            if (rbtn_correct.isChecked() || rbtn_wrong.isChecked()) {
                 // Desativa o Botão apos o Clique
                 btn_insertDb.setEnabled(false);
                 int lastIdLocation = helperDatabase.amountLocation();
@@ -52,9 +51,8 @@ public class FeedbackLocation extends Fragment {
             } else {
                 CustomAlertDialog customAlertDialog = new CustomAlertDialog(
                         view.getContext());
-                customAlertDialog.message(getString(R.string.title_invalidData), Html.fromHtml(
-                        getString(R.string.error_selected)).toString())
-                        .show();
+                customAlertDialog.defaultMessage(R.string.title_invalidData, R.string.error_selected,
+                        null, null, true).show();
             }
         });
 

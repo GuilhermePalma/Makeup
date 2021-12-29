@@ -208,14 +208,15 @@ public class ProfileActivity extends AppCompatActivity {
 
                         // Atualiza o Nome e Tenta Atualizar na API e Banco Local (SQLite)
                         user.setName(valueInput);
-                        String message_updateAPI = updateDataAPI(user);
-                        if (message_updateAPI.equals("")) {
-                            dialog.message("Nome Alterado", "Nome Alterado para: "
-                                    + user.getName()).show();
+                        if (updateUser(user)) {
+                            dialog.defaultMessage(R.string.txt_changed, R.string.txt_changedDetails,
+                                    new String[]{"Nome"}, new String[]{"Nome", user.getName()},
+                                    true).show();
                             showDataUser();
+
                         } else {
-                            dialog.message(getString(R.string.title_errorAPI),
-                                    message_updateAPI).show();
+                            dialog.defaultMessage(R.string.title_errorAPI, R.string.error_change, null,
+                                    new String[]{"Nome"}, true).show();
                         }
                     } else editText_update.setError(user.getError_Validation(), null);
                 } else if (valueTitleChange.equals(HINT_EMAIL)) {
@@ -224,14 +225,14 @@ public class ProfileActivity extends AppCompatActivity {
 
                         // Atualiza o Email e Tenta Atualizar na API e Banco Local (SQLite)
                         user.setEmail(valueInput);
-                        String message_updateAPI = updateEmailAPI(user);
-                        if (message_updateAPI.equals("")) {
-                            dialog.message("Email Alterado", "Email Alterado para: "
-                                    + user.getEmail()).show();
+                        if (updateUser(user)) {
+                            dialog.defaultMessage(R.string.txt_changed, R.string.txt_changedDetails,
+                                    new String[]{"Email"}, new String[]{"Email", user.getEmail()},
+                                    true).show();
                             showDataUser();
                         } else {
-                            dialog.message(getString(R.string.title_errorAPI),
-                                    message_updateAPI).show();
+                            dialog.defaultMessage(R.string.title_errorAPI, R.string.error_change, null,
+                                    new String[]{"Email"}, true).show();
                         }
 
                     } else editText_update.setError(user.getError_Validation(), null);
@@ -241,14 +242,14 @@ public class ProfileActivity extends AppCompatActivity {
 
                         // Atualiza o Nome e Tenta Atualizar na API e Banco Local (SQLite)
                         user.setPassword(valueInput);
-                        String message_updateAPI = updateDataAPI(user);
-                        if (message_updateAPI.equals("")) {
-                            dialog.message("Senha Alterado", "Senha Alterada para: "
-                                    + user.getEmail()).show();
+                        if (updateUser(user)) {
+                            dialog.defaultMessage(R.string.txt_changed, R.string.txt_changedDetails,
+                                    new String[]{"Senha"}, new String[]{"Senha", user.getEmail()},
+                                    true).show();
                             showDataUser();
                         } else {
-                            dialog.message(getString(R.string.title_errorAPI),
-                                    message_updateAPI).show();
+                            dialog.defaultMessage(R.string.title_errorAPI, R.string.error_change, null,
+                                    new String[]{"Senha"}, true).show();
                         }
 
                     } else editText_update.setError(user.getError_Validation(), null);
@@ -259,20 +260,20 @@ public class ProfileActivity extends AppCompatActivity {
 
                         // Atualiza o Nickname e Tenta Atualizar na API e Banco Local (SQLite)
                         user.setNickname(valueInput);
-                        String message_updateAPI = updateNicknameAPI(user);
-                        if (message_updateAPI.equals("")) {
-                            dialog.message("Nickname Alterado", "Nickname Alterado para: "
-                                    + user.getEmail()).show();
+                        if (updateUser(user)) {
+                            dialog.defaultMessage(R.string.txt_changed, R.string.txt_changedDetails,
+                                    new String[]{"Nickname"}, new String[]{"Nickname", user.getNickname()},
+                                    true).show();
                             showDataUser();
                         } else {
-                            dialog.message(getString(R.string.title_errorAPI),
-                                    message_updateAPI).show();
+                            dialog.defaultMessage(R.string.title_errorAPI, R.string.error_change, null,
+                                    new String[]{"Nickname"}, true).show();
                         }
 
                     } else editText_update.setError(user.getError_Validation(), null);
                 } else {
-                    dialog.message(getString(R.string.title_invalidData),
-                            getString(R.string.error_api)).show();
+                    dialog.defaultMessage(R.string.title_invalidData, R.string.error_api, null,
+                            null, true).show();
 
                     // Recarrega os Dados e Layout na Tela
                     showDataUser();
@@ -282,19 +283,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     //todo: atualiza o nome do usuario na API
-    private String updateDataAPI(User user) {
-        // Operação sem erro = Retorno ""
-
-        // Atualizar o dado no Banco de Dados Local
-        DataBaseHelper database = new DataBaseHelper(this);
-        database.updateUser(user);
-        database.close();
-
-        return "";
-    }
-
-    //todo: atualiza o nome do usuario na API
-    private String updateEmailAPI(User user) {
+    private boolean updateUser(User user) {
         // Operação sem erro = Retorno ""
         // Gerar programaticamente um novo Token
         String remove_newJWT = "JWT New";
@@ -305,22 +294,7 @@ public class ProfileActivity extends AppCompatActivity {
         database.updateUser(user);
         database.close();
 
-        return "";
-    }
-
-    //todo: atualiza o nome do usuario na API
-    private String updateNicknameAPI(User user) {
-        // Operação sem erro = Retorno ""
-        // API irá gerar automaticamente um novo JWT
-        String generated_newJWT = "JWT New";
-        user.setToken_user(generated_newJWT);
-
-        // Atualiza o Usario no Banco Local
-        DataBaseHelper database = new DataBaseHelper(this);
-        database.updateUser(user);
-        database.close();
-
-        return "";
+        return true;
     }
 
     /**

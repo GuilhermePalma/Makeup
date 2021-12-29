@@ -5,13 +5,7 @@ import static com.example.maquiagem.model.SerializationData.DEFAULT_QUANTITY;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
-import android.text.Html;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,6 +23,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerResources;
 import com.example.maquiagem.model.SerializationData;
 import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.model.entity.User;
@@ -37,7 +32,6 @@ import com.example.maquiagem.view.fragments.FragmentListMakeup;
 import com.example.maquiagem.view.fragments.FragmentSearchMakeup;
 import com.google.android.material.navigation.NavigationView;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -237,16 +231,15 @@ public class MainActivity extends AppCompatActivity {
 
             // Caso seja o Item de Localização ---> Valida Conexão com Internet e GPS
             if (id_item == OPTION_LOCATION) {
-                if (!connectionAvailable()) {
-                    customAlertDialog.message(getString(R.string.title_noConnection),
-                            getString(R.string.error_connection)).show();
-
+                if (!ManagerResources.hasConnectionInternet(context)) {
+                    customAlertDialog.defaultMessage(R.string.title_noConnection,
+                            R.string.error_connection, null, new String[]{"Internet"},
+                            true).show();
                     drawer.closeDrawer(GravityCompat.START);
                     return false;
-                } else if (!gpsAvailable()) {
-                    customAlertDialog.message(getString(R.string.title_noGps),
-                            getString(R.string.error_noGps)).show();
-
+                } else if (!ManagerResources.hasConnectionGps(context)) {
+                    customAlertDialog.defaultMessage(R.string.title_noGps, R.string.error_connection,
+                            null, new String[]{"GPS"}, true).show();
                     drawer.closeDrawer(GravityCompat.START);
                     return false;
                 }
@@ -273,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
 
                     break;
                 case OPTION_MY_FAVORITE_MAKEUPS:
-                    if (connectionAvailable()) {
+                    if (ManagerResources.hasConnectionInternet(context)) {
                         // Obtem os Dados da API e Sincroniza o Banco de Dados Local
                         asyncGetMakeups(OPTION_MY_FAVORITE_MAKEUPS);
                     } else {
@@ -354,50 +347,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // todo: colocar verificação da Internet e GPS em uma classe separada (Util..)
-    // Verifica se a Internet está disponivel
-    private boolean connectionAvailable() {
-        ConnectivityManager connectionManager = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo;
-
-        // Valida se o serviço de Internet está ativo
-        if (connectionManager != null) {
-            networkInfo = connectionManager.getActiveNetworkInfo();
-
-            // Valida se existe conexão ativa
-            if (networkInfo != null && networkInfo.isConnected()) {
-                return true;
-            } else {
-                // Erro na Conexão
-                Log.e("NO CONECTED", "\n Erro na conexão com a Internet" +
-                        "\nConexão: " + networkInfo);
-                return false;
-            }
-
-        } else {
-            Log.e("NO SERVICE", "\n Erro no serviço de Internet" +
-                    "\nServiço: " + connectionManager);
-            return false;
-        }
-    }
-
-    // Verifica se o GPS está disponivel
-    private boolean gpsAvailable() {
-        // Gerencia os serviços de Localziação
-        LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        // Verifica se o GPS está ativo e Habilitado para Usar
-        try {
-            return service.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (IllegalArgumentException exception) {
-            Log.e("ERROR SERVICE GPS", "Não foi foi possivel obter o " +
-                    "Serviço de GPS\n" + exception);
-            exception.printStackTrace();
-            return false;
-        }
-    }
-
     /**
      * Metodo responsavel pela busca de forma Assincrona nas APIs (Local ou Externa). A partir do
      * ID do Menu Lateral, configura os dados obtidos e quantidade de resultados. Tambem é tratado a
@@ -458,8 +407,8 @@ public class MainActivity extends AppCompatActivity {
         layout_loading.setVisibility(View.GONE);
         frame_fragment.setVisibility(View.GONE);
 
-        customAlertDialog.message(getString(R.string.title_noData),
-                Html.fromHtml(getString(R.string.error_tableEmpty)).toString()).show();
+        customAlertDialog.defaultMessage(R.string.title_noData, R.string.error_tableEmpty, null,
+                null, true).show();
     }
 
     /**

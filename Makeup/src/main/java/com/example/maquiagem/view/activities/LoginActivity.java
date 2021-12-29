@@ -1,5 +1,6 @@
 package com.example.maquiagem.view.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -28,6 +29,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button btn_login;
     private User user;
     private ManagerKeyboard managerKeyboard;
+    private CustomAlertDialog customDialog;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +55,9 @@ public class LoginActivity extends AppCompatActivity {
         checkBox_rememberUser = findViewById(R.id.checkbox_rememberUser);
         btn_singUp = findViewById(R.id.btn_goSingUp);
         btn_login = findViewById(R.id.btn_login);
-
-        managerKeyboard = new ManagerKeyboard(LoginActivity.this);
+        context = LoginActivity.this;
+        customDialog = new CustomAlertDialog(context);
+        managerKeyboard = new ManagerKeyboard(context);
     }
 
     /**
@@ -63,8 +67,7 @@ public class LoginActivity extends AppCompatActivity {
 
         btn_login.setOnClickListener(v -> {
             if (validationInputs()) {
-                String apiMessage = existUserApi(user);
-                if (apiMessage.equals("")) {
+                if (existUserApi(user)) {
 
                     // Obtem as Informações do Usuario da API
                     User userInformation = getInformationUser(user);
@@ -72,9 +75,8 @@ public class LoginActivity extends AppCompatActivity {
                     // Obtem e Define o JWT na API
                     String jsonWebToken = getJsonWebToken(userInformation);
                     if (jsonWebToken.equals("")) {
-                        new CustomAlertDialog(this).message(
-                                getString(R.string.title_errorAPI),
-                                getString(R.string.error_JWT)).show();
+                        customDialog.defaultMessage(R.string.title_errorAPI, R.string.error_JWT,
+                                null, null, true).show();
                         return;
                     }
 
@@ -92,7 +94,8 @@ public class LoginActivity extends AppCompatActivity {
                     finishAffinity();
                 } else {
                     // Mensagem de Erro de Usuario não Cadastrado
-                    new CustomAlertDialog(this).message(getString(R.string.title_invalidData), apiMessage).show();
+                    customDialog.defaultMessage(R.string.title_invalidData, R.string.error_noExistUser,
+                            null, new String[]{""}, true).show();
                 }
             }
             // Erro dos Inputs já são tratados no proprio metodo
@@ -124,12 +127,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // todo: implementar metodo da API
-    private String existUserApi(User user) {
-        // Realiza a a VAlidação se O Usuario existe no Banco de Dados
+    private boolean existUserApi(User user) {
+        // Verifica se o Usuario existe no Banco de Dados Local ---> Exibe o Email no Input
+        // Se não, Solicita o novo Login --> Autentica --> Gera o Token --> Salva o Usuario
 
-        // Obtem o JsonWebToken
-
-        return "";
+        return true;
     }
 
     //todo implementar = obter informações

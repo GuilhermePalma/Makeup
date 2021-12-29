@@ -1,5 +1,11 @@
 package com.example.maquiagem.view.fragments;
 
+import static com.example.maquiagem.model.SearchInternet.PARAM_BRAND;
+import static com.example.maquiagem.model.SearchInternet.PARAM_CATEGORY;
+import static com.example.maquiagem.model.SearchInternet.PARAM_TAGS;
+import static com.example.maquiagem.model.SearchInternet.PARAM_TYPE;
+import static com.example.maquiagem.model.SearchInternet.URL_MAKEUP;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -31,13 +37,6 @@ public class FragmentSearchMakeup extends Fragment {
     // Chave do Intent.put
     public static final String KEY_URI = "url_search";
 
-    // Constantes do Campo da API
-    private final String URL_API = "http://makeup-api.herokuapp.com/api/v1/products.json?";
-    private final String BRAND = "brand";
-    private final String TYPE = "product_type";
-    private final String CATEGORY = "product_category";
-    private final String TAGS = "product_tags";
-
     // Widgets Utilizados
     private final Activity activity;
     private final Context context;
@@ -53,6 +52,7 @@ public class FragmentSearchMakeup extends Fragment {
     private ChipGroup chipGroup_tags;
     private String[] array_brand;
     private String[] array_type;
+    private CustomAlertDialog customDialog;
 
     /**
      * Construtor da Classe do Fragment SearchMakeup
@@ -84,6 +84,7 @@ public class FragmentSearchMakeup extends Fragment {
         // Array das Tags selecionadas p/ pesqusia, Classe Utilizada e Array de Categorias Vazio
         listTags = new ArrayList<>();
         makeup = new Makeup();
+        customDialog = new CustomAlertDialog(context);
 
         // Instancia dos Arrays dos AutoCompleteText
         array_category = new String[0];
@@ -145,8 +146,8 @@ public class FragmentSearchMakeup extends Fragment {
         btn_search.setOnClickListener(v -> {
             // Verifica se os Dados forma Preenchidos
             if (makeup.getBrand().equals("") && makeup.getType().equals("") && listTags.isEmpty()) {
-                new CustomAlertDialog(context).message(getString(R.string.error_input),
-                        getString(R.string.error_notArgsSearch)).show();
+                customDialog.defaultMessage(R.string.error_input,
+                        R.string.error_notArgsSearch, null, null, true).show();
             } else {
                 // Inicia a Activity Result com a URL que será consultada
                 Intent intentResult = new Intent(context, ResultActivity.class);
@@ -175,12 +176,11 @@ public class FragmentSearchMakeup extends Fragment {
             else tagsWithCommas.append(item_tag).append(",");
         }
 
-        Uri build_uriAPI = Uri.parse(URL_API).buildUpon()
-                .appendQueryParameter(BRAND, brand_formatted)
-                .appendQueryParameter(TYPE, type_formatted)
-                .appendQueryParameter(CATEGORY, category_formatted)
-                .appendQueryParameter(TAGS, tagsWithCommas.toString())
-                .build();
+        Uri build_uriAPI = Uri.parse(URL_MAKEUP).buildUpon()
+                .appendQueryParameter(PARAM_BRAND, brand_formatted)
+                .appendQueryParameter(PARAM_TYPE, type_formatted)
+                .appendQueryParameter(PARAM_CATEGORY, category_formatted)
+                .appendQueryParameter(PARAM_TAGS, tagsWithCommas.toString()).build();
 
         return build_uriAPI.toString();
     }
@@ -222,14 +222,14 @@ public class FragmentSearchMakeup extends Fragment {
         autoComplete_category.setOnClickListener(v -> {
             // Exibe uma Mensagem caso a Categoria não esteja disponivel
             if (array_category.length < 1) {
-                new CustomAlertDialog(context).message(getString(R.string.error_valueRequired),
-                        Html.fromHtml(getString(R.string.error_category)).toString()).show();
+                customDialog.defaultMessage(R.string.error_valueRequired,
+                        R.string.error_category, null, null, true).show();
             }
         });
         inputLayout_category.setEndIconOnClickListener(v -> {
             if (array_category.length < 1) {
-                new CustomAlertDialog(context).message(getString(R.string.error_valueRequired),
-                        Html.fromHtml(getString(R.string.error_category)).toString()).show();
+                customDialog.defaultMessage(R.string.error_valueRequired,R.string.error_category,
+                        null, null, true).show();
             } else autoComplete_category.showDropDown();
         });
 

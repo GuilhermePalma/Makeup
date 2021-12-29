@@ -133,8 +133,7 @@ public class SingUpActivity extends AppCompatActivity {
         btn_singUp.setOnClickListener(v -> {
             if (validationInputs()) {
                 // Obtem a Mensagem de erro (caso exista) da API
-                String insert_Api = insertInApi(user);
-                if (insert_Api.equals("")) {
+                if (insertInApi(user)) {
 
                     // Obtem as Informações do Usuario da API
                     User userInformation = getInformationUser(user);
@@ -142,9 +141,8 @@ public class SingUpActivity extends AppCompatActivity {
                     // Obtem e Define o JWT na API
                     String jsonWebToken = getJsonWebToken(userInformation);
                     if (jsonWebToken.equals("")) {
-                        new CustomAlertDialog(this).message(
-                                getString(R.string.title_errorAPI),
-                                getString(R.string.error_JWT)).show();
+                        dialog.defaultMessage(R.string.title_errorAPI, R.string.error_JWT, null,
+                                null, true).show();
                         return;
                     }
 
@@ -165,7 +163,8 @@ public class SingUpActivity extends AppCompatActivity {
                     finishAffinity();
                 } else {
                     // Erro no Cadastro do Usuario na API
-                    dialog.message(getString(R.string.title_existUser), insert_Api).show();
+                    dialog.defaultMessage(R.string.title_existUser, R.string.error_existUser, null,
+                            new String[]{""}, true).show();
                 }
             }
             // O metodo de Validação dos Inputs já Trata os Possiveis Erros
@@ -173,8 +172,8 @@ public class SingUpActivity extends AppCompatActivity {
     }
 
     // todo: impementar inserção do usuario na API
-    private String insertInApi(User user) {
-        return "";
+    private boolean insertInApi(User user) {
+        return true;
     }
 
 

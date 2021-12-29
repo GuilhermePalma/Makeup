@@ -1,5 +1,6 @@
 package com.example.maquiagem.view.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
-import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.model.SearchInternet;
 import com.example.maquiagem.model.SerializationData;
+import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.view.CustomAlertDialog;
 import com.example.maquiagem.view.fragments.FragmentListMakeup;
 import com.example.maquiagem.view.fragments.FragmentSearchMakeup;
@@ -31,6 +32,7 @@ public class ResultActivity extends AppCompatActivity {
     private CustomAlertDialog dialogs;
     private List<Makeup> makeupListSearch;
     private FrameLayout frameLayout_fragment;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +57,8 @@ public class ResultActivity extends AppCompatActivity {
             }
         }
         // Mensagem de Erro caso não tenha a URI disponivel
-        dialogs.messageWithCloseWindow(this, getString(R.string.title_noData),
-                getString(R.string.error_recoveryData)).show();
+        dialogs.messageWithCloseWindow(this, R.string.title_noData, R.string.error_recoveryData,
+                null, null).show();
     }
 
     /**
@@ -65,7 +67,8 @@ public class ResultActivity extends AppCompatActivity {
     private void instanceItems() {
         frameLayout_fragment = findViewById(R.id.frame_forFragmentSearch);
         makeupListSearch = new ArrayList<>();
-        dialogs = new CustomAlertDialog(this);
+        context = ResultActivity.this;
+        dialogs = new CustomAlertDialog(context);
         title_loading = findViewById(R.id.txt_titleLoadingSearch);
         progressIndicator_loading = findViewById(R.id.progress_loadingSearch);
     }
@@ -84,23 +87,22 @@ public class ResultActivity extends AppCompatActivity {
         // Execução da Tarefa de Forma Assincrona
         executorService.execute(() -> {
             // Obtem o JSON
-            String jsonReciver_search = SearchInternet.searchByUrl(uri_received, "GET");
+            String jsonReciver_search = SearchInternet.searchByUrl(context, uri_received, "GET");
 
             runOnUiThread(() -> {
                 // Tratamento do JSON
                 if (jsonReciver_search == null || jsonReciver_search.equals("")) {
-                    dialogs.messageWithCloseWindow(this,
-                            getString(R.string.title_noExist),
-                            getString(R.string.error_noExists)).show();
+                    dialogs.messageWithCloseWindow(this, R.string.title_noExist,
+                            R.string.error_noExists, null, null).show();
                 } else {
                     // Serializa O JSON e Adiciona ele na List usada no Fragment
-                    makeupListSearch = new SerializationData(this).serializationJsonMakeup(
+                    makeupListSearch = new SerializationData(context).serializationJsonMakeup(
                             jsonReciver_search, SerializationData.ALL_ITEMS_JSON);
 
                     // Verifica se Há Itens na Lista e se Realizou Inserção no Banco de Dados
                     if (makeupListSearch == null || makeupListSearch.isEmpty() || !insertInDataBase(makeupListSearch)) {
-                        dialogs.messageWithCloseWindow(this, getString(R.string.title_invalidData),
-                                getString(R.string.error_noExists)).show();
+                        dialogs.messageWithCloseWindow(this, R.string.title_invalidData,
+                                R.string.error_noExists, null, null).show();
                     } else {
                         title_loading.setVisibility(View.GONE);
                         progressIndicator_loading.setVisibility(View.GONE);
@@ -123,7 +125,7 @@ public class ResultActivity extends AppCompatActivity {
     private boolean insertInDataBase(List<Makeup> makeups) {
         // Verifica se o Array é null ou Vazio = Evita Exceptions
         if (makeups != null && !makeups.isEmpty()) {
-            DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
+            DataBaseHelper dataBaseHelper = new DataBaseHelper(context);
             // Insere cada item do Array no DB
             for (Makeup makeupItem : makeups) {
                 if (!dataBaseHelper.existsInMakeup(makeupItem.getType(), makeupItem.getBrand())) {

@@ -1,5 +1,6 @@
 package com.example.maquiagem.view.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -16,10 +17,12 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class ConfigurationActivity extends AppCompatActivity {
 
+    private CustomAlertDialog customDialog;
     private AutoCompleteTextView autoCompleteIdioms;
     private SwitchMaterial switchDarkTheme;
     private String[] array_idioms;
     private User user;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +61,12 @@ public class ConfigurationActivity extends AppCompatActivity {
         autoCompleteIdioms = findViewById(R.id.autoComplete_changeIdioms);
         switchDarkTheme = findViewById(R.id.switch_darkTheme);
         array_idioms = getResources().getStringArray(R.array.array_idioms);
+        context = ConfigurationActivity.this;
+        customDialog = new CustomAlertDialog(context);
 
         // Obtem a Instancia do Usuario
-        DataBaseHelper database = new DataBaseHelper(this);
-        user = database.selectUser(this);
+        DataBaseHelper database = new DataBaseHelper(context);
+        user = database.selectUser(context);
         database.close();
     }
 
@@ -78,13 +83,12 @@ public class ConfigurationActivity extends AppCompatActivity {
         switchDarkTheme.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
             // Define o Novo valor ao Theme e Atualiza no Banco de Dados
-            DataBaseHelper database = new DataBaseHelper(this);
+            DataBaseHelper database = new DataBaseHelper(context);
             user.setTheme_is_night(isChecked);
             database.updateUser(user);
             database.close();
 
-            String messageTheme_api = updateThemeAPI(user);
-            if (messageTheme_api.equals("")) {
+            if (updateThemeAPI(user)) {
                 // todo: enviar o theme alterado p/ api local
                 int theme_app = isChecked ? AppCompatDelegate.MODE_NIGHT_YES :
                         AppCompatDelegate.MODE_NIGHT_NO;
@@ -92,8 +96,8 @@ public class ConfigurationActivity extends AppCompatActivity {
                 // Define o Theme no APP
                 AppCompatDelegate.setDefaultNightMode(theme_app);
             } else {
-                new CustomAlertDialog(this).message(
-                        getString(R.string.title_errorAPI), messageTheme_api).show();
+                customDialog.defaultMessage(R.string.title_errorAPI, R.string.error_change, null,
+                        new String[]{"Tema", "Usario"}, true).show();
             }
         });
     }
@@ -103,7 +107,7 @@ public class ConfigurationActivity extends AppCompatActivity {
      */
     private void setUpAutoComplete() {
         // Obtem e Configura o AutoCompleteIdiom
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context,
                 android.R.layout.simple_dropdown_item_1line, array_idioms);
         autoCompleteIdioms.setAdapter(adapter);
 
@@ -118,30 +122,29 @@ public class ConfigurationActivity extends AppCompatActivity {
             }
 
             // Atualiza os Valores no Banco de Dados
-            DataBaseHelper database = new DataBaseHelper(this);
+            DataBaseHelper database = new DataBaseHelper(context);
             user.setIdiom(idiom);
             database.updateUser(user);
             database.close();
 
-            String messageIdiom_api = updateIdiomAPI(user);
-            if (messageIdiom_api.equals("")) {
-                // todo: enviar o idioma alterado p/ api local
-                new CustomAlertDialog(this).message(
-                        getString(R.string.title_updateUser),
-                        getString(R.string.text_idiomUpdate, idiom)).show();
+            if (updateIdiomAPI(user)) {
+                customDialog.defaultMessage(R.string.title_updateUser, R.string.text_idiomUpdate,
+                        null, new String[]{idiom}, true).show();
             } else {
-                new CustomAlertDialog(this).message(
-                        getString(R.string.title_errorAPI), messageIdiom_api).show();
+                customDialog.defaultMessage(R.string.title_errorAPI, R.string.error_change, null,
+                        new String[]{"Idioma", "Usario"}, true).show();
             }
         });
     }
 
-    private String updateThemeAPI(User user) {
-        return "";
+    // todo: enviar o tema alterado p/ API LOCAL
+    private boolean updateThemeAPI(User user) {
+        return true;
     }
 
-    private String updateIdiomAPI(User user) {
-        return "";
+    // todo: enviar o idioma alterado p/ API LOCAL
+    private boolean updateIdiomAPI(User user) {
+        return true;
     }
 
 }

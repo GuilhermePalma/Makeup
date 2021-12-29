@@ -217,6 +217,7 @@
     </string-array>
 
     <!-- Mensagens de Erro -->
+    <string name="btn_close">Fechar</string>
     <string name="title_noConnection">Sem Internet</string>
     <string name="title_invalidData">Dados Invalidos</string>
     <string name="title_noGps">Sem GPS</string>
@@ -228,8 +229,7 @@
     <string name="title_noData">Sem Dados</string>
     <string name="error_input">Preencha os Campos</string>
     <string name="error_noExists">Não existe nenhum Produto Cadastrado com esses Filtros</string>
-    <string name="error_connection">Sem Conexão com a Internet</string>
-    <string name="error_noGps">Sem conexão com o GPS</string>
+    <string name="error_connection">Sem Conexão com %s</string>
     <string name="error_location">Erro ao Recuperar a Ultima Localização</string>
     <string name="error_recoveryData">Nenhum dado foi informado para a Busca</string>
     <string name="error_sensor">Sensor de Proximidade não Disponivel no Dispostivo</string>
@@ -249,6 +249,7 @@
     <string name="error_notArgsSearch">É necessario ao menos UMA opção escolhida para realizar
         a busca</string>
     <string name="error_JWT">Não foi Possivel realizar o Login no Aplicativo</string>
+    <string name="error_change">Não foi Possivel alterar %1$s do %2$s</string>
 
     <!-- Validação dos Formularios -->
     <string name="validation_ok">Campo Validado</string>
@@ -327,6 +328,8 @@
     <string name="toolbar_dataApplication">Dados do Uso</string>
 
     <!--Profile Activity-->
+    <string name="txt_changed">%s Alterado</string>
+    <string name="txt_changedDetails">%1$s Alterado para: \'%2$s\'</string>
     <string name="toolbar_profile">Perfil</string>
     <string name="text_change">Alterar</string>
     <string name="text_abort">Cancelar</string>

@@ -64,7 +64,7 @@ public class Makeup {
 
         // Configura a Execução da Tarefa Assincrona
         Set<Callable<String>> callableTaskAPI = new HashSet<>();
-        callableTaskAPI.add(() -> SearchInternet.searchByUrl(uri_search.toString(), "GET"));
+        callableTaskAPI.add(() -> SearchInternet.searchByUrl(context, uri_search.toString(), "GET"));
 
         try {
             // Obtem o Resultado da Busca Assincrona

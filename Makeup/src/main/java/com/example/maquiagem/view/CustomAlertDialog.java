@@ -5,6 +5,9 @@ import android.content.Context;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.example.maquiagem.R;
+import com.example.maquiagem.controller.ManagerResources;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class CustomAlertDialog {
 
@@ -14,36 +17,51 @@ public class CustomAlertDialog {
         this.context = context;
     }
 
-    public AlertDialog message(String title, String message) {
+    public AlertDialog defaultMessage(int id_title, int id_message, Object[] valuesStringTitle,
+                                      Object[] valuesStringMessage, boolean isCancelable) {
 
         // Cria o alertDialog
-        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        MaterialAlertDialogBuilder alertDialogBuilder = new MaterialAlertDialogBuilder(context);
+
+        String txt_title = ManagerResources.getStringIdNormalized(context, id_title, valuesStringTitle);
+        String txt_message = ManagerResources.getStringIdNormalized(context, id_message, valuesStringMessage);
 
         // Configura Titulo e a Mensagem
-        alertDialog.setTitle(title);
-        alertDialog.setMessage(message);
+        alertDialogBuilder.setTitle(txt_title);
+        alertDialogBuilder.setMessage(txt_message);
+
+        // Define se o Usuario poderá ou não Fechar o AlertDialog
+        alertDialogBuilder.setCancelable(isCancelable);
 
         // Configura o Botão e o clique para Fechar
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
-                (dialog, which) -> dialog.dismiss());
+        alertDialogBuilder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
 
-        return alertDialog;
+        return alertDialogBuilder.create();
     }
 
-    public AlertDialog messageWithCloseWindow(Activity activity, String title, String message) {
+    public AlertDialog messageWithCloseWindow(Activity activity, int id_title, int id_message, Object[] valuesStringTitle,
+                                              Object[] valuesStringMessage) {
 
-        // Criação do AlertDialog
-        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-        alertDialog.setTitle(title);
-        alertDialog.setMessage(message);
+        // Cria o alertDialog
+        MaterialAlertDialogBuilder alertDialogBuilder = new MaterialAlertDialogBuilder(context);
+
+        String txt_title = ManagerResources.getStringIdNormalized(context, id_title, valuesStringTitle);
+        String txt_message = ManagerResources.getStringIdNormalized(context, id_message, valuesStringMessage);
+
+        // Configura Titulo e a Mensagem
+        alertDialogBuilder.setTitle(txt_title);
+        alertDialogBuilder.setMessage(txt_message);
+
+        // Não Permite que o Usuario Feche o Dialog sem clicar no Botão
+        alertDialogBuilder.setCancelable(false);
 
         // Configura o Botão e o clique para Fechar
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Fechar",
+        alertDialogBuilder.setNegativeButton(context.getString(R.string.btn_close),
                 (dialog, which) -> {
                     activity.finish();
                     dialog.dismiss();
                 });
 
-        return alertDialog;
+        return alertDialogBuilder.create();
     }
 }

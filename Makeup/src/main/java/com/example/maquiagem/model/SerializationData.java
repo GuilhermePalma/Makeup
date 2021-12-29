@@ -1,12 +1,14 @@
 package com.example.maquiagem.model;
 
+import static com.example.maquiagem.controller.ManagerResources.isNullOrEmpty;
+
 import android.content.Context;
 import android.database.Cursor;
-import android.text.Html;
 import android.util.Log;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerResources;
 import com.example.maquiagem.model.entity.Makeup;
 
 import org.json.JSONArray;
@@ -65,31 +67,27 @@ public class SerializationData {
                     makeupLoop.setFavorite(false);
 
                     // Normaliza as Strings Recebidas (HTML Tags ---> String)
-                    makeupLoop.setBrand(Html.fromHtml(makeupLoop.getBrand()).toString());
-                    makeupLoop.setName(Html.fromHtml(makeupLoop.getName()).toString());
-                    makeupLoop.setCurrency(Html.fromHtml(makeupLoop.getCurrency()).toString());
-                    makeupLoop.setType(Html.fromHtml(makeupLoop.getType()).toString());
-                    makeupLoop.setDescription(Html.fromHtml(makeupLoop.getDescription()).toString());
+                    makeupLoop.setBrand(ManagerResources.getNormalizedString(makeupLoop.getBrand()));
+                    makeupLoop.setName(ManagerResources.getNormalizedString(makeupLoop.getName()));
+                    makeupLoop.setCurrency(ManagerResources.getNormalizedString(makeupLoop.getCurrency()));
+                    makeupLoop.setType(ManagerResources.getNormalizedString(makeupLoop.getType()));
+                    makeupLoop.setDescription(ManagerResources.getNormalizedString(makeupLoop.getDescription()));
 
                     //Caso não tenha dados inseridos
-                    if (makeupLoop.getName().equals("null") ||
-                            makeupLoop.getName().equals("")) {
+                    if (makeupLoop.getName().equals("null") || isNullOrEmpty(makeupLoop.getName())) {
                         makeupLoop.setName(context.getString(R.string.empty_name));
                     }
-                    if (makeupLoop.getPrice().equals("null") ||
-                            makeupLoop.getPrice().equals("")) {
+                    if (makeupLoop.getPrice().equals("null") || isNullOrEmpty(makeupLoop.getPrice())) {
                         makeupLoop.setPrice(context.getString(R.string.empty_price));
                     }
-                    if (makeupLoop.getCurrency().equals("null") ||
-                            makeupLoop.getCurrency().equals("")) {
+                    if (makeupLoop.getCurrency().equals("null") || isNullOrEmpty(makeupLoop.getCurrency())) {
                         makeupLoop.setCurrency("U$");
                     }
                     if (makeupLoop.getDescription().equals("null") ||
-                            makeupLoop.getDescription().equals("")) {
+                            isNullOrEmpty(makeupLoop.getDescription())) {
                         makeupLoop.setDescription(context.getString(R.string.empty_description));
                     }
-                    if (makeupLoop.getUrlImage().equals("null") ||
-                            makeupLoop.getUrlImage().equals("")) {
+                    if (makeupLoop.getUrlImage().equals("null") || isNullOrEmpty(makeupLoop.getUrlImage())) {
                         makeupLoop.setUrlImage(URL_NO_IMAGE);
                     }
 

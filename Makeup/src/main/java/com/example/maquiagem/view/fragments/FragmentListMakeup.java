@@ -72,8 +72,8 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
 
         if (makeupList == null || makeupList.isEmpty()) {
             CustomAlertDialog customDialog = new CustomAlertDialog(context);
-            customDialog.message(getString(R.string.title_noData),getString(R.string.txt_maintenance)).show();
-       } else {
+            customDialog.defaultMessage(R.string.title_noData, R.string.txt_maintenance, null, null, true).show();
+        } else {
             // Cofigura o Recycler e Header do RecyclerView
             recyclerView = view.findViewById(R.id.recycler_listMakeup);
             setUpRecyclerList();
