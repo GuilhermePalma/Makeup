@@ -69,7 +69,6 @@
     <string name="option_dataUse">Dados de Uso</string>
     <string name="open_menu">Abrir o Menu Lateral</string>
     <string name="close_menu">Fechar o Menu Lateral</string>
-    <string name="text_nicknameFormatted">\@%s</string>
 
     <!-- Fragment SearchMakeup-->
     <string name="hint_brand">Marca</string>
@@ -240,7 +239,7 @@
     <string name="error_noMatchPassword">As Senhas não são Iguais</string>
     <string name="error_existUser">O Usuario %s já existe no Sistema. Realize o Login !</string>
     <string name="error_noExistUser">O Usuario %s não existe no Sistema. Realize o Cadastro !</string>
-    <string name="error_api">Houve um erro na execução da solicitação. Tente Novamente</string>
+        <string name="error_api">Houve um erro na execução da solicitação. Tente Novamente</string>
     <string name="error_tableEmpty">Não há registros com os dados Solicitados. &lt;br />
         Algumas Funções ainda estão sendo desenvolvidas, aguarde.</string>
     <string name="error_dataUser">Infelizmente, não foi possivel obter os Dados do Usuario</string>
@@ -328,9 +327,9 @@
     <string name="toolbar_dataApplication">Dados do Uso</string>
 
     <!--Profile Activity-->
-    <string name="txt_changed">%s Alterado</string>
-    <string name="txt_changedDetails">%1$s Alterado para: \'%2$s\'</string>
     <string name="toolbar_profile">Perfil</string>
+    <string name="text_changeUser">Alterar Dados do Usuario</string>
+    <string name="text_detailsProfile">Esses são alguns dos dados sobre você</string>
     <string name="text_change">Alterar</string>
     <string name="text_abort">Cancelar</string>
 

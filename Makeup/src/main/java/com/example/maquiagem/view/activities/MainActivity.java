@@ -87,26 +87,12 @@ public class MainActivity extends AppCompatActivity {
         DataBaseHelper dataBaseHelper = new DataBaseHelper(context);
         User user = dataBaseHelper.selectUser(context);
         dataBaseHelper.close();
-        if (user != null) {
-            // Configuração no Tamanho do Nome e Nickname no Header do Menu Lateral
-            String name_formatted, nickname_formatted;
-            String name = user.getName();
-            String nickname = user.getNickname();
-            if (name.length() > 21) {
-                name_formatted = name.substring(0, 20);
-            } else name_formatted = name;
 
-            if (nickname.length() > 21) {
-                nickname_formatted = nickname.substring(0, 20);
-            } else nickname_formatted = nickname;
-
-            txt_nameHeader.setText(name_formatted);
-            txt_nicknameHeader.setText(
-                    getString(R.string.text_nicknameFormatted, nickname_formatted));
-        } else {
-            txt_nameHeader.setText("");
-            txt_nicknameHeader.setText("");
-        }
+        // Configuração no Tamanho do Nome e Nickname no Header do Menu Lateral
+        txt_nameHeader.setText(user != null
+                ? user.customStringFormat(user.getName(), null, 21) : "");
+        txt_nicknameHeader.setText(user != null
+                ? user.customStringFormat(user.getNickname(), "@", 21) : "");
     }
 
     /**

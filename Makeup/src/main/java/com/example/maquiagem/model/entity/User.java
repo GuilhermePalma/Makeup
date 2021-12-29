@@ -1,11 +1,14 @@
 package com.example.maquiagem.model.entity;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.maquiagem.R;
+import com.example.maquiagem.controller.ManagerResources;
 
 public class User {
 
+    public static final int NO_MAX_LENGTH = -1;
     // Context é usado p/ obter as Strings de Validação do String.xml
     private Context context;
     // Atributos já Iniciados para não serem null
@@ -114,6 +117,28 @@ public class User {
         error_Validation = context.getString(R.string.validation_noFormmat,
                 "Idioma", "os Idiomas da Lista");
         return false;
+    }
+
+    public String customStringFormat(String string_before, String prefix, int max_length) {
+        try {
+            // Formata o Inicio (Prefixo) da String
+            String temporary_format = ManagerResources.isNullOrEmpty(prefix) ? "" : prefix;
+
+            // Define o Tamanho Maximo como o Comprimento Total da String
+            if (max_length == NO_MAX_LENGTH || max_length <= 0) {
+                max_length = string_before.length();
+            }
+
+            // Formata o Tamanho da String e Retorna
+            temporary_format += string_before.length() > max_length
+                    ? string_before.substring(0, max_length) : string_before;
+            return temporary_format;
+        } catch (Exception ex) {
+            // Tratamento de Possiveis Exceções (Index maior que o temanho, ...)
+            Log.e("ERROR NICKNAME", "Erro na Formatação do Nickname. Exceção: " + ex);
+            ex.printStackTrace();
+            return "";
+        }
     }
 
     public String getName() {

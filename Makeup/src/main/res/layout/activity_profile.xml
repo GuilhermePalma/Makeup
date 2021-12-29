@@ -4,23 +4,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".view.activities.ProfileActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        tools:context=".view.activities.ProfileActivity">
-
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
 
         <include
             android:id="@+id/toolbar2"
             layout="@layout/tool_bar" />
 
-        <TextView
-            android:id="@+id/txt_nickname"
-            android:layout_width="0dp"
+        <!-- Texto de Demonstração -->
+        <!--<TextView
+            android:id="@+id/txt_helloProfile"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginLeft="15dp"
@@ -29,248 +32,110 @@
             android:layout_marginRight="15dp"
             android:fontFamily="@font/ubuntu_bold"
             android:gravity="center"
-            android:text="Nickname"
+            android:text="Ola @nickname"
             android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar2"
-            tools:ignore="HardcodedText" />
+            tools:ignore="HardcodedText" />-->
 
-        <TextView
-            android:id="@+id/title_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
-            android:fontFamily="@font/ubuntu_bold"
-            android:text="@string/hint_name"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_nickname"
-            app:layout_constraintVertical_bias="0.07" />
-
-        <TextView
-            android:id="@+id/txt_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/btn_changeName"
-            app:layout_constraintStart_toStartOf="@+id/title_name"
-            app:layout_constraintTop_toBottomOf="@+id/title_name" />
-
-        <Button
-            android:id="@+id/btn_changeName"
-            style="@style/Widget.AppCompat.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginRight="20dp"
-            android:padding="0dp"
-            android:text="@string/text_change"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/txt_name" />
-
-        <TextView
-            android:id="@+id/title_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/ubuntu_bold"
-            android:text="@string/hint_email"
-            android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_name" />
-
-        <TextView
-            android:id="@+id/txt_email"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/btn_changeEmail"
-            app:layout_constraintStart_toStartOf="@+id/title_email"
-            app:layout_constraintTop_toBottomOf="@+id/title_email" />
-
-        <Button
-            android:id="@+id/btn_changeEmail"
-            style="@style/Widget.AppCompat.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginRight="20dp"
-            android:padding="0dp"
-            android:text="@string/text_change"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_email"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/txt_email" />
-
-        <TextView
-            android:id="@+id/title_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/ubuntu_bold"
-            android:text="@string/hint_password"
-            android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_email" />
-
-        <TextView
-            android:id="@+id/txt_password"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/btn_changePassword"
-            app:layout_constraintStart_toStartOf="@+id/title_password"
-            app:layout_constraintTop_toBottomOf="@+id/title_password" />
-
-        <Button
-            android:id="@+id/btn_changePassword"
-            style="@style/Widget.AppCompat.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginRight="20dp"
-            android:padding="0dp"
-            android:text="@string/text_change"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_password"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/txt_password" />
-
-        <TextView
-            android:id="@+id/title_nickname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/ubuntu_bold"
-            android:text="@string/hint_nickname"
-            android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_password" />
-
-        <TextView
-            android:id="@+id/txt_nicknameChange"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/btn_changeNickname"
-            app:layout_constraintStart_toStartOf="@+id/title_nickname"
-            app:layout_constraintTop_toBottomOf="@+id/title_nickname" />
-
-        <Button
-            android:id="@+id/btn_changeNickname"
-            style="@style/Widget.AppCompat.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginRight="20dp"
-            android:padding="0dp"
-            android:text="@string/text_change"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_nicknameChange"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/txt_nicknameChange" />
-
-        <TextView
-            android:id="@+id/txt_errorDataUser"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginRight="20dp"
-            android:fontFamily="@font/ubuntu_bold"
-            android:gravity="center"
-            android:text="@string/error_dataUser"
-            android:textSize="20sp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/title_inputChange"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginBottom="15dp"
-            android:gravity="center"
-            android:text="Valor do Campo que será Alterado"
-            android:textSize="20sp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/inputLayout_updateUser"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="HardcodedText" />
+        <include layout="@layout/layout_header_list"
+            android:id="@+id/header_profile"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/inputLayout_updateUser"
+            android:id="@+id/editLayout_profileName"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginBottom="30dp"
-            android:visibility="gone"
-            app:endIconMode="clear_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_nicknameChange">
+            android:enabled="false"
+            android:hint="@string/hint_name"
+            app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editText_updateUser"
+                android:id="@+id/editText_profileName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:visibility="visible" />
+                android:layout_height="match_parent"
+                android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editLayout_profileNickname"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:enabled="false"
+            android:hint="@string/hint_nickname"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText_profileNickname"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editLayout_profileEmail"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:enabled="false"
+            android:hint="@string/hint_email"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText_profileEmail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editLayout_profilePassword"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:enabled="false"
+            android:hint="@string/hint_password"
+            app:endIconMode="password_toggle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText_profilePassword"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btn_changeUser"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="20dp"
+            android:text="@string/text_changeUser" />
+
 
         <LinearLayout
             android:id="@+id/linearLayout_buttons"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="20dp"
             android:layout_marginBottom="30dp"
             android:orientation="horizontal"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/inputLayout_updateUser"
-            app:layout_constraintStart_toStartOf="@+id/inputLayout_updateUser"
-            app:layout_constraintTop_toBottomOf="@+id/inputLayout_updateUser">
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/btn_abortChange"
@@ -280,10 +145,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:text="@string/text_abort"
-                android:visibility="visible"
-                app:layout_constraintStart_toStartOf="@+id/inputLayout_updateUser"
-                app:layout_constraintTop_toBottomOf="@+id/inputLayout_updateUser" />
+                android:text="@string/text_abort" />
 
             <Button
                 android:id="@+id/btn_confirmChange"
@@ -293,12 +155,8 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:text="@string/text_change"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="@+id/inputLayout_updateUser"
-                app:layout_constraintTop_toBottomOf="@+id/inputLayout_updateUser" />
-
+                android:text="@string/text_change" />
         </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </ScrollView>

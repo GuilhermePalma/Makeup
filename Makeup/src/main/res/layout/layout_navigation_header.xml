@@ -27,7 +27,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="5dp"
-        android:text="@string/text_nicknameFormatted"
-        android:textColor="@color/snow" />
+        android:text="\@example_nickname"
+        android:textColor="@color/snow"
+        tools:ignore="HardcodedText" />
 
 </LinearLayout>
