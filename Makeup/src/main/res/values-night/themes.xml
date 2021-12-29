@@ -24,6 +24,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
+        <item name="fontFamily">@font/ubuntu_regular</item>
     </style>
 
     <style name="ThemeOverlay.Maquiagem.AppWidgetContainer" parent="">
