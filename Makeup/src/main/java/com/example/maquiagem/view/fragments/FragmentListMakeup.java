@@ -16,7 +16,7 @@ import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ClickRecyclerView;
 import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.controller.RecyclerListMakeup;
-import com.example.maquiagem.model.Makeup;
+import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.view.CustomAlertDialog;
 import com.example.maquiagem.view.activities.MakeupDetailsActivity;
 
@@ -25,7 +25,7 @@ import java.util.List;
 public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
 
     public static final String TYPE_CATALOG = "catalog";
-    public static final String TYPE_FAVORITE = "favorite";
+    public static final String TYPE_MY_FAVORITE = "my_favorites";
     public static final String TYPE_MORE_LIKED = "more_search";
     public static final String TYPE_HISTORIC = "historic";
     private static final String TYPE = "type_fragment";
@@ -112,7 +112,7 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
         TextView header_subtitle = header_view.findViewById(R.id.txt_subtitleHeaderList);
 
         switch (type_fragment) {
-            case TYPE_FAVORITE:
+            case TYPE_MY_FAVORITE:
                 header_title.setText(R.string.title_favoriteList);
                 header_subtitle.setText(R.string.subtitle_favoriteList);
                 break;
@@ -166,7 +166,7 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
             database.updateFavoriteMakeup(makeup_click);
         }
 
-        if (type_fragment.equals(TYPE_FAVORITE)) {
+        if (type_fragment.equals(TYPE_MY_FAVORITE)) {
             makeupList.remove(indexItem);
         } else {
             makeupList.set(indexItem, makeup_click);

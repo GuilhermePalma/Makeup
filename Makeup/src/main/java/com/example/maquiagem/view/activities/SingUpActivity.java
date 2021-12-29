@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.controller.ManagerKeyboard;
-import com.example.maquiagem.model.User;
+import com.example.maquiagem.model.entity.User;
 import com.example.maquiagem.view.CustomAlertDialog;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.textfield.TextInputEditText;

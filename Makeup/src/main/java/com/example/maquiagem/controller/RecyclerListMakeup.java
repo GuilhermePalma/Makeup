@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.model.Makeup;
+import com.example.maquiagem.model.entity.Makeup;
 import com.google.android.material.card.MaterialCardView;
 import com.squareup.picasso.Picasso;
 

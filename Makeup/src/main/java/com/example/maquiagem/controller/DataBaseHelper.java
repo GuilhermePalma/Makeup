@@ -6,10 +6,11 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
-import com.example.maquiagem.model.Location;
-import com.example.maquiagem.model.Makeup;
-import com.example.maquiagem.model.User;
+import com.example.maquiagem.model.entity.Location;
+import com.example.maquiagem.model.entity.Makeup;
+import com.example.maquiagem.model.entity.User;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
 
@@ -286,25 +287,32 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      * Retorna o resgistro do Usaurio já serializado
      */
     public User selectUser(Context context) {
-        SQLiteDatabase database = getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            SQLiteDatabase database = getReadableDatabase();
+            cursor = database.rawQuery(String.format("SELECT * FROM %1$s", TABLE_USER), null);
 
-        Cursor cursor = database.rawQuery(String.format("SELECT * FROM %1$s", TABLE_USER), null);
+            if (cursor != null && cursor.moveToFirst()) {
+                User user = new User();
+                user.setContext(context);
+                user.setNickname(cursor.getString(cursor.getColumnIndexOrThrow("nickname")));
+                user.setPassword(cursor.getString(cursor.getColumnIndexOrThrow(PASSWORD_USER)));
+                user.setEmail(cursor.getString(cursor.getColumnIndexOrThrow(EMAIL_USER)));
+                user.setName(cursor.getString(cursor.getColumnIndexOrThrow(NAME_USER)));
+                user.setIdiom(cursor.getString(cursor.getColumnIndexOrThrow(IDIOM_USER)));
+                int value_theme = cursor.getInt(cursor.getColumnIndexOrThrow(THEME_IS_NIGHT_USER));
+                user.setTheme_is_night(value_theme == TRUE);
+                user.setToken_user(cursor.getString(cursor.getColumnIndexOrThrow(TOKEN_USER)));
 
-        if (cursor != null && cursor.moveToFirst()) {
-            User user = new User();
-            user.setContext(context);
-            user.setNickname(cursor.getString(cursor.getColumnIndex(NICKNAME_USER)));
-            user.setPassword(cursor.getString(cursor.getColumnIndex(PASSWORD_USER)));
-            user.setEmail(cursor.getString(cursor.getColumnIndex(EMAIL_USER)));
-            user.setName(cursor.getString(cursor.getColumnIndex(NAME_USER)));
-            user.setIdiom(cursor.getString(cursor.getColumnIndex(IDIOM_USER)));
-            int value_theme = cursor.getInt(cursor.getColumnIndex(THEME_IS_NIGHT_USER));
-            user.setTheme_is_night(value_theme == TRUE);
-            user.setToken_user(cursor.getString(cursor.getColumnIndex(TOKEN_USER)));
-
-            cursor.close();
-            return user;
-        } else return null;
+                return user;
+            } else return null;
+        } catch (Exception ex) {
+            Log.e("Exception", "Erro ao Obter o Usuario do Banco de Dados. Exceção: " + ex);
+            ex.printStackTrace();
+            return null;
+        } finally {
+            if (cursor != null) cursor.close();
+        }
     }
 
     /**

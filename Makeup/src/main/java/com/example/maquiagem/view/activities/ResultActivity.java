@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
-import com.example.maquiagem.model.Makeup;
+import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.model.SearchInternet;
 import com.example.maquiagem.model.SerializationData;
 import com.example.maquiagem.view.CustomAlertDialog;

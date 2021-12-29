@@ -1,12 +1,15 @@
 package com.example.maquiagem.view.activities;
 
+import static com.example.maquiagem.model.SerializationData.ALL_ITEMS_JSON;
+import static com.example.maquiagem.model.SerializationData.DEFAULT_QUANTITY;
+
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -26,45 +29,38 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
-import com.example.maquiagem.model.Makeup;
-import com.example.maquiagem.model.SearchInternet;
 import com.example.maquiagem.model.SerializationData;
-import com.example.maquiagem.model.User;
+import com.example.maquiagem.model.entity.Makeup;
+import com.example.maquiagem.model.entity.User;
 import com.example.maquiagem.view.CustomAlertDialog;
 import com.example.maquiagem.view.fragments.FragmentListMakeup;
 import com.example.maquiagem.view.fragments.FragmentSearchMakeup;
 import com.google.android.material.navigation.NavigationView;
 
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String URL_API = "http://makeup-api.herokuapp.com/api/v1/products.json?";
-    private static final String RATING_GREATER = "rating_greater_than";
-    private static final int MAX_RESULT_CATALOG = 60;
-
+    public static final int OPTION_MY_FAVORITE_MAKEUPS = R.id.option_favoriteMakeup;
+    public static final int OPTION_MORE_FAVORITES = R.id.option_moreFavorites;
+    public static final int OPTION_HOME_MAKEUP = R.id.option_homeMakeup;
     private final int OPTION_SEARCH_MAKEUP = R.id.option_searchMakeup;
-    private final int OPTION_FAVORITE_MAKEUPS = R.id.option_favoriteMakeup;
-    private final int OPTION_MORE_FAVORITES = R.id.option_moreFavorites;
-    private final int OPTION_HOME_MAKEUP = R.id.option_homeMakeup;
     private final int OPTION_LOCATION = R.id.option_location;
     private final int POSITION_TOP_MENU_SEARCH = 0;
     private final int POSITION_TOP_MENU_HOME = 1;
 
+    private Context context;
     private LinearLayout layout_loading;
     private FrameLayout frame_fragment;
     private Toolbar toolbar;
     private Menu menu;
     private DrawerLayout drawer;
     private NavigationView navigationView;
-    private SerializationData serializationData;
-    private CustomAlertDialog dialogs;
+    private CustomAlertDialog customAlertDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +81,7 @@ public class MainActivity extends AppCompatActivity {
         navigationView.getMenu().findItem(OPTION_HOME_MAKEUP).setCheckable(true);
 
         // Mostra o Conteudo da Tela Inicial (Catalogo)
-        List<Makeup> list_catalogMakeup = asyncGetMakeups(OPTION_HOME_MAKEUP);
-        setUpListFragment(list_catalogMakeup, FragmentListMakeup.TYPE_CATALOG);
+        asyncGetMakeups(OPTION_HOME_MAKEUP);
 
         //Configura o Header do Navigation View
         View headerView = navigationView.getHeaderView(0);
@@ -95,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
         TextView txt_nameHeader = headerView.findViewById(R.id.text_nameHeader);
         TextView txt_nicknameHeader = headerView.findViewById(R.id.text_nicknameHeader);
 
-        DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
-        User user = dataBaseHelper.selectUser(this);
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(context);
+        User user = dataBaseHelper.selectUser(context);
         dataBaseHelper.close();
         if (user != null) {
             // Configuração no Tamanho do Nome e Nickname no Header do Menu Lateral
@@ -129,9 +124,8 @@ public class MainActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.navigation_view);
         layout_loading = findViewById(R.id.layout_loadingData);
         frame_fragment = findViewById(R.id.frame_forFragment);
-
-        serializationData = new SerializationData(this);
-        dialogs = new CustomAlertDialog(this);
+        context = MainActivity.this;
+        customAlertDialog = new CustomAlertDialog(context);
     }
 
     /**
@@ -177,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Instancia o Fragment e Seleciona sua opção no Menu Lateral
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
-                        new FragmentSearchMakeup(this, this)).commit();
+                        new FragmentSearchMakeup(this, context)).commit();
                 navigationView.getMenu().findItem(OPTION_SEARCH_MAKEUP).setChecked(true);
                 navigationView.getMenu().findItem(OPTION_SEARCH_MAKEUP).setCheckable(true);
 
@@ -190,8 +184,7 @@ public class MainActivity extends AppCompatActivity {
                 menu.getItem(POSITION_TOP_MENU_HOME).setVisible(false);
 
                 // Instancia o Fragment e Seleciona sua opção no Menu Latera
-                List<Makeup> list_catalogMakeup = asyncGetMakeups(OPTION_HOME_MAKEUP);
-                setUpListFragment(list_catalogMakeup, FragmentListMakeup.TYPE_CATALOG);
+                asyncGetMakeups(OPTION_HOME_MAKEUP);
 
                 navigationView.getMenu().findItem(OPTION_HOME_MAKEUP).setChecked(true);
                 navigationView.getMenu().findItem(OPTION_HOME_MAKEUP).setCheckable(true);
@@ -245,13 +238,13 @@ public class MainActivity extends AppCompatActivity {
             // Caso seja o Item de Localização ---> Valida Conexão com Internet e GPS
             if (id_item == OPTION_LOCATION) {
                 if (!connectionAvailable()) {
-                    dialogs.message(getString(R.string.title_noConnection),
+                    customAlertDialog.message(getString(R.string.title_noConnection),
                             getString(R.string.error_connection)).show();
 
                     drawer.closeDrawer(GravityCompat.START);
                     return false;
                 } else if (!gpsAvailable()) {
-                    dialogs.message(getString(R.string.title_noGps),
+                    customAlertDialog.message(getString(R.string.title_noGps),
                             getString(R.string.error_noGps)).show();
 
                     drawer.closeDrawer(GravityCompat.START);
@@ -268,31 +261,34 @@ public class MainActivity extends AppCompatActivity {
             // SwitchCase para verificar qual item foi selecionado
             switch (id_item) {
                 case OPTION_PROFILE:
-                    startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                    startActivity(new Intent(context, ProfileActivity.class));
                     break;
 
                 case OPTION_HOME_MAKEUP:
-                    List<Makeup> list_catalogMakeup = asyncGetMakeups(OPTION_HOME_MAKEUP);
-                    setUpListFragment(list_catalogMakeup, FragmentListMakeup.TYPE_CATALOG);
+                    asyncGetMakeups(OPTION_HOME_MAKEUP);
 
                     //Altera o Icone Superior (Icone Search)
                     menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(true);
                     menu.getItem(POSITION_TOP_MENU_HOME).setVisible(false);
 
                     break;
-                case OPTION_FAVORITE_MAKEUPS:
-                    // todo: Implementar API_LOCAL
-                    // Verificar a Internet: Se disponivel acessa api_local se não obtem do BD
-                    String select_favorite = String.format("SELECT * FROM %1$s WHERE %2$s=1",
-                            DataBaseHelper.TABLE_MAKEUP, DataBaseHelper.IS_FAVORITE_MAKEUP);
-
-                    List<Makeup> list_favoriteMakeup = serializationData.serializationSelectMakeup(select_favorite);
-                    setUpListFragment(list_favoriteMakeup, FragmentListMakeup.TYPE_FAVORITE);
+                case OPTION_MY_FAVORITE_MAKEUPS:
+                    if (connectionAvailable()) {
+                        // Obtem os Dados da API e Sincroniza o Banco de Dados Local
+                        asyncGetMakeups(OPTION_MY_FAVORITE_MAKEUPS);
+                    } else {
+                        // Obtem os Dados Salvos do Banco Local (Sem Internet)
+                        String select_favorite = String.format("SELECT * FROM %1$s WHERE %2$s=1",
+                                DataBaseHelper.TABLE_MAKEUP, DataBaseHelper.IS_FAVORITE_MAKEUP);
+                        List<Makeup> list_favorites = new SerializationData(context)
+                                .serializationSelectMakeup(select_favorite);
+                        setUpListFragment(list_favorites, FragmentListMakeup.TYPE_MY_FAVORITE);
+                    }
                     break;
 
                 case OPTION_SEARCH_MAKEUP:
                     getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
-                            new FragmentSearchMakeup(this, this)).commit();
+                            new FragmentSearchMakeup(this, context)).commit();
 
                     //Altera o Icone Superior (Icone Home)
                     menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(false);
@@ -300,39 +296,39 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case OPTION_MORE_FAVORITES:
-                    // Todo: Implementar metodo da API_local
-                    setUpListFragment(null, FragmentListMakeup.TYPE_MORE_LIKED);
+                    asyncGetMakeups(OPTION_MORE_FAVORITES);
                     break;
 
                 case OPTION_HISTORIC_MAKEUP:
                     String select_historic = String.format("SELECT * FROM %s", DataBaseHelper.TABLE_MAKEUP);
 
-                    List<Makeup> list_historicSearches = serializationData.serializationSelectMakeup(select_historic);
+                    List<Makeup> list_historicSearches = new SerializationData(context)
+                            .serializationSelectMakeup(select_historic);
                     setUpListFragment(list_historicSearches, FragmentListMakeup.TYPE_HISTORIC);
                     break;
 
                 case OPTION_LOCATION:
                     // Já foi Validado Internet e GPS
-                    startActivity(new Intent(this, LocationActivity.class));
+                    startActivity(new Intent(context, LocationActivity.class));
                     break;
 
                 case OPTION_CONFIG:
-                    startActivity(new Intent(MainActivity.this,
+                    startActivity(new Intent(context,
                             ConfigurationActivity.class));
                     break;
 
                 case OPTION_DATA_USED:
-                    startActivity(new Intent(MainActivity.this,
+                    startActivity(new Intent(context,
                             DataApplicationActivity.class));
                     break;
 
                 case OPTION_EXIT:
                     // Limpa o Banco Local do Usuario
-                    DataBaseHelper database = new DataBaseHelper(this);
+                    DataBaseHelper database = new DataBaseHelper(context);
                     database.deleteAllUsers();
                     database.close();
                     // Inicia a SplashScreen
-                    startActivity(new Intent(this, SplashScreen.class));
+                    startActivity(new Intent(context, SplashScreen.class));
                     finish();
                     break;
             }
@@ -403,91 +399,56 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Este metodo realiza uma busca de forma Assincrona nas APIs (Local ou externa). A partir de
-     * um ID do Menu Lateral, configura os dados obtidos e quantidade de resultados
-     * <p>
-     * Nesse Metodo há tratamento de Possiveis exceções e retornos em caso de Erro.
+     * Metodo responsavel pela busca de forma Assincrona nas APIs (Local ou Externa). A partir do
+     * ID do Menu Lateral, configura os dados obtidos e quantidade de resultados. Tambem é tratado a
+     * exibição dos itens no do Fragment
      */
-    private List<Makeup> asyncGetMakeups(int option_search) {
+    private void asyncGetMakeups(int option_search) {
+        // Quantidade de Itens que serão Exibidos
+        int quantity_items = option_search == OPTION_HOME_MAKEUP ? DEFAULT_QUANTITY : ALL_ITEMS_JSON;
+
         // Carrega o Circular Progress Indicator
         layout_loading.setVisibility(View.VISIBLE);
         frame_fragment.setVisibility(View.GONE);
 
-        // Configura uma Atividade Assincrona
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        // Executa a Busca Assincrona. Dessa forma, a busca pode continuar após o metodo terminar
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        executorService.execute(() -> {
+            Makeup makeup = new Makeup(context);
+            List<Makeup> async_list = makeup.getMakeups(executorService, makeup.getUri(option_search),
+                    quantity_items);
 
-        // Configura a Execução da Tarefa Assincrona
-        Set<Callable<String>> callableTaskAPI = new HashSet<>();
-        callableTaskAPI.add(() -> {
-            // Obtem o JSON e Quantidade de Resultados
-            String json;
-            switch (option_search) {
-                case OPTION_HOME_MAKEUP:
-                    json = getJsonCatalog();
-                    break;
+            // Atribui a Lista usada o Valor Oficial das Maquiagens
+            runOnUiThread(() -> {
+                if (async_list == null || async_list.isEmpty()) showError();
+                else {
+                    String type_fragment = "";
+                    switch (option_search) {
+                        case OPTION_HOME_MAKEUP:
+                            type_fragment = FragmentListMakeup.TYPE_CATALOG;
+                            break;
+                        case OPTION_MY_FAVORITE_MAKEUPS:
+                            type_fragment = FragmentListMakeup.TYPE_MY_FAVORITE;
+                            break;
+                        case OPTION_MORE_FAVORITES:
+                            type_fragment = FragmentListMakeup.TYPE_MORE_LIKED;
+                            break;
+                        default:
+                            break;
+                    }
+                    setUpListFragment(async_list, type_fragment);
+                }
+            });
 
-                case OPTION_FAVORITE_MAKEUPS:
-                    json = getJsonFavorite();
-                    break;
-
-                case OPTION_MORE_FAVORITES:
-                    json = getJsonMoreLiked();
-                    break;
-
-                default:
-                    json = "";
-                    break;
+            // Sincroniza o Banco de Dados Local com os Dados recebido da API
+            if (async_list != null && option_search == OPTION_MY_FAVORITE_MAKEUPS) {
+                DataBaseHelper dataBase = new DataBaseHelper(context);
+                for (int i = 0; i < async_list.size(); i++) {
+                    dataBase.insertMakeup(async_list.get(i));
+                }
+                dataBase.close();
             }
-            return json;
         });
-
-        try {
-            // Obtem o Resultado da Busca Assincrona
-            List<Future<String>> futureTasksList = executorService.invokeAll(callableTaskAPI);
-            String json = futureTasksList.get(0).get();
-
-            if (json == null || json.equals("")) return null;
-
-            int quantity_result = option_search == OPTION_FAVORITE_MAKEUPS
-                    ? SerializationData.ALL_ITEMS_JSON : MAX_RESULT_CATALOG;
-
-            // Retorna o JSON Serializado ou null
-            return new SerializationData(getApplicationContext()).serializationJsonMakeup(json, quantity_result);
-        } catch (Exception ex) {
-            Log.e("Error", "Erro ao manipular o JSON ou na sua Serialização. " + ex);
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * Obtem Maquiagens na API Externa (makeup-api)
-     */
-    public String getJsonCatalog() {
-        Uri build_uriAPI = Uri.parse(URL_API).buildUpon()
-                .appendQueryParameter(RATING_GREATER, "4.7").build();
-        return SearchInternet.searchByUrl(build_uriAPI.toString(), "GET");
-    }
-
-    /**
-     * Obtem uma String Array das Maquiagens Favoritas do Usuario. Busca na API Local(Makeup_API)
-     */
-    public String getJsonFavorite() {
-        // todo: Implementar API_Interna
-        // Obtem os Dados do Usuario no Banco de Dados
-        // Envia uma solicitação à Makeup_API
-        // Obtem o JSON
-        return "In Develop";
-    }
-
-    /**
-     * Obtem uma String Array das maquiagens mais favoritadas. Busca na API Local(Makeup_API)
-     */
-    public String getJsonMoreLiked() {
-        // todo: Implementar API_Interna
-        // Envia uma solicitação à Makeup_API
-        // Obtem o JSON
-        return "In Develop";
     }
 
     /**
@@ -497,7 +458,7 @@ public class MainActivity extends AppCompatActivity {
         layout_loading.setVisibility(View.GONE);
         frame_fragment.setVisibility(View.GONE);
 
-        dialogs.message(getString(R.string.title_noData),
+        customAlertDialog.message(getString(R.string.title_noData),
                 Html.fromHtml(getString(R.string.error_tableEmpty)).toString()).show();
     }
 

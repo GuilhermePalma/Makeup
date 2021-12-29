@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.model.entity.Makeup;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,6 +18,7 @@ import java.util.List;
 
 public class SerializationData {
 
+    public static final int DEFAULT_QUANTITY = 40;
     public static final int ALL_ITEMS_JSON = -1;
     private static final String URL_NO_IMAGE = "https://github.com/GuilhermeCallegari/Maquiagem/blob" +
             "/main/app/src/main/res/drawable/makeup_no_image.jpg";
@@ -40,7 +42,7 @@ public class SerializationData {
             int max_result;
 
             // Define a Quantidade de Resultados
-            max_result = quantity_show == ALL_ITEMS_JSON ? quantity_array : quantity_show;
+            max_result = quantity_show == ALL_ITEMS_JSON ? quantity_array : Math.min(quantity_show, quantity_array);
 
             for (int i = 0; i < max_result; i++) {
                 // Pega um objeto de acordo com a Posição (Posição = Item/Produto)

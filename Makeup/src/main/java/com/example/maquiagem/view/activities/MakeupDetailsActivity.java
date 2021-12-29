@@ -15,7 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
-import com.example.maquiagem.model.Makeup;
+import com.example.maquiagem.model.entity.Makeup;
 import com.squareup.picasso.Picasso;
 
 public class MakeupDetailsActivity extends AppCompatActivity {
@@ -67,10 +67,13 @@ public class MakeupDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar4);
         toolbar.setTitle(getString(R.string.title_details));
         setSupportActionBar(toolbar);
-        // Icon de voltar para a Tela Home
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_return_home);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if(getSupportActionBar() != null){
+            // Icon de voltar para a Tela Home
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_return_home);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        }
     }
 
     /* Trata o Clique no Icone "Return" da ToolBar

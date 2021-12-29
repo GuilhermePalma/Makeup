@@ -1,6 +1,6 @@
 package com.example.maquiagem.controller;
 
-import com.example.maquiagem.model.Makeup;
+import com.example.maquiagem.model.entity.Makeup;
 
 // Trata os Cliques no RecyclerView
 public interface ClickRecyclerView {

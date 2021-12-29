@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
-import com.example.maquiagem.model.User;
+import com.example.maquiagem.model.entity.User;
 
 public class SplashScreen extends AppCompatActivity {
 

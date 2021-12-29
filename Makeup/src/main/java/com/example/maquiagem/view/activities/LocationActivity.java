@@ -22,7 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
-import com.example.maquiagem.model.Location;
+import com.example.maquiagem.model.entity.Location;
 import com.example.maquiagem.view.fragments.FeedbackLocation;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -54,7 +54,7 @@ public class LocationActivity extends AppCompatActivity {
     private boolean activeFragment = false;
     static final String STATE_FRAGMENT = "STATE FRAGMENT";
 
-    private com.example.maquiagem.model.Location classLocation;
+    private Location classLocation;
     private DataBaseHelper dataBaseHelper;
     private int actualId;
 
@@ -66,7 +66,7 @@ public class LocationActivity extends AppCompatActivity {
         setUpToolBar();
         recoveryId();
 
-        classLocation = new com.example.maquiagem.model.Location();
+        classLocation = new Location();
         dataBaseHelper = new DataBaseHelper(this);
 
         loading_location.setMax(10);
@@ -179,7 +179,7 @@ public class LocationActivity extends AppCompatActivity {
                                     + "\n" + addresses.get(0).getAddressLine(0));
 
                             // Instancia a classe de Localização
-                            classLocation = new com.example.maquiagem.model.Location(
+                            classLocation = new Location(
                                     actualId,
                                     addresses.get(0).getThoroughfare(),
                                     addresses.get(0).getFeatureName(),

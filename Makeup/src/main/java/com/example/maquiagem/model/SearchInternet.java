@@ -13,6 +13,10 @@ import java.net.URL;
 
 public class SearchInternet {
 
+    public static final String URL_MAKEUP = "http://makeup-api.herokuapp.com/api/v1/products.json?";
+    public static final String PARAM_RATING_GREATER = "rating_greater_than";
+    public  static  final String PARAM_BRAND = "brand";
+
     // Metodo para Buscar em uma API ---> Retorna uma String com o JSON
     public static String searchByUrl(String url, String method) {
 

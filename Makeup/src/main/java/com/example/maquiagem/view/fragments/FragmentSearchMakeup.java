@@ -16,7 +16,7 @@ import android.widget.Button;
 import androidx.fragment.app.Fragment;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.model.Makeup;
+import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.view.CustomAlertDialog;
 import com.example.maquiagem.view.activities.ResultActivity;
 import com.google.android.material.chip.Chip;

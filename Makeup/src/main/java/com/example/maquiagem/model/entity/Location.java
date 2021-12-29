@@ -1,4 +1,4 @@
-package com.example.maquiagem.model;
+package com.example.maquiagem.model.entity;
 
 public class Location {
 
