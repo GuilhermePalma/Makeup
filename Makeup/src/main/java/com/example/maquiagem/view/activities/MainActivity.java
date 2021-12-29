@@ -334,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
             FragmentListMakeup fragmentListMakeup = FragmentListMakeup.newInstance(makeupList,
                     type_fragment);
             getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
-                    fragmentListMakeup).commit();
+                    fragmentListMakeup).commitAllowingStateLoss();
         }
     }
 
@@ -412,5 +412,10 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 }

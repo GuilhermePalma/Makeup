@@ -95,6 +95,7 @@ public class ConfigurationActivity extends AppCompatActivity {
 
                 // Define o Theme no APP
                 AppCompatDelegate.setDefaultNightMode(theme_app);
+                recreate();
             } else {
                 customDialog.defaultMessage(R.string.title_errorAPI, R.string.error_change, null,
                         new String[]{"Tema", "Usario"}, true).show();
