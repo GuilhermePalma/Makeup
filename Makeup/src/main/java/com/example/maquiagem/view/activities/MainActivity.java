@@ -6,6 +6,8 @@ import static com.example.maquiagem.model.SerializationData.DEFAULT_QUANTITY;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private final int POSITION_TOP_MENU_SEARCH = 0;
     private final int POSITION_TOP_MENU_HOME = 1;
 
+    private boolean isLoading = false;
     private Context context;
     private LinearLayout layout_loading;
     private FrameLayout frame_fragment;
@@ -55,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private CustomAlertDialog customAlertDialog;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +139,13 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Não Permite o Clique em outras Opções enquanto o Conteudo não for Carregado
+        if (isLoading) {
+            showWaitLoading();
+            drawer.closeDrawer(GravityCompat.START);
+            return false;
+        }
+
         // Valores das Opções do Menu Superior (3 Pontinhos)
         final int OPTION_MENU_TOP_HOME = R.id.topMenu_home;
         final int OPTION_MENU_TOP_SEARCH = R.id.search_option;
@@ -176,29 +185,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Remove a Seleção de todos os Itens do Menu Lateral
-     */
-    private void unselectedItemsMenu() {
-        int sizeMenu = navigationView.getMenu().size();
-        for (int i = 0; i < sizeMenu; i++) {
-
-            MenuItem menuItem = navigationView.getMenu().getItem(i);
-
-            if (menuItem.hasSubMenu()) {
-
-                // Caso tenha um Sub-menu, acessa eles para retirar a seleção
-                for (int u = 0; u < menuItem.getSubMenu().size(); u++) {
-                    menuItem.getSubMenu().getItem(u).setChecked(false);
-                    menuItem.getSubMenu().getItem(u).setCheckable(false);
-                }
-            } else {
-                navigationView.getMenu().getItem(i).setChecked(false);
-                navigationView.getMenu().getItem(i).setCheckable(false);
-            }
-        }
-    }
-
-    /**
      * Trata o Clique nos Itens do Menu Lateral
      */
     private void listenerNavigation() {
@@ -212,6 +198,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Trata o Clique nos Itens
         navigationView.setNavigationItemSelectedListener(item -> {
+
+            // Não Permite o Clique em outras Opções enquanto o Conteudo não for Carregado
+            if (isLoading) {
+                showWaitLoading();
+                drawer.closeDrawer(GravityCompat.START);
+                return false;
+            }
+
             // Obtem o ID do Item selecionado
             int id_item = item.getItemId();
 
@@ -321,6 +315,79 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Metodo responsavel pela busca de forma Assincrona nas APIs (Local ou Externa). A partir do
+     * ID do Menu Lateral, configura os dados obtidos e quantidade de resultados. Tambem é tratado a
+     * exibição dos itens no do Fragment
+     */
+    private void asyncGetMakeups(int option_search) {
+        // Quantidade de Itens que serão Exibidos
+        int quantity_items = option_search == OPTION_HOME_MAKEUP ? DEFAULT_QUANTITY : ALL_ITEMS_JSON;
+
+        // Carrega o Circular Progress Indicator
+        layout_loading.setVisibility(View.VISIBLE);
+        frame_fragment.setVisibility(View.GONE);
+
+        // Somente Busca novos dados se a Ultima Pesquisa já foi Concluida
+        if (!isLoading) {
+
+            // Handler exibira os Resultados da Task Async na Thread Main
+            Handler handler = new Handler(Looper.getMainLooper());
+
+            // Configura e executa as Tarefas Assincronas
+            ExecutorService executorService = Executors.newCachedThreadPool();
+            executorService.execute(() -> {
+                // Define o Inicio do Carregamento
+                handler.post(() -> isLoading = true);
+
+                // Obtem as Makeups
+                Makeup makeup = new Makeup(context);
+                List<Makeup> async_list = makeup.getMakeups(executorService, makeup.getUri(option_search),
+                        quantity_items);
+
+                // Atribui a Lista usada o Valor Oficial das Maquiagens
+                handler.post(() -> {
+                    if (async_list == null || async_list.isEmpty()) showError();
+                    else {
+                        String type_fragment = "";
+                        switch (option_search) {
+                            case OPTION_HOME_MAKEUP:
+                                type_fragment = FragmentListMakeup.TYPE_CATALOG;
+                                break;
+                            case OPTION_MY_FAVORITE_MAKEUPS:
+                                type_fragment = FragmentListMakeup.TYPE_MY_FAVORITE;
+                                break;
+                            case OPTION_MORE_FAVORITES:
+                                type_fragment = FragmentListMakeup.TYPE_MORE_LIKED;
+                                break;
+                            default:
+                                break;
+                        }
+                        // Configura o Fragment
+                        setUpListFragment(async_list, type_fragment);
+                    }
+                });
+
+                // Define o Fim do Carregamento
+                handler.post(() -> isLoading = false);
+
+                // Sincroniza o Banco de Dados Local com os Dados recebido da API
+                if (async_list != null && option_search == OPTION_MY_FAVORITE_MAKEUPS) {
+                    ManagerDatabase dataBase = new ManagerDatabase(context);
+                    int allInserted = 0;
+                    for (int i = 0; i < async_list.size(); i++) {
+                        allInserted = dataBase.insertMakeup(async_list.get(i)) ? allInserted : allInserted + 1;
+                    }
+
+                    if (allInserted > 0) {
+                        customAlertDialog.defaultMessage(R.string.title_possibleError, R.string.error_syncFavorites,
+                                null, new String[]{"Favoritas"}, false).show();
+                    }
+                }
+            });
+        } else showWaitLoading();
+    }
+
+    /**
      * Configura instancias dos Fragment de Lista (Catalogo, Favoritas, Historico)
      */
     private void setUpListFragment(List<Makeup> makeupList, String type_fragment) {
@@ -339,61 +406,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Metodo responsavel pela busca de forma Assincrona nas APIs (Local ou Externa). A partir do
-     * ID do Menu Lateral, configura os dados obtidos e quantidade de resultados. Tambem é tratado a
-     * exibição dos itens no do Fragment
+     * Remove a Seleção de todos os Itens do Menu Lateral
      */
-    private void asyncGetMakeups(int option_search) {
-        // Quantidade de Itens que serão Exibidos
-        int quantity_items = option_search == OPTION_HOME_MAKEUP ? DEFAULT_QUANTITY : ALL_ITEMS_JSON;
+    private void unselectedItemsMenu() {
+        int sizeMenu = navigationView.getMenu().size();
+        for (int i = 0; i < sizeMenu; i++) {
 
-        // Carrega o Circular Progress Indicator
-        layout_loading.setVisibility(View.VISIBLE);
-        frame_fragment.setVisibility(View.GONE);
+            MenuItem menuItem = navigationView.getMenu().getItem(i);
 
-        // Executa a Busca Assincrona. Dessa forma, a busca pode continuar após o metodo terminar
-        ExecutorService executorService = Executors.newCachedThreadPool();
-        executorService.execute(() -> {
-            Makeup makeup = new Makeup(context);
-            List<Makeup> async_list = makeup.getMakeups(executorService, makeup.getUri(option_search),
-                    quantity_items);
+            if (menuItem.hasSubMenu()) {
 
-            // Atribui a Lista usada o Valor Oficial das Maquiagens
-            runOnUiThread(() -> {
-                if (async_list == null || async_list.isEmpty()) showError();
-                else {
-                    String type_fragment = "";
-                    switch (option_search) {
-                        case OPTION_HOME_MAKEUP:
-                            type_fragment = FragmentListMakeup.TYPE_CATALOG;
-                            break;
-                        case OPTION_MY_FAVORITE_MAKEUPS:
-                            type_fragment = FragmentListMakeup.TYPE_MY_FAVORITE;
-                            break;
-                        case OPTION_MORE_FAVORITES:
-                            type_fragment = FragmentListMakeup.TYPE_MORE_LIKED;
-                            break;
-                        default:
-                            break;
-                    }
-                    setUpListFragment(async_list, type_fragment);
+                // Caso tenha um Sub-menu, acessa eles para retirar a seleção
+                for (int u = 0; u < menuItem.getSubMenu().size(); u++) {
+                    menuItem.getSubMenu().getItem(u).setChecked(false);
+                    menuItem.getSubMenu().getItem(u).setCheckable(false);
                 }
-            });
-
-            // Sincroniza o Banco de Dados Local com os Dados recebido da API
-            if (async_list != null && option_search == OPTION_MY_FAVORITE_MAKEUPS) {
-                ManagerDatabase dataBase = new ManagerDatabase(context);
-                int allInserted = 0;
-                for (int i = 0; i < async_list.size(); i++) {
-                    allInserted = dataBase.insertMakeup(async_list.get(i)) ? allInserted : allInserted + 1;
-                }
-
-                if (allInserted > 0) {
-                    customAlertDialog.defaultMessage(R.string.title_possibleError, R.string.error_syncFavorites,
-                            null, new String[]{"Favoritas"}, false).show();
-                }
+            } else {
+                navigationView.getMenu().getItem(i).setChecked(false);
+                navigationView.getMenu().getItem(i).setCheckable(false);
             }
-        });
+        }
     }
 
     /**
@@ -405,6 +437,11 @@ public class MainActivity extends AppCompatActivity {
 
         customAlertDialog.defaultMessage(R.string.title_noData, R.string.error_tableEmpty, null,
                 null, true).show();
+    }
+
+    private void showWaitLoading() {
+        customAlertDialog.defaultMessage(R.string.title_noData, R.string.error_waitLoading, null,
+                null, false).show();
     }
 
     /**

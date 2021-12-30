@@ -240,7 +240,7 @@
     <string name="error_noMatchPassword">As Senhas não são Iguais</string>
     <string name="error_existUser">O Usuario %s já existe no Sistema. Realize o Login !</string>
     <string name="error_noExistUser">O Usuario %s não existe no Sistema. Realize o Cadastro !</string>
-        <string name="error_api">Houve um erro na execução da solicitação. Tente Novamente</string>
+    <string name="error_api">Houve um erro na execução da solicitação. Tente Novamente</string>
     <string name="error_tableEmpty">Não há registros com os dados Solicitados. &lt;br />
         Algumas Funções ainda estão sendo desenvolvidas, aguarde.</string>
     <string name="error_dataUser">Infelizmente, não foi possivel obter os Dados do Usuario</string>
@@ -253,6 +253,8 @@
     <string name="error_database">Não foi possivel salvar os Dados no Banco de Dados. Tente Novamente</string>
     <string name="error_syncFavorites">Algumas das Maquiagens %s não foram Carregadas. Tente Novamente
         mais tarde</string>
+    <string name="error_waitLoading">Não é possivel carregar o novos dados enquanto antigo não
+        concluir.&lt;br />&lt;br /> Aguarde e Tenta Novamente</string>
 
     <!-- Validação dos Formularios -->
     <string name="validation_ok">Campo Validado</string>
