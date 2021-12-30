@@ -1,51 +1,31 @@
 package com.example.maquiagem.view;
 
+import static com.example.maquiagem.controller.ManagerSharedPreferences.KEY_COUNT_UPDATE;
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.text.Html;
 import android.widget.RemoteViews;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerSharedPreferences;
 
 import java.text.DateFormat;
 import java.util.Date;
 
 public class WidgetApp extends AppWidgetProvider {
 
-    // Nome do Arquivo e Key p/ o SharedPreferences
-    private static final String SHARED_PREFERENCES_FILE = "com.example.android.appapimakeup";
-    private static final String COUNT_UPDATE_KEY = "contadorWidget";
-
-   /** Sobrescreve o metodo onUpdate para lidar com todas as atualizações do Widget
-     * @param context          Contexto da Aplicação
-     * @param appWidgetManager Widget manager.
-     * @param appWidgetIds     Array com ID do Widget */
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager,
-                         int[] appWidgetIds) {
-        // Laço de repetição que atualiza  ID por ID de cada Widget pendente
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
-    }
-
-
     // Metodo que atualiza o Widget
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
         // Obtem o arquivo que armazena o contador
-        SharedPreferences preferences = context.
-                getSharedPreferences(SHARED_PREFERENCES_FILE, 0);
-        // Recupera o Valor. Caso não exista ---> Retorna 0
-        int counter = preferences.getInt(COUNT_UPDATE_KEY + appWidgetId, 0);
-        // Adiciona +1 no contador de Atualização
-        counter++;
+        ManagerSharedPreferences managerPreferences = new ManagerSharedPreferences(context);
+        final String key_preferences = KEY_COUNT_UPDATE + appWidgetId;
 
         // Obtem a Data Atual para informar no Widget (Utlima Atualização)
         String dateString = DateFormat.
@@ -72,7 +52,8 @@ public class WidgetApp extends AppWidgetProvider {
 
         // Mostra a Hora e a quantidade das Atualizações
         views.setTextViewText(R.id.appwidget_updateNumber_label, Html.fromHtml(
-                String.format(context.getString(R.string.txt_lastUpdate), counter)));
+                String.format(context.getString(R.string.txt_lastUpdate),
+                        managerPreferences.getWidgetCount(key_preferences))));
 
         // Icon do ImageButton
         views.setImageViewResource(R.id.btn_update, R.drawable.ic_autorenew);
@@ -80,13 +61,13 @@ public class WidgetApp extends AppWidgetProvider {
         // Buscas de Maquiagem
         views.setTextViewText(R.id.txtWidget_search,
                 context.getResources().
-                        getString( R.string.txt_brandTypeFormat,
+                        getString(R.string.txt_brandTypeFormat,
                                 Integer.toString(database.amountMakeupSearch())
                         )
         );
 
         // Mostra todas as posições Pesquisadas
-        views.setTextViewText(R.id.txtWidget_resultLocation,Integer.
+        views.setTextViewText(R.id.txtWidget_resultLocation, Integer.
                 toString(database.amountLocation()));
 
         // Mostra as Posições Certas e Erradas na Tela
@@ -95,11 +76,8 @@ public class WidgetApp extends AppWidgetProvider {
 
         database.close();
 
-        // Armazena a contagem/numero em um SharedPreferences
-        SharedPreferences.Editor preferencesEditor = preferences.edit();
-        // Usa a chave das Preferences, Seleciona pelo ID atual do Widget e Substitui pelo novo
-        preferencesEditor.putInt(COUNT_UPDATE_KEY + appWidgetId, counter);
-        preferencesEditor.apply();
+        // Armazena o Numero de Atualizações nas SharedPreferences
+        managerPreferences.setIncrementCountWidget(key_preferences);
 
         // Botão de Update
         Intent intentUpdate = new Intent(context, WidgetApp.class);
@@ -123,6 +101,22 @@ public class WidgetApp extends AppWidgetProvider {
 
         // Atualiza o Widget usando o ID e a RemoteView
         appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+    /**
+     * Sobrescreve o metodo onUpdate para lidar com todas as atualizações do Widget
+     *
+     * @param context          Contexto da Aplicação
+     * @param appWidgetManager Widget manager.
+     * @param appWidgetIds     Array com ID do Widget
+     */
+    @Override
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager,
+                         int[] appWidgetIds) {
+        // Laço de repetição que atualiza  ID por ID de cada Widget pendente
+        for (int appWidgetId : appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId);
+        }
     }
 
 }

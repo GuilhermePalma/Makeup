@@ -1,7 +1,7 @@
 package com.example.maquiagem.view.activities;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,10 +11,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.maquiagem.R;
+import com.example.maquiagem.controller.ManagerSharedPreferences;
 import com.example.maquiagem.controller.ViewPagerAdapter;
 
 public class SlideScreen extends AppCompatActivity {
 
+    private Context context;
     private ViewPager viewPager;
     private TextView dot1;
     private TextView dot2;
@@ -23,15 +25,13 @@ public class SlideScreen extends AppCompatActivity {
     private Button next;
     private Button back;
 
-    private final String FILE_PREFERENCE = "com.example.maquiagem";
-    private final String FIRST_LOGIN = "first_login";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slide_screen);
 
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SlideScreen.this);
+        context = SlideScreen.this;
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(context);
 
         viewPager = findViewById(R.id.viewPager_initial);
         viewPager.setAdapter(viewPagerAdapter);
@@ -48,12 +48,11 @@ public class SlideScreen extends AppCompatActivity {
 
     // Listener do Botão "Pular" --> Pula a apresentação do APP
     private void listenerSkip() {
-        next.setOnClickListener( v -> {
+        next.setOnClickListener(v -> {
             // Define que não é o Primeiro Acesso do Usuario p/ não apresentar novamente o APP
-            SharedPreferences preferences = getSharedPreferences(FILE_PREFERENCE, 0);
-            preferences.edit().putBoolean(FIRST_LOGIN, false).apply();
+            new ManagerSharedPreferences(context).setFirstLogin(false);
             finish();
-            startActivity(new Intent(getApplicationContext(), SingUpActivity.class));
+            startActivity(new Intent(context, SingUpActivity.class));
         });
     }
 
@@ -63,12 +62,12 @@ public class SlideScreen extends AppCompatActivity {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 // Tratamento especial p/ cada Item da Lista
-                switch (position){
+                switch (position) {
                     case 0:
-                       back.setVisibility(View.INVISIBLE);
-                       dot1.setTextColor(getResources().getColor(R.color.red));
-                       dot2.setTextColor(getResources().getColor(R.color.black));
-                       break;
+                        back.setVisibility(View.INVISIBLE);
+                        dot1.setTextColor(getResources().getColor(R.color.red));
+                        dot2.setTextColor(getResources().getColor(R.color.black));
+                        break;
                     case 1:
                         back.setVisibility(View.VISIBLE);
                         back.setOnClickListener(v -> listenerBack(position));
@@ -87,17 +86,19 @@ public class SlideScreen extends AppCompatActivity {
             }
 
             // Listener do Botão "Anterior" ---> Recebe uma posição > 0 e < 3 e atualiza o Item
-            private void listenerBack(int position){
-                if (position > 0 && position < 3){
-                    viewPager.setCurrentItem(position-1);
+            private void listenerBack(int position) {
+                if (position > 0 && position < 3) {
+                    viewPager.setCurrentItem(position - 1);
                 }
             }
 
             @Override
-            public void onPageSelected(int position) {}
+            public void onPageSelected(int position) {
+            }
 
             @Override
-            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrollStateChanged(int state) {
+            }
         });
     }
 

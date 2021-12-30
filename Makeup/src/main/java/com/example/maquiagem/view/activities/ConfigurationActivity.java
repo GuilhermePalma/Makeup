@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerSharedPreferences;
 import com.example.maquiagem.model.entity.User;
 import com.example.maquiagem.view.CustomAlertDialog;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -81,15 +82,10 @@ public class ConfigurationActivity extends AppCompatActivity {
 
         // Configura o Switch Dark e Light Theme
         switchDarkTheme.setOnCheckedChangeListener((buttonView, isChecked) -> {
-
             // Define o Novo valor ao Theme e Atualiza no Banco de Dados
-            DataBaseHelper database = new DataBaseHelper(context);
-            user.setTheme_is_night(isChecked);
-            database.updateUser(user);
-            database.close();
+            new ManagerSharedPreferences(context).setDarkTheme(isChecked);
 
             if (updateThemeAPI(user)) {
-                // todo: enviar o theme alterado p/ api local
                 int theme_app = isChecked ? AppCompatDelegate.MODE_NIGHT_YES :
                         AppCompatDelegate.MODE_NIGHT_NO;
 
@@ -138,12 +134,12 @@ public class ConfigurationActivity extends AppCompatActivity {
         });
     }
 
-    // todo: enviar o tema alterado p/ API LOCAL
+    // Todo: Enviar o tema alterado p/ API LOCAL
     private boolean updateThemeAPI(User user) {
         return true;
     }
 
-    // todo: enviar o idioma alterado p/ API LOCAL
+    // Todo: enviar o Idioma alterado p/ API LOCAL
     private boolean updateIdiomAPI(User user) {
         return true;
     }

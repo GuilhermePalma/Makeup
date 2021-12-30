@@ -2,7 +2,6 @@ package com.example.maquiagem.view.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -11,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.controller.ManagerKeyboard;
+import com.example.maquiagem.controller.ManagerResources;
+import com.example.maquiagem.controller.ManagerSharedPreferences;
 import com.example.maquiagem.model.entity.User;
 import com.example.maquiagem.view.CustomAlertDialog;
 import com.google.android.material.checkbox.MaterialCheckBox;
@@ -20,8 +21,6 @@ import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
-    public final static String FILE_PREFERENCE = "com.example.maquiagem";
-    public final static String LOGIN_NOT_REMEMBER = "not_remember_login";
     private TextInputEditText edit_nickname;
     private TextInputEditText edit_password;
     private MaterialCheckBox checkBox_rememberUser;
@@ -40,10 +39,19 @@ public class LoginActivity extends AppCompatActivity {
         // Instancia os Widgets E Classes que serão Usados
         instanceItems();
 
+        // Verifica se o Usuario Possui Login (Sem o Lembrar Login)
+        checkLogin();
+
         // Listener no Botão "Cadastrar" e "Login"
-        btn_singUp.setOnClickListener(v -> startActivity(new Intent(
-                LoginActivity.this, SingUpActivity.class)));
+        btn_singUp.setOnClickListener(v -> startActivity(new Intent(context, SingUpActivity.class)));
         executeLogin();
+    }
+
+    private void checkLogin() {
+        DataBaseHelper database = new DataBaseHelper(context);
+        User user = database.selectUser(context);
+
+        if (user != null) edit_nickname.setText(user.getNickname());
     }
 
     /**
@@ -74,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     // Obtem e Define o JWT na API
                     String jsonWebToken = getJsonWebToken(userInformation);
-                    if (jsonWebToken.equals("")) {
+                    if (ManagerResources.isNullOrEmpty(jsonWebToken)) {
                         customDialog.defaultMessage(R.string.title_errorAPI, R.string.error_JWT,
                                 null, null, true).show();
                         return;
@@ -85,12 +93,10 @@ public class LoginActivity extends AppCompatActivity {
                     insertUserDatabase(userInformation);
 
                     // Define nas Preferences se o Usuario terá ou não que fazer Login a cada Acesso
-                    SharedPreferences preferences = getSharedPreferences(FILE_PREFERENCE, 0);
-                    preferences.edit().putBoolean(
-                            LOGIN_NOT_REMEMBER, checkBox_rememberUser.isChecked()).apply();
+                    new ManagerSharedPreferences(context).setRememberLogin(checkBox_rememberUser.isChecked());
 
                     // Inicia a Nova Acticity e Limpa as Activities da Pilha
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    startActivity(new Intent(context, MainActivity.class));
                     finishAffinity();
                 } else {
                     // Mensagem de Erro de Usuario não Cadastrado

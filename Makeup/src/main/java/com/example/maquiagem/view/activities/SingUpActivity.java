@@ -1,7 +1,7 @@
 package com.example.maquiagem.view.activities;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.DataBaseHelper;
 import com.example.maquiagem.controller.ManagerKeyboard;
+import com.example.maquiagem.controller.ManagerSharedPreferences;
 import com.example.maquiagem.model.entity.User;
 import com.example.maquiagem.view.CustomAlertDialog;
 import com.google.android.material.checkbox.MaterialCheckBox;
@@ -33,6 +34,7 @@ public class SingUpActivity extends AppCompatActivity {
     private ManagerKeyboard managerKeyboard;
     private CustomAlertDialog dialog;
     private User user;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +48,7 @@ public class SingUpActivity extends AppCompatActivity {
         // Listener dos cliques no Botão "Cadastrar" e "Login"
         executeSingUp();
         btn_goLogin.setOnClickListener(v -> {
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            startActivity(new Intent(context, LoginActivity.class));
             finish();
         });
     }
@@ -63,9 +65,11 @@ public class SingUpActivity extends AppCompatActivity {
         btn_singUp = findViewById(R.id.btn_singUp);
         btn_goLogin = findViewById(R.id.btn_goLogin);
 
-        managerKeyboard = new ManagerKeyboard(SingUpActivity.this);
-        dialog = new CustomAlertDialog(this);
-        user = new User(this);
+        context = SingUpActivity.this;
+
+        managerKeyboard = new ManagerKeyboard(context);
+        dialog = new CustomAlertDialog(context);
+        user = new User(context);
     }
 
     /**
@@ -75,7 +79,7 @@ public class SingUpActivity extends AppCompatActivity {
         // Configura o AutoCompleteText e suas opções
         String[] array_idioms = getResources().getStringArray(R.array.array_idioms);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context,
                 android.R.layout.simple_dropdown_item_1line, array_idioms);
         autoComplete_idioms.setAdapter(adapter);
 
@@ -121,7 +125,7 @@ public class SingUpActivity extends AppCompatActivity {
             return false;
         } else {
             // Reatribui um novo Valor à Classe user e Define por Padrão o Tema Claro
-            user = new User(this, name, nickname, email, password, user.getIdiom(), false);
+            user = new User(context, name, nickname, email, password, user.getIdiom(), false);
             return true;
         }
     }
@@ -153,13 +157,10 @@ public class SingUpActivity extends AppCompatActivity {
                     insertUserDatabase(user);
 
                     // Define nas Preferences se o Usuario terá ou não que fazer Login a cada Acesso
-                    SharedPreferences preferences =
-                            getSharedPreferences(LoginActivity.FILE_PREFERENCE, 0);
-                    preferences.edit().putBoolean(LoginActivity.LOGIN_NOT_REMEMBER,
-                            checkBox_remember.isChecked()).apply();
+                    new ManagerSharedPreferences(context).setRememberLogin(checkBox_remember.isChecked());
 
                     // Inicia a Nova Acticity e Limpa as Activities da Pilha
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    startActivity(new Intent(context, MainActivity.class));
                     finishAffinity();
                 } else {
                     // Erro no Cadastro do Usuario na API
@@ -191,7 +192,7 @@ public class SingUpActivity extends AppCompatActivity {
      * Insere o Usuario no Banco de Dados Local(SQLite)
      */
     private void insertUserDatabase(User user) {
-        DataBaseHelper database = new DataBaseHelper(this);
+        DataBaseHelper database = new DataBaseHelper(context);
         // Exclui dados do Banco de Dados se houverem e Insere o Novo Usuario
         database.deleteAllUsers();
         database.insertUser(user);
