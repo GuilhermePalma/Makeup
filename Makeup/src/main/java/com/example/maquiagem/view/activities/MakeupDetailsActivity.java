@@ -1,5 +1,6 @@
 package com.example.maquiagem.view.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -14,12 +15,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.model.entity.Makeup;
+import com.example.maquiagem.view.CustomAlertDialog;
 import com.squareup.picasso.Picasso;
 
 public class MakeupDetailsActivity extends AppCompatActivity {
 
+    private Context context;
     private TextView name;
     private TextView brandType;
     private TextView currency_price;
@@ -36,19 +39,19 @@ public class MakeupDetailsActivity extends AppCompatActivity {
 
         Intent intentMakeup = getIntent();
 
-        getInstanceItens();
+        getInstanceItems();
         setUpToolBar();
 
         if (intentMakeup != null) {
             makeup = new Makeup();
-            makeup.setName(intentMakeup.getStringExtra(DataBaseHelper.NAME_MAKEUP));
-            makeup.setType(intentMakeup.getStringExtra(DataBaseHelper.TYPE_MAKEUP));
-            makeup.setBrand(intentMakeup.getStringExtra(DataBaseHelper.BRAND_MAKEUP));
-            makeup.setCurrency(intentMakeup.getStringExtra(DataBaseHelper.CURRENCY_MAKEUP));
-            makeup.setPrice(intentMakeup.getStringExtra(DataBaseHelper.PRICE_MAKEUP));
-            makeup.setDescription(intentMakeup.getStringExtra(DataBaseHelper.DESCRIPTION_MAKEUP));
-            makeup.setUrlImage(intentMakeup.getStringExtra(DataBaseHelper.URL_IMAGE_MAKEUP));
-            makeup.setFavorite(intentMakeup.getBooleanExtra(DataBaseHelper.IS_FAVORITE_MAKEUP, false));
+            makeup.setName(intentMakeup.getStringExtra(ManagerDatabase.NAME_MAKEUP));
+            makeup.setType(intentMakeup.getStringExtra(ManagerDatabase.TYPE_MAKEUP));
+            makeup.setBrand(intentMakeup.getStringExtra(ManagerDatabase.BRAND_MAKEUP));
+            makeup.setCurrency(intentMakeup.getStringExtra(ManagerDatabase.CURRENCY_MAKEUP));
+            makeup.setPrice(intentMakeup.getStringExtra(ManagerDatabase.PRICE_MAKEUP));
+            makeup.setDescription(intentMakeup.getStringExtra(ManagerDatabase.DESCRIPTION_MAKEUP));
+            makeup.setUrlImage(intentMakeup.getStringExtra(ManagerDatabase.URL_IMAGE_MAKEUP));
+            makeup.setFavorite(intentMakeup.getBooleanExtra(ManagerDatabase.IS_FAVORITE_MAKEUP, false));
 
             if (makeup.getName() == null && makeup.getPrice() == null) {
                 showWindowWithoutData();
@@ -87,7 +90,8 @@ public class MakeupDetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void getInstanceItens() {
+    private void getInstanceItems() {
+        context = MakeupDetailsActivity.this;
         name = findViewById(R.id.txt_nameProduct);
         brandType = findViewById(R.id.txt_brandTypeProduct);
         currency_price = findViewById(R.id.txt_priceProduct);
@@ -113,15 +117,16 @@ public class MakeupDetailsActivity extends AppCompatActivity {
 
     private void listenerFavorite() {
         cbx_favorite.setOnClickListener(v -> {
-
             // Atualiza o Estado do Favorite
-            DataBaseHelper database = new DataBaseHelper(this);
+            ManagerDatabase database = new ManagerDatabase(context);
 
             makeup.setFavorite(!makeup.isFavorite());
             cbx_favorite.setChecked(makeup.isFavorite());
 
-            database.updateFavoriteMakeup(makeup);
-            database.close();
+            if(!database.setFavoriteMakeup(makeup)){
+                new CustomAlertDialog(context).defaultMessage(R.string.error_api,
+                        R.string.error_database, null, null, true).show();
+            }
         });
     }
 

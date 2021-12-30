@@ -11,7 +11,7 @@ import android.text.Html;
 import android.widget.RemoteViews;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.controller.ManagerSharedPreferences;
 
 import java.text.DateFormat;
@@ -37,7 +37,7 @@ public class WidgetApp extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_app);
 
         // Instancia o HelperDatabase
-        DataBaseHelper database = new DataBaseHelper(context);
+        ManagerDatabase database = new ManagerDatabase(context);
 
         int correct = database.amountCorrectLocation();
         int wrong = database.amountWrongLocation();
@@ -73,8 +73,6 @@ public class WidgetApp extends AppWidgetProvider {
         // Mostra as Posições Certas e Erradas na Tela
         views.setTextViewText(R.id.txtWidget_correctResult, Integer.toString(correct));
         views.setTextViewText(R.id.txtWidget_wrongResult, Integer.toString(wrong));
-
-        database.close();
 
         // Armazena o Numero de Atualizações nas SharedPreferences
         managerPreferences.setIncrementCountWidget(key_preferences);

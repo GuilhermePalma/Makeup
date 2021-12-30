@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.controller.ManagerSharedPreferences;
 import com.example.maquiagem.model.entity.User;
 import com.example.maquiagem.view.CustomAlertDialog;
@@ -66,9 +66,8 @@ public class ConfigurationActivity extends AppCompatActivity {
         customDialog = new CustomAlertDialog(context);
 
         // Obtem a Instancia do Usuario
-        DataBaseHelper database = new DataBaseHelper(context);
-        user = database.selectUser(context);
-        database.close();
+        ManagerDatabase database = new ManagerDatabase(context);
+        user = database.selectUser();
     }
 
     /**
@@ -118,19 +117,20 @@ public class ConfigurationActivity extends AppCompatActivity {
                 return;
             }
 
-            // Atualiza os Valores no Banco de Dados
-            DataBaseHelper database = new DataBaseHelper(context);
-            user.setIdiom(idiom);
-            database.updateUser(user);
-            database.close();
-
+            // Atualiza o Valor na API e Banco de Dados Local
             if (updateIdiomAPI(user)) {
-                customDialog.defaultMessage(R.string.title_updateUser, R.string.text_idiomUpdate,
-                        null, new String[]{idiom}, true).show();
-            } else {
-                customDialog.defaultMessage(R.string.title_errorAPI, R.string.error_change, null,
-                        new String[]{"Idioma", "Usario"}, true).show();
+                // Atualiza os Valores no Banco de Dados
+                ManagerDatabase database = new ManagerDatabase(context);
+                user.setIdiom(idiom);
+                if (database.updateUser(user)) {
+                    customDialog.defaultMessage(R.string.title_updateUser, R.string.text_idiomUpdate,
+                            null, new String[]{idiom}, true).show();
+                    return;
+                }
             }
+            customDialog.defaultMessage(R.string.title_errorAPI, R.string.error_change, null,
+                    new String[]{"Idioma", "Usario"}, true).show();
+
         });
     }
 

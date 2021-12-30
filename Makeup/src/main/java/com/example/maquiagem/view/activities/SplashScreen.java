@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.controller.ManagerSharedPreferences;
 import com.example.maquiagem.model.entity.User;
 
@@ -35,9 +35,8 @@ public class SplashScreen extends AppCompatActivity {
             } else if (managerPreferences.isRememberLogin()) {
 
                 // Obtem o Usuario do Banco de Dados e Tenta Realizar o Login
-                DataBaseHelper database = new DataBaseHelper(context);
-                User user = database.selectUser(context);
-                database.close();
+                ManagerDatabase database = new ManagerDatabase(context);
+                User user = database.selectUser();
 
                 if (executeLogin(user)) startActivity(new Intent(context, MainActivity.class));
                 else startActivity(new Intent(context, LoginActivity.class));

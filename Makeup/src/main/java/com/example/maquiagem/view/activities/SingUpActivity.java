@@ -10,7 +10,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.controller.ManagerKeyboard;
 import com.example.maquiagem.controller.ManagerSharedPreferences;
 import com.example.maquiagem.model.entity.User;
@@ -32,7 +32,7 @@ public class SingUpActivity extends AppCompatActivity {
     private Button btn_goLogin;
     private MaterialCheckBox checkBox_remember;
     private ManagerKeyboard managerKeyboard;
-    private CustomAlertDialog dialog;
+    private CustomAlertDialog customDialog;
     private User user;
     private Context context;
 
@@ -68,7 +68,7 @@ public class SingUpActivity extends AppCompatActivity {
         context = SingUpActivity.this;
 
         managerKeyboard = new ManagerKeyboard(context);
-        dialog = new CustomAlertDialog(context);
+        customDialog = new CustomAlertDialog(context);
         user = new User(context);
     }
 
@@ -145,26 +145,32 @@ public class SingUpActivity extends AppCompatActivity {
                     // Obtem e Define o JWT na API
                     String jsonWebToken = getJsonWebToken(userInformation);
                     if (jsonWebToken.equals("")) {
-                        dialog.defaultMessage(R.string.title_errorAPI, R.string.error_JWT, null,
+                        customDialog.defaultMessage(R.string.title_errorAPI, R.string.error_JWT, null,
                                 null, true).show();
                         return;
                     }
 
                     // Define o Token e Insere o Usuario no Banco de Dados
-                    userInformation.setToken_user(jsonWebToken);
-                    insertUserDatabase(userInformation);
+                    ManagerSharedPreferences managerPreferences = new ManagerSharedPreferences(context);
+                    managerPreferences.setUserToken(jsonWebToken);
 
-                    insertUserDatabase(user);
+                    // Salva o Usuario no Banco de Dados
+                    ManagerDatabase database = new ManagerDatabase(this);
+                    if(!database.insertUser(userInformation)){
+                        customDialog.defaultMessage(R.string.title_errorAPI, R.string.error_database,
+                                null, null, true).show();
+                        return;
+                    }
 
                     // Define nas Preferences se o Usuario terá ou não que fazer Login a cada Acesso
-                    new ManagerSharedPreferences(context).setRememberLogin(checkBox_remember.isChecked());
+                    managerPreferences.setRememberLogin(checkBox_remember.isChecked());
 
                     // Inicia a Nova Acticity e Limpa as Activities da Pilha
                     startActivity(new Intent(context, MainActivity.class));
                     finishAffinity();
                 } else {
                     // Erro no Cadastro do Usuario na API
-                    dialog.defaultMessage(R.string.title_existUser, R.string.error_existUser, null,
+                    customDialog.defaultMessage(R.string.title_existUser, R.string.error_existUser, null,
                             new String[]{""}, true).show();
                 }
             }
@@ -186,17 +192,6 @@ public class SingUpActivity extends AppCompatActivity {
     // todo implementar obtenção do JWT
     public String getJsonWebToken(User user) {
         return "JWT";
-    }
-
-    /**
-     * Insere o Usuario no Banco de Dados Local(SQLite)
-     */
-    private void insertUserDatabase(User user) {
-        DataBaseHelper database = new DataBaseHelper(context);
-        // Exclui dados do Banco de Dados se houverem e Insere o Novo Usuario
-        database.deleteAllUsers();
-        database.insertUser(user);
-        database.close();
     }
 
     /**

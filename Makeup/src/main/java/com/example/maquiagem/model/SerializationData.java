@@ -7,7 +7,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.controller.ManagerResources;
 import com.example.maquiagem.model.entity.Makeup;
 
@@ -115,12 +115,12 @@ public class SerializationData {
 
     // Tratamento/Serialização de Dados do Banco Local (SQLite)
     public List<Makeup> serializationSelectMakeup(String select) {
-        DataBaseHelper database = new DataBaseHelper(context);
+        ManagerDatabase database = new ManagerDatabase(context);
         Cursor cursor = database.selectMakeup(select);
         List<Makeup> list_resultSelect = new ArrayList<>();
 
         // Caso haja posição para o Cursor
-        if (cursor.moveToFirst()) {
+        if (cursor != null && !cursor.isClosed() && cursor.moveToFirst()) {
 
             String brand, name, price, currency, type, description, urlImage;
             int id, intFavorite;
@@ -128,15 +128,15 @@ public class SerializationData {
 
             // Pega os dados enquanto o Cursor tiver proxima posição
             do {
-                id = cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseHelper.ID_MAKEUP));
-                brand = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseHelper.BRAND_MAKEUP));
-                name = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseHelper.NAME_MAKEUP));
-                type = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseHelper.TYPE_MAKEUP));
-                price = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseHelper.PRICE_MAKEUP));
-                currency = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseHelper.CURRENCY_MAKEUP));
-                description = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseHelper.DESCRIPTION_MAKEUP));
-                urlImage = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseHelper.URL_IMAGE_MAKEUP));
-                intFavorite = cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseHelper.IS_FAVORITE_MAKEUP));
+                id = cursor.getInt(cursor.getColumnIndexOrThrow(ManagerDatabase.ID_MAKEUP));
+                brand = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.BRAND_MAKEUP));
+                name = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.NAME_MAKEUP));
+                type = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.TYPE_MAKEUP));
+                price = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.PRICE_MAKEUP));
+                currency = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.CURRENCY_MAKEUP));
+                description = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.DESCRIPTION_MAKEUP));
+                urlImage = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.URL_IMAGE_MAKEUP));
+                intFavorite = cursor.getInt(cursor.getColumnIndexOrThrow(ManagerDatabase.IS_FAVORITE_MAKEUP));
                 isFavorite = intFavorite == 1;
 
                 Makeup makeup = new Makeup(id, brand, name, type, price, currency, description,
@@ -148,15 +148,14 @@ public class SerializationData {
 
             } while (cursor.moveToNext());
 
+            if (!cursor.isClosed()) cursor.close();
+            database.close();
         } else {
             // Não possui dados na Tabela
             Log.e("EMPTY DATABASE", "Não foi encontrado nenhum " +
-                    "dado no Banco de Dados\n" + cursor.toString());
+                    "dado no Banco de Dados");
             return null;
         }
-
-        cursor.close();
-        database.close();
 
         return list_resultSelect.isEmpty() ? null : list_resultSelect;
     }

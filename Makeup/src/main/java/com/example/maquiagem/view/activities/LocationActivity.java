@@ -1,6 +1,7 @@
 package com.example.maquiagem.view.activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -21,8 +22,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.model.entity.Location;
+import com.example.maquiagem.view.CustomAlertDialog;
 import com.example.maquiagem.view.fragments.FeedbackLocation;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -34,28 +36,24 @@ import java.util.Locale;
 
 public class LocationActivity extends AppCompatActivity {
 
-    private LinearLayout layout_data;
+    static final String STATE_FRAGMENT = "STATE FRAGMENT";
     public LinearLayout layout_address;
-
+    private Context context;
+    private LinearLayout layout_data;
     private TextView txt_wait;
     private TextView txt_error;
     private TextView country;
     private TextView state;
     private TextView address;
     private TextView cep;
-
     private Button btn_reset;
     private ImageButton btnFragment;
-
     private ProgressBar loading_location;
-
     private double latitude = 0;
     private double longitude = 0;
     private boolean activeFragment = false;
-    static final String STATE_FRAGMENT = "STATE FRAGMENT";
-
     private Location classLocation;
-    private DataBaseHelper dataBaseHelper;
+    private ManagerDatabase managerDatabase;
     private int actualId;
 
     @Override
@@ -67,13 +65,13 @@ public class LocationActivity extends AppCompatActivity {
         recoveryId();
 
         classLocation = new Location();
-        dataBaseHelper = new DataBaseHelper(this);
+        managerDatabase = new ManagerDatabase(context);
 
         loading_location.setMax(10);
         loading_location.setProgress(0);
 
         // Obtem a ultima localização inserida
-        int lastIdLocation = dataBaseHelper.amountLocation();
+        int lastIdLocation = managerDatabase.amountLocation();
         actualId = lastIdLocation + 1;
 
         getLastLocation();
@@ -107,6 +105,7 @@ public class LocationActivity extends AppCompatActivity {
 
     // Recupera os ID dos Itens
     private void recoveryId() {
+        context = LocationActivity.this;
         layout_data = findViewById(R.id.layout_data);
         layout_address = findViewById(R.id.layout_address);
         btnFragment = findViewById(R.id.btn_showFragment);
@@ -122,7 +121,7 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     // Metodo ao clicar no ImageButton ---> Setinha em baixo da Localização
-    public void buttonFragment(View view){
+    public void buttonFragment(View view) {
         // Caso o Fragment esteja ativo --> Fecha. Se não está ativo ----> Abre
         if (activeFragment) {
             closeFragment();
@@ -135,16 +134,16 @@ public class LocationActivity extends AppCompatActivity {
     public void getLastLocation() {
 
         // Serviço do Google para Manipular Localizações
-        FusedLocationProviderClient fusedLocationClient =LocationServices.
-                getFusedLocationProviderClient(getApplicationContext());
+        FusedLocationProviderClient fusedLocationClient = LocationServices.
+                getFusedLocationProviderClient(context);
 
         // Verifica se a permissão de Localização  foi Concedida --> Se não = Solicita pro Usuario
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+        if (ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this, new String[]{
-                    Manifest.permission.ACCESS_FINE_LOCATION},0);
+                    Manifest.permission.ACCESS_FINE_LOCATION}, 0);
 
             showError();
             return;
@@ -152,77 +151,79 @@ public class LocationActivity extends AppCompatActivity {
 
         // Recupera a Ultima Localização
         fusedLocationClient.getLastLocation().
-            addOnSuccessListener(this,
-                    location -> {
+                addOnSuccessListener(this,
+                        location -> {
 
-                        List<Address> addresses = new ArrayList<>();
-                        Geocoder geocoder = new Geocoder(getApplicationContext(),
-                                Locale.getDefault());
+                            List<Address> addresses = new ArrayList<>();
+                            Geocoder geocoder = new Geocoder(context,
+                                    Locale.getDefault());
 
-                        if (location == null){
-                            Log.e("LOCATION", "Erro na Localização\n" + location);
+                            if (location == null) {
+                                Log.e("LOCATION", "Erro na Localização\n" + location);
 
-                            showError();
-                            return;
-                        }
-
-                        try {
-                            // Tenta obter a Latitude e Longitude do Local atual
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-
-                            // Geolocalização Reversa (Longitude + Latidude = Endereço)
-                            addresses = geocoder.getFromLocation(latitude, longitude, 1);
-
-                            // Imprime o resultado da List de Endereços (ArrayList)
-                            Log.d("LIST ENDEREÇO", addresses.get(0).toString()
-                                    + "\n" + addresses.get(0).getAddressLine(0));
-
-                            // Instancia a classe de Localização
-                            classLocation = new Location(
-                                    actualId,
-                                    addresses.get(0).getThoroughfare(),
-                                    addresses.get(0).getFeatureName(),
-                                    addresses.get(0).getAdminArea(),
-                                    addresses.get(0).getSubAdminArea(),
-                                    addresses.get(0).getSubThoroughfare(),
-                                    addresses.get(0).getPostalCode(),
-                                    addresses.get(0).getCountryName(),
-                                    addresses.get(0).getCountryCode()
-                            );
-
-                            // Insere a Localização no BD e Exibe o Endereço
-                            dataBaseHelper.insertLocation(classLocation);
-
-                        } catch (IOException e) {
-                            // Tratamento de Erro da Localização ---> Erro no Processo
-                            Log.e("GET LOCATION", "Erro na recuperação do endereço " +
-                                    "pela Latitude e Longitude.\n" + e);
-                        }
-                        catch (IllegalArgumentException illegalArgumentException) {
-                            // Tratamento de Erro da Localização ---> Formato não aceito
-                            Log.e("ERROR FORMAT","Latitude = " + location.getLatitude() +
-                                    ", Longitude = " +
-                                    location.getLongitude(), illegalArgumentException);
-                        }
-                        finally {
-                            Log.d("FINAL LOCATION", "Localização Final:\n" +
-                                    addresses.toString());
-
-                            if(addresses.isEmpty() || addresses == null){
                                 showError();
-                            } else showWindow(classLocation);
+                                return;
+                            }
 
+                            try {
+                                // Tenta obter a Latitude e Longitude do Local atual
+                                latitude = location.getLatitude();
+                                longitude = location.getLongitude();
+
+                                // Geolocalização Reversa (Longitude + Latidude = Endereço)
+                                addresses = geocoder.getFromLocation(latitude, longitude, 1);
+
+                                // Imprime o resultado da List de Endereços (ArrayList)
+                                Log.d("LIST ENDEREÇO", addresses.get(0).toString()
+                                        + "\n" + addresses.get(0).getAddressLine(0));
+
+                                // Instancia a classe de Localização
+                                classLocation = new Location(
+                                        actualId,
+                                        addresses.get(0).getThoroughfare(),
+                                        addresses.get(0).getFeatureName(),
+                                        addresses.get(0).getAdminArea(),
+                                        addresses.get(0).getSubAdminArea(),
+                                        addresses.get(0).getSubThoroughfare(),
+                                        addresses.get(0).getPostalCode(),
+                                        addresses.get(0).getCountryName(),
+                                        addresses.get(0).getCountryCode()
+                                );
+
+                                // Insere a Localização no BD e Exibe o Endereço
+                                if (!managerDatabase.insertLocation(classLocation)) {
+                                    new CustomAlertDialog(context).defaultMessage(R.string.error_api,
+                                            R.string.error_database, null, null, true).show();
+                                }
+
+
+                            } catch (IOException e) {
+                                // Tratamento de Erro da Localização ---> Erro no Processo
+                                Log.e("GET LOCATION", "Erro na recuperação do endereço " +
+                                        "pela Latitude e Longitude.\n" + e);
+                            } catch (IllegalArgumentException illegalArgumentException) {
+                                // Tratamento de Erro da Localização ---> Formato não aceito
+                                Log.e("ERROR FORMAT", "Latitude = " + location.getLatitude() +
+                                        ", Longitude = " +
+                                        location.getLongitude(), illegalArgumentException);
+                            } finally {
+                                Log.d("FINAL LOCATION", "Localização Final:\n" +
+                                        addresses.toString());
+
+                                if (addresses.isEmpty() || addresses == null) {
+                                    showError();
+                                } else showWindow(classLocation);
+
+                            }
+                        })
+
+                // Caso não consiga obter a ultima Localização ---> Erro
+                .addOnFailureListener(
+                        e -> {
+                            Log.e("TAG", "onFailure: ", e);
+                            showError();
                         }
-                    })
-
-            // Caso não consiga obter a ultima Localização ---> Erro
-            .addOnFailureListener(
-                    e -> {
-                        Log.e("TAG", "onFailure: ", e);
-                        showError();
-                    }
-            );
+                );
     }
 
     // Mostra o Layout do Endereço
@@ -250,7 +251,7 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     // Mostra o Layout de Erro
-    public void showError(){
+    public void showError() {
 
         loading_location.setProgress(10);
         loading_location.setVisibility(View.GONE);
@@ -265,9 +266,9 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     // Mostra o Fragment na Tela
-    public void showFragment(){
+    public void showFragment() {
         // Instancia a classe do Fragment ---> Envia um Context p/ acessar o Banco de Dados
-        FeedbackLocation feedbackLocation = FeedbackLocation.newInstance(getApplicationContext());
+        FeedbackLocation feedbackLocation = FeedbackLocation.newInstance(context);
 
         // Dá suporte ao Fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -284,7 +285,7 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     // Fecha o Fragment
-    public void closeFragment(){
+    public void closeFragment() {
         //Obtem o gerenciametno de Fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -293,7 +294,7 @@ public class LocationActivity extends AppCompatActivity {
                 findFragmentById(R.id.fragment_location);
 
         // Existe o Fragment no id Informado
-        if (feedbackLocation != null){
+        if (feedbackLocation != null) {
             // Cria uma ação a ser executada
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 

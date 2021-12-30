@@ -216,6 +216,7 @@
     </string-array>
 
     <!-- Mensagens de Erro -->
+    <string name="title_possibleError">Possiveis Erros</string>
     <string name="btn_close">Fechar</string>
     <string name="title_noConnection">Sem Internet</string>
     <string name="title_invalidData">Dados Invalidos</string>
@@ -249,6 +250,9 @@
         a busca</string>
     <string name="error_JWT">Não foi Possivel realizar o Login no Aplicativo</string>
     <string name="error_change">Não foi Possivel alterar %1$s do %2$s</string>
+    <string name="error_database">Não foi possivel salvar os Dados no Banco de Dados. Tente Novamente</string>
+    <string name="error_syncFavorites">Algumas das Maquiagens %s não foram Carregadas. Tente Novamente
+        mais tarde</string>
 
     <!-- Validação dos Formularios -->
     <string name="validation_ok">Campo Validado</string>

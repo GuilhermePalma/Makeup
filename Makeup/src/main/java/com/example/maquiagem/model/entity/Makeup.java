@@ -8,7 +8,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.model.SearchInternet;
 import com.example.maquiagem.model.SerializationData;
 import com.example.maquiagem.view.activities.MainActivity;
@@ -58,7 +58,7 @@ public class Makeup {
         // Todo: Remover, temporario enquanto não se tem a API Interna
         if(uri_search.toString().equals("In Develop 1")){
             String select_favorite = String.format("SELECT * FROM %1$s WHERE %2$s=1",
-                    DataBaseHelper.TABLE_MAKEUP, DataBaseHelper.IS_FAVORITE_MAKEUP);
+                    ManagerDatabase.TABLE_MAKEUP, ManagerDatabase.IS_FAVORITE_MAKEUP);
             return new SerializationData(context).serializationSelectMakeup(select_favorite);
         }
 

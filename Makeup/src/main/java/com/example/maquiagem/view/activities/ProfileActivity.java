@@ -13,7 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerDatabase;
+import com.example.maquiagem.controller.ManagerSharedPreferences;
 import com.example.maquiagem.model.entity.User;
 import com.example.maquiagem.view.CustomAlertDialog;
 import com.google.android.material.textfield.TextInputEditText;
@@ -87,9 +88,8 @@ public class ProfileActivity extends AppCompatActivity {
         btn_confirm = findViewById(R.id.btn_confirmChange);
         btn_abort = findViewById(R.id.btn_abortChange);
 
-        DataBaseHelper database = new DataBaseHelper(context);
-        user = database.selectUser(context);
-        database.close();
+        ManagerDatabase database = new ManagerDatabase(context);
+        user = database.selectUser();
     }
 
     /**
@@ -204,13 +204,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Obter Infos do Usuario
 
-        // Salva o Token no Banco de Dados e Atualiza o Usario no Banco Local
-        user.setToken_user(new_JWT);
-        DataBaseHelper database = new DataBaseHelper(context);
-        database.updateUser(user);
-        database.close();
+        // Salva o Token nas Preferences
+        new ManagerSharedPreferences(context).setUserToken(new_JWT);
 
-        return true;
+        // Atualiza o Usuario no Banco de dados Local
+        ManagerDatabase database = new ManagerDatabase(context);
+        return database.updateUser(user);
     }
 
 }

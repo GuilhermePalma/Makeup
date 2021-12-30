@@ -6,6 +6,7 @@ import static com.example.maquiagem.model.SerializationData.DEFAULT_QUANTITY;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,7 +23,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.controller.ManagerResources;
 import com.example.maquiagem.model.SerializationData;
 import com.example.maquiagem.model.entity.Makeup;
@@ -84,9 +85,8 @@ public class MainActivity extends AppCompatActivity {
         TextView txt_nameHeader = headerView.findViewById(R.id.text_nameHeader);
         TextView txt_nicknameHeader = headerView.findViewById(R.id.text_nicknameHeader);
 
-        DataBaseHelper dataBaseHelper = new DataBaseHelper(context);
-        User user = dataBaseHelper.selectUser(context);
-        dataBaseHelper.close();
+        ManagerDatabase managerDatabase = new ManagerDatabase(context);
+        User user = managerDatabase.selectUser();
 
         // Configuração no Tamanho do Nome e Nickname no Header do Menu Lateral
         txt_nameHeader.setText(user != null
@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         // Obtem os Dados Salvos do Banco Local (Sem Internet)
                         String select_favorite = String.format("SELECT * FROM %1$s WHERE %2$s=1",
-                                DataBaseHelper.TABLE_MAKEUP, DataBaseHelper.IS_FAVORITE_MAKEUP);
+                                ManagerDatabase.TABLE_MAKEUP, ManagerDatabase.IS_FAVORITE_MAKEUP);
                         List<Makeup> list_favorites = new SerializationData(context)
                                 .serializationSelectMakeup(select_favorite);
                         setUpListFragment(list_favorites, FragmentListMakeup.TYPE_MY_FAVORITE);
@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case OPTION_HISTORIC_MAKEUP:
-                    String select_historic = String.format("SELECT * FROM %s", DataBaseHelper.TABLE_MAKEUP);
+                    String select_historic = String.format("SELECT * FROM %s", ManagerDatabase.TABLE_MAKEUP);
 
                     List<Makeup> list_historicSearches = new SerializationData(context)
                             .serializationSelectMakeup(select_historic);
@@ -308,9 +308,9 @@ public class MainActivity extends AppCompatActivity {
 
                 case OPTION_EXIT:
                     // Limpa o Banco Local do Usuario
-                    DataBaseHelper database = new DataBaseHelper(context);
-                    database.deleteAllUsers();
-                    database.close();
+                    ManagerDatabase database = new ManagerDatabase(context);
+                    if (!database.clearTables()) Log.e("Error Clear", "Não foi possivel " +
+                            "limpar o Banco de Dados Local");
                     // Inicia a SplashScreen
                     startActivity(new Intent(context, SplashScreen.class));
                     finish();
@@ -382,11 +382,16 @@ public class MainActivity extends AppCompatActivity {
 
             // Sincroniza o Banco de Dados Local com os Dados recebido da API
             if (async_list != null && option_search == OPTION_MY_FAVORITE_MAKEUPS) {
-                DataBaseHelper dataBase = new DataBaseHelper(context);
+                ManagerDatabase dataBase = new ManagerDatabase(context);
+                int allInserted = 0;
                 for (int i = 0; i < async_list.size(); i++) {
-                    dataBase.insertMakeup(async_list.get(i));
+                    allInserted = dataBase.insertMakeup(async_list.get(i)) ? allInserted : allInserted + 1;
                 }
-                dataBase.close();
+
+                if (allInserted > 0) {
+                    customAlertDialog.defaultMessage(R.string.title_possibleError, R.string.error_syncFavorites,
+                            null, new String[]{"Favoritas"}, false).show();
+                }
             }
         });
     }

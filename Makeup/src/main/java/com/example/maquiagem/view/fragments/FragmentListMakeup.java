@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ClickRecyclerView;
-import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.controller.RecyclerListMakeup;
 import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.view.CustomAlertDialog;
@@ -35,6 +35,7 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
     private String type_fragment;
     private Context context;
     private List<Makeup> makeupList;
+    private CustomAlertDialog customDialog;
 
     // Contrutor Vazio do Fragment
     public FragmentListMakeup() {
@@ -69,10 +70,11 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
         View view = inflater.inflate(R.layout.fragment_list_makeup, container, false);
 
         context = view.getContext();
+        customDialog = new CustomAlertDialog(context);
 
         if (makeupList == null || makeupList.isEmpty()) {
-            CustomAlertDialog customDialog = new CustomAlertDialog(context);
-            customDialog.defaultMessage(R.string.title_noData, R.string.txt_maintenance, null, null, true).show();
+            customDialog.defaultMessage(R.string.title_noData, R.string.txt_maintenance, null,
+                    null, true).show();
         } else {
             // Cofigura o Recycler e Header do RecyclerView
             recyclerView = view.findViewById(R.id.recycler_listMakeup);
@@ -140,41 +142,46 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
     @Override
     public void onClickProduct(Makeup makeup_click) {
         Intent details_makeup = new Intent(context, MakeupDetailsActivity.class);
-        details_makeup.putExtra(DataBaseHelper.ID_MAKEUP, makeup_click.getId());
-        details_makeup.putExtra(DataBaseHelper.BRAND_MAKEUP, makeup_click.getBrand());
-        details_makeup.putExtra(DataBaseHelper.NAME_MAKEUP, makeup_click.getName());
-        details_makeup.putExtra(DataBaseHelper.PRICE_MAKEUP, makeup_click.getPrice());
-        details_makeup.putExtra(DataBaseHelper.CURRENCY_MAKEUP, makeup_click.getCurrency());
-        details_makeup.putExtra(DataBaseHelper.DESCRIPTION_MAKEUP, makeup_click.getDescription());
-        details_makeup.putExtra(DataBaseHelper.TYPE_MAKEUP, makeup_click.getType());
-        details_makeup.putExtra(DataBaseHelper.URL_IMAGE_MAKEUP, makeup_click.getUrlImage());
-        details_makeup.putExtra(DataBaseHelper.IS_FAVORITE_MAKEUP, makeup_click.isFavorite());
+        details_makeup.putExtra(ManagerDatabase.ID_MAKEUP, makeup_click.getId());
+        details_makeup.putExtra(ManagerDatabase.BRAND_MAKEUP, makeup_click.getBrand());
+        details_makeup.putExtra(ManagerDatabase.NAME_MAKEUP, makeup_click.getName());
+        details_makeup.putExtra(ManagerDatabase.PRICE_MAKEUP, makeup_click.getPrice());
+        details_makeup.putExtra(ManagerDatabase.CURRENCY_MAKEUP, makeup_click.getCurrency());
+        details_makeup.putExtra(ManagerDatabase.DESCRIPTION_MAKEUP, makeup_click.getDescription());
+        details_makeup.putExtra(ManagerDatabase.TYPE_MAKEUP, makeup_click.getType());
+        details_makeup.putExtra(ManagerDatabase.URL_IMAGE_MAKEUP, makeup_click.getUrlImage());
+        details_makeup.putExtra(ManagerDatabase.IS_FAVORITE_MAKEUP, makeup_click.isFavorite());
 
         startActivity(details_makeup);
     }
 
     @Override
-    public void onClickFavorite(Makeup makeup_click) {
+    public void onClickFavorite(Makeup makeup_click, int position_item) {
         // Obtem a Posição do Item na Lista
-        int indexItem = makeupList.indexOf(makeup_click);
+        int index_list = makeupList.indexOf(makeup_click);
         makeup_click.setFavorite(!makeup_click.isFavorite());
-        DataBaseHelper database = new DataBaseHelper(context);
+        ManagerDatabase database = new ManagerDatabase(context);
 
-        if (type_fragment.equals(TYPE_CATALOG)) {
-            database.insertMakeup(makeup_click);
-        } else {
-            database.updateFavoriteMakeup(makeup_click);
+        // Salva o Usuario no Banco de Dados
+        if (!database.insertMakeup(makeup_click)) {
+            customDialog.defaultMessage(R.string.title_errorAPI, R.string.error_database,
+                    null, null, true).show();
+            return;
         }
-
-        if (type_fragment.equals(TYPE_MY_FAVORITE)) {
-            makeupList.remove(indexItem);
-        } else {
-            makeupList.set(indexItem, makeup_click);
-        }
-
-        database.close();
 
         // Atualiza o Item que foi Favoritado/Desfavoritado
-        recyclerListMakeup.notifyItemChanged(indexItem);
+        if (type_fragment.equals(TYPE_MY_FAVORITE)) {
+            if (makeupList.size() == 1) {
+                makeupList.clear();
+                recyclerListMakeup.notifyDataSetChanged();
+            } else {
+                makeupList.remove(index_list);
+                recyclerListMakeup.notifyItemRemoved(position_item);
+                recyclerListMakeup.notifyItemRangeChanged(position_item, makeupList.size());
+            }
+        } else {
+            makeupList.set(index_list, makeup_click);
+            recyclerListMakeup.notifyItemChanged(position_item);
+        }
     }
 }

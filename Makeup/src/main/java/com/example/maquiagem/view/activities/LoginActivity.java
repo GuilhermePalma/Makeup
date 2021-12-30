@@ -8,7 +8,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.controller.ManagerKeyboard;
 import com.example.maquiagem.controller.ManagerResources;
 import com.example.maquiagem.controller.ManagerSharedPreferences;
@@ -48,8 +48,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void checkLogin() {
-        DataBaseHelper database = new DataBaseHelper(context);
-        User user = database.selectUser(context);
+        ManagerDatabase database = new ManagerDatabase(context);
+        User user = database.selectUser();
 
         if (user != null) edit_nickname.setText(user.getNickname());
     }
@@ -89,11 +89,19 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     // Define o Token e Insere o Usuario no Banco de Dados
-                    userInformation.setToken_user(jsonWebToken);
-                    insertUserDatabase(userInformation);
+                    ManagerSharedPreferences managerPreferences = new ManagerSharedPreferences(context);
+                    managerPreferences.setUserToken(jsonWebToken);
+
+                    // Salva o Usuario no Banco de Dados
+                    ManagerDatabase database = new ManagerDatabase(this);
+                    if(!database.insertUser(user)){
+                        customDialog.defaultMessage(R.string.title_errorAPI, R.string.error_database,
+                                null, null, true).show();
+                        return;
+                    }
 
                     // Define nas Preferences se o Usuario terá ou não que fazer Login a cada Acesso
-                    new ManagerSharedPreferences(context).setRememberLogin(checkBox_rememberUser.isChecked());
+                    managerPreferences.setRememberLogin(checkBox_rememberUser.isChecked());
 
                     // Inicia a Nova Acticity e Limpa as Activities da Pilha
                     startActivity(new Intent(context, MainActivity.class));
@@ -152,17 +160,6 @@ public class LoginActivity extends AppCompatActivity {
     private String getJsonWebToken(User user) {
         // retorna o jwt p/ salvar no banco de dados
         return "JWT";
-    }
-
-    /**
-     * Insere o Usuario no Banco de Dados Local(SQLite)
-     */
-    private void insertUserDatabase(User user) {
-        DataBaseHelper database = new DataBaseHelper(this);
-        // Exclui dados do Banco de Dados se houverem e Insere o Novo Usuario
-        database.deleteAllUsers();
-        database.insertUser(user);
-        database.close();
     }
 
     /**

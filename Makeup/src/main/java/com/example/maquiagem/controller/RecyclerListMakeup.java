@@ -39,6 +39,10 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerListMakeup.
         this.clickRecyclerView = clickRecyclerView;
     }
 
+    public boolean hasHeader() {
+        return header != null;
+    }
+
     @Override
     public int getItemViewType(int position) {
         return isHeader(position) ? NUMBER_HEADER : NUMBER_ITEM;
@@ -122,7 +126,7 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerListMakeup.
         holder.checkBox_favorite.setOnClickListener(v -> {
             // Muda p/ o estado oposto do CheckBox e Instancia o Clique
             holder.checkBox_favorite.setChecked(!makeup.isFavorite());
-            clickRecyclerView.onClickFavorite(makeup);
+            clickRecyclerView.onClickFavorite(makeup, position);
         });
     }
 
@@ -130,7 +134,7 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerListMakeup.
     @Override
     public int getItemCount() {
         if (makeupList != null && !makeupList.isEmpty()) {
-            if(header != null) return makeupList.size() + 1;
+            if (header != null) return makeupList.size() + 1;
             return makeupList.size();
         } else return 0;
     }

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.model.SearchInternet;
 import com.example.maquiagem.model.SerializationData;
 import com.example.maquiagem.model.entity.Makeup;
@@ -29,7 +29,7 @@ public class ResultActivity extends AppCompatActivity {
     private TextView title_loading;
     private CircularProgressIndicator progressIndicator_loading;
     private String uri_received;
-    private CustomAlertDialog dialogs;
+    private CustomAlertDialog customDialog;
     private List<Makeup> makeupListSearch;
     private FrameLayout frameLayout_fragment;
     private Context context;
@@ -57,7 +57,7 @@ public class ResultActivity extends AppCompatActivity {
             }
         }
         // Mensagem de Erro caso não tenha a URI disponivel
-        dialogs.messageWithCloseWindow(this, R.string.title_noData, R.string.error_recoveryData,
+        customDialog.messageWithCloseWindow(this, R.string.title_noData, R.string.error_recoveryData,
                 null, null).show();
     }
 
@@ -68,7 +68,7 @@ public class ResultActivity extends AppCompatActivity {
         frameLayout_fragment = findViewById(R.id.frame_forFragmentSearch);
         makeupListSearch = new ArrayList<>();
         context = ResultActivity.this;
-        dialogs = new CustomAlertDialog(context);
+        customDialog = new CustomAlertDialog(context);
         title_loading = findViewById(R.id.txt_titleLoadingSearch);
         progressIndicator_loading = findViewById(R.id.progress_loadingSearch);
     }
@@ -92,7 +92,7 @@ public class ResultActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 // Tratamento do JSON
                 if (jsonReciver_search == null || jsonReciver_search.equals("")) {
-                    dialogs.messageWithCloseWindow(this, R.string.title_noExist,
+                    customDialog.messageWithCloseWindow(this, R.string.title_noExist,
                             R.string.error_noExists, null, null).show();
                 } else {
                     // Serializa O JSON e Adiciona ele na List usada no Fragment
@@ -101,7 +101,7 @@ public class ResultActivity extends AppCompatActivity {
 
                     // Verifica se Há Itens na Lista e se Realizou Inserção no Banco de Dados
                     if (makeupListSearch == null || makeupListSearch.isEmpty() || !insertInDataBase(makeupListSearch)) {
-                        dialogs.messageWithCloseWindow(this, R.string.title_invalidData,
+                        customDialog.messageWithCloseWindow(this, R.string.title_invalidData,
                                 R.string.error_noExists, null, null).show();
                     } else {
                         title_loading.setVisibility(View.GONE);
@@ -119,20 +119,24 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
-     * Serializa os Dados e Insere no {@link DataBaseHelper} para ter um registro das maquiagens
+     * Serializa os Dados e Insere no {@link ManagerDatabase} para ter um registro das maquiagens
      * buscadas
      */
     private boolean insertInDataBase(List<Makeup> makeups) {
         // Verifica se o Array é null ou Vazio = Evita Exceptions
         if (makeups != null && !makeups.isEmpty()) {
-            DataBaseHelper dataBaseHelper = new DataBaseHelper(context);
+            ManagerDatabase managerDatabase = new ManagerDatabase(context);
+            int allInserted = 0;
+
             // Insere cada item do Array no DB
             for (Makeup makeupItem : makeups) {
-                if (!dataBaseHelper.existsInMakeup(makeupItem.getType(), makeupItem.getBrand())) {
-                    dataBaseHelper.insertMakeup(makeupItem);
-                }
+                allInserted = managerDatabase.insertMakeup(makeupItem) ? allInserted : allInserted + 1;
             }
-            dataBaseHelper.close();
+
+            if (allInserted > 0) {
+                customDialog.defaultMessage(R.string.title_possibleError, R.string.error_syncFavorites,
+                        null, new String[]{"Pesquisadas"}, false).show();
+            }
             return true;
         } else {
             return false;

@@ -11,16 +11,18 @@ import android.widget.RadioButton;
 import androidx.fragment.app.Fragment;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.controller.DataBaseHelper;
+import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.view.CustomAlertDialog;
 
 public class FeedbackLocation extends Fragment {
 
-    private final DataBaseHelper helperDatabase;
+    private final ManagerDatabase helperDatabase;
+    private final CustomAlertDialog customAlertDialog;
 
     // Construtor que recebe context p/ usar no BD
     public FeedbackLocation(Context context) {
-        helperDatabase = new DataBaseHelper(context);
+        helperDatabase = new ManagerDatabase(context);
+        customAlertDialog = new CustomAlertDialog(context);
     }
 
 
@@ -35,6 +37,7 @@ public class FeedbackLocation extends Fragment {
                              Bundle savedInstanceState) {
         // Cria uma view para o Fragment (Obtem o Layout)
         View view = inflater.inflate(R.layout.fragment_feedback_location, container, false);
+
         // Recebe os valores dos Botões do Fragment
         Button btn_insertDb = view.findViewById(R.id.btn_sendData);
         RadioButton rbtn_correct = view.findViewById(R.id.rbtn_trueLocation);
@@ -47,10 +50,11 @@ public class FeedbackLocation extends Fragment {
                 int lastIdLocation = helperDatabase.amountLocation();
 
                 // Caso a posição seja correta, insere no Banco de Dados 'True', se não = 'False'
-                helperDatabase.insertTypeLocation(lastIdLocation, rbtn_correct.isChecked());
+                if (!helperDatabase.setCorrectLocation(lastIdLocation, rbtn_correct.isChecked())) {
+                    customAlertDialog.defaultMessage(R.string.error_api, R.string.error_database,
+                            null, null, true).show();
+                }
             } else {
-                CustomAlertDialog customAlertDialog = new CustomAlertDialog(
-                        view.getContext());
                 customAlertDialog.defaultMessage(R.string.title_invalidData, R.string.error_selected,
                         null, null, true).show();
             }
