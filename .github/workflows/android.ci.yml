@@ -39,7 +39,7 @@ jobs:
   # Executa o AndroidTest do APP (Após Executar o Build)
   android_unit_tests:
     name: Android Unit Test
-    needs: build
+    needs: build-gradle
       
     # Executa os Testes Unitarios no APP (Desabilitado por Erros)
     runs-on: [ubuntu-latest]
@@ -51,6 +51,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+          distribution: 'adopt'
+          cache: gradle
 
       - name: Unit Tests
         run: ./gradlew test --stacktrace
