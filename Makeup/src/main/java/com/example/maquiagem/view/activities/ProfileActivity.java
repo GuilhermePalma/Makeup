@@ -1,6 +1,6 @@
 package com.example.maquiagem.view.activities;
 
-import static com.example.maquiagem.model.entity.User.NO_MAX_LENGTH;
+import static com.example.maquiagem.controller.ManagerResources.NO_MAX_LENGTH;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ManagerDatabase;
+import com.example.maquiagem.controller.ManagerResources;
 import com.example.maquiagem.controller.ManagerSharedPreferences;
 import com.example.maquiagem.model.entity.User;
 import com.example.maquiagem.view.CustomAlertDialog;
@@ -22,6 +23,9 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
 
+/**
+ * Activity Responsavel por exibir os Dados do Usuario e permitir sua alteração
+ */
 public class ProfileActivity extends AppCompatActivity {
 
     private TextInputEditText editText_name;
@@ -115,7 +119,7 @@ public class ProfileActivity extends AppCompatActivity {
      */
     private void showDataUser() {
         TextView txt_helloProfile = header_profile.findViewById(R.id.txt_titleHeaderList);
-        txt_helloProfile.setText(String.format("Olá %s", user.customStringFormat(
+        txt_helloProfile.setText(String.format("Olá %s", ManagerResources.customStringFormat(
                 user.getNickname(), "@", NO_MAX_LENGTH)));
 
         // Exibe os Dados do Usuario
@@ -129,6 +133,11 @@ public class ProfileActivity extends AppCompatActivity {
         enableChangeInputs(false);
     }
 
+    /**
+     * Metodo Responsavel por Ativar/Desativar os Inputs com os Dados do Usuario
+     *
+     * @param enableInput Valor booelan se os Inputs estarão ativos ou não
+     */
     private void enableChangeInputs(boolean enableInput) {
         for (TextInputLayout inputLayout : editLayouts_array) {
             inputLayout.setEnabled(enableInput);
@@ -195,8 +204,14 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    // Todo Implementar API Interna
+    /**
+     * Atualiza o Usuario na API, obtem um novo JWT e sincroniza o Usuario no Banco de Dados Local
+     *
+     * @param user Instancia do {@link User} com os Dados Alterados
+     * @return true|false
+     */
     private boolean updateUser(User user) {
+        // Todo Implementar API Interna
         // Atualizar Usuario na API
 
         // Gerar novo Token

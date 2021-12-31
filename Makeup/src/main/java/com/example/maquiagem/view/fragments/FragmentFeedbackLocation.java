@@ -14,24 +14,42 @@ import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.view.CustomAlertDialog;
 
-public class FeedbackLocation extends Fragment {
+/**
+ * Classe de um {@link Fragment} que verifica com o Usuario se uma {@link com.example.maquiagem.model.entity.Location}
+ * está correta ou não
+ */
+public class FragmentFeedbackLocation extends Fragment {
 
     private final ManagerDatabase helperDatabase;
     private final CustomAlertDialog customAlertDialog;
 
-    // Construtor que recebe context p/ usar no BD
-    public FeedbackLocation(Context context) {
+    /**
+     * Construtor da Classe {@link FragmentFeedbackLocation}
+     *
+     * @param context {@link Context} utilizado para Instanciar Itens
+     */
+    private FragmentFeedbackLocation(Context context) {
         helperDatabase = new ManagerDatabase(context);
         customAlertDialog = new CustomAlertDialog(context);
     }
 
 
-    // Cria novamente uma nova instancia do Fragmente
-    public static FeedbackLocation newInstance(Context context) {
-        return new FeedbackLocation(context);
+    /**
+     * Metodo Estatico que  Cria uma Instancia da Classe {@link FragmentFeedbackLocation}
+     *
+     * @param context {@link Context} utilizado para instanciar Itens na Classe
+     */
+    public static FragmentFeedbackLocation newInstance(Context context) {
+        return new FragmentFeedbackLocation(context);
     }
 
-    // Retorna uma View do Fragment para ser usado em uma view
+    /**
+     * Metodo que Retorna a {@link View} do {@link FragmentFeedbackLocation} configurada
+     *
+     * @param container Local em que a {@link View} do {@link FragmentFeedbackLocation} será inflada
+     * @param inflater  Instancia da Classe {@link LayoutInflater} que Infla/Cria o Fragment
+     * @return {@link View}
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

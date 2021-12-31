@@ -1,7 +1,6 @@
 package com.example.maquiagem.controller;
 
 import android.content.Context;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,41 +19,80 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 import java.util.Random;
 
-public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerListMakeup.ViewHolderListMakeup> {
+/**
+ * Classe Responsavel por Gerenciar um {@link RecyclerView}. Ela Herda Metodos da Classe
+ * {@link RecyclerView.Adapter<>}
+ */
+public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    /**
+     * Instancia da Classe {@link ClickRecyclerView} que trata os Cliques nos Itens do {@link RecyclerView}
+     */
     private final ClickRecyclerView clickRecyclerView;
+    /**
+     * {@link Context} utilizado na Manipualção de Recursos da Classe
+     */
     private final Context context;
-    private final int NUMBER_HEADER = 0;
-    private final int NUMBER_ITEM = 1;
+    /**
+     * Define o Valor da View do Header
+     */
+    private final int VIEW_TYPE_HEADER = 0;
+    /**
+     * Define o Valor da View dos Itens
+     */
+    private final int VIEW_TYPE_ITEM = 1;
+    /**
+     * {@link List<> } com os Elementos que serão exibidos
+     */
     private final List<Makeup> makeupList;
-    // Context e List/Array (mostar/armazenar os dados) e ClickRecyclerView (Trata os Cliques)
+    /**
+     * {@link View} configurada com o Header
+     */
     private final View header;
 
-    // Contrutor da Calsse
+    /**
+     * Construtor da Classe {@link RecyclerListMakeup}
+     *
+     * @param context           {@link Context} utilziado na Manipulação dos Recursos do APP
+     * @param header            {@link View} configurada do Header
+     * @param list_makeups      {@link List} das {@link Makeup} que serão exibidas
+     * @param clickRecyclerView Instancia da Classe {@link ClickRecyclerView} que controla o Clique
+     *                          nos Itens
+     */
     public RecyclerListMakeup(Context context, View header,
-                              List<Makeup> list, ClickRecyclerView clickRecyclerView) {
+                              List<Makeup> list_makeups, ClickRecyclerView clickRecyclerView) {
         this.context = context;
         this.header = header;
-        this.makeupList = list;
+        this.makeupList = list_makeups;
         this.clickRecyclerView = clickRecyclerView;
     }
 
-    public boolean hasHeader() {
-        return header != null;
-    }
-
+    /**
+     * Metodo Responsavel por Retornar o Tipo de {@link View} a partir de uma Posição
+     *
+     * @param position posição do Item na Lista
+     */
     @Override
     public int getItemViewType(int position) {
-        return isHeader(position) ? NUMBER_HEADER : NUMBER_ITEM;
+        return isHeader(position) ? VIEW_TYPE_HEADER : VIEW_TYPE_ITEM;
     }
 
-    //Cria o ViewHolder; Instancia com o valor do Layout usado
+    /**
+     * Metodo Responsavel pela Criação e Intancia da View que será configurada e Exibida
+     *
+     * @param viewType  Tipo da {@link View} que será Exibida
+     * @param viewGroup Local em que a {@link View} será Inflada
+     * @return {@link RecyclerView.ViewHolder}
+     * @see #getItemViewType(int)
+     * @see ViewHolderListMakeup
+     * @see ViewHoldWithOfInstance
+     */
     @NonNull
     @Override
-    public ViewHolderListMakeup onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        if (viewType == NUMBER_HEADER && header != null) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        if (viewType == VIEW_TYPE_HEADER && header != null) {
             // Infla o Layout do Header
-            return new ViewHolderListMakeup(header);
+            return new ViewHoldWithOfInstance(header);
         } else {
             // Cria uma View e Instancia com o Layout do RecyclerView
             View itemView = LayoutInflater.from(viewGroup.getContext())
@@ -64,86 +102,87 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerListMakeup.
         }
     }
 
-    // Recupera os Valores do ListArray e Insere os Valores de Acordo com a Posição no RecyclerView
+    /**
+     * Configura os Itens da {@link View}.
+     *
+     * @param holder   Classe Herdada da {@link RecyclerView.ViewHolder} que controla a Instancia dos
+     *                 itens da {@link View}
+     * @param position Posição do Item que está sendo configurado
+     */
     @Override
-    public void onBindViewHolder(@NonNull ViewHolderListMakeup holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        /// Verifica se o Item está na Posição de Item que será configurado como Makeup
+        if (holder instanceof ViewHolderListMakeup) {
+            // Subtrai 1 da Posição se Exisitr Header
+            int position_real = header != null ? position : position - 1;
 
-        // Subtrai 1 da Posição se o Header for != null Header
-        int position_real = position;
-        if (header != null) {
-            if (isHeader(position)) {
-                // Caso o Layout Superior Exista, não configura um Item do RecyclerView
-                return;
-            } else {
-                position_real = position - 1;
-            }
+            // Obtem a Makeup que será exibida
+            Makeup makeup = makeupList.get(position_real);
+
+            // Formata o Nome (Evitar Cortar ou Passar do Tamanho do Card)
+            String name_formatted = ManagerResources.customStringFormat(
+                    makeup.getName(), null, position % 5 == 0 ? 28 : 12);
+
+            // Exibe os Dados na Tela
+            ((ViewHolderListMakeup) holder).name.setText(name_formatted);
+            ((ViewHolderListMakeup) holder).currency_price.setText(ManagerResources.getStringIdNormalized(
+                    context, R.string.formatted_currencyPrice, new String[]{makeup.getCurrency(),
+                            makeup.getPrice()}));
+
+            // TODO: Implementação da Contagem de Favoritos na API
+            Random numberRandom = new Random();
+            int random_amountFavorite = numberRandom.nextInt(1500);
+            ((ViewHolderListMakeup) holder).amount_favorite.setText(ManagerResources.getStringIdNormalized(
+                    context, R.string.txt_quantityFavorite, new Object[]{random_amountFavorite}));
+
+            // Recupera se o Produto foi Favoritado ou não (Coloca o Coração em Vermelho ou Branco)
+            ((ViewHolderListMakeup) holder).checkBox_favorite.setChecked(makeup.isFavorite());
+
+            // Biblioteca Picasso (Converte URL da IMG ---> IMG)
+            Picasso.get().load(makeup.getUrlImage())
+                    .error(R.drawable.makeup_no_image)
+                    .into(((ViewHolderListMakeup) holder).image);
+
+            // Listeners dos Cliques nos Itens do RecyclerView
+            ((ViewHolderListMakeup) holder).image.setOnClickListener(v -> clickRecyclerView.onClickProduct(makeup));
+            ((ViewHolderListMakeup) holder).cardView.setOnClickListener(v -> clickRecyclerView.onClickProduct(makeup));
+            ((ViewHolderListMakeup) holder).checkBox_favorite.setOnClickListener(v -> {
+                // Muda p/ o estado oposto do CheckBox e Instancia o Clique
+                ((ViewHolderListMakeup) holder).checkBox_favorite.setChecked(!makeup.isFavorite());
+                clickRecyclerView.onClickFavorite(makeup, position);
+            });
         }
-
-        Makeup makeup = makeupList.get(position_real);
-
-        String name = makeup.getName();
-        String name_formatted;
-
-        // Formatação no Tamanho dos Nomes
-        if (position % 5 == 0) {
-            // Caso seja o Card Maior 2x1
-            if (name.length() > 29) {
-                name_formatted = name.substring(0, 28);
-            } else {
-                name_formatted = name;
-            }
-        } else {
-            // Caso seja o Card Menor 1x1
-            if (name.length() > 13) {
-                name_formatted = name.substring(0, 12);
-            } else {
-                name_formatted = name;
-            }
-        }
-
-        // Exibe os Dados na Tela
-        holder.name.setText(name_formatted);
-        holder.currency_price.setText(Html.fromHtml(context.getString(R.string.formatted_currencyPrice,
-                makeup.getCurrency(), makeup.getPrice())));
-
-        // TODO: Implementação da Contagem de Favoritos na API
-        Random numberRandom = new Random();
-        int random_amountFavorite = numberRandom.nextInt(1500);
-        holder.amount_favorite.setText(context.getString
-                (R.string.txt_quantityFavorite, random_amountFavorite));
-
-        // Recupera se o Produto foi Favoritado ou não (Coloca o Coração em Vermelho ou Branco)
-        holder.checkBox_favorite.setChecked(makeup.isFavorite());
-
-        // Biblioteca Picasso (Converte URL da IMG ---> IMG)
-        Picasso.get().load(makeup.getUrlImage())
-                .error(R.drawable.makeup_no_image)
-                .into(holder.image);
-
-        // Listeners dos Cliques nos Itens do RecyclerView
-        holder.image.setOnClickListener(v -> clickRecyclerView.onClickProduct(makeup));
-        holder.cardView.setOnClickListener(v -> clickRecyclerView.onClickProduct(makeup));
-        holder.checkBox_favorite.setOnClickListener(v -> {
-            // Muda p/ o estado oposto do CheckBox e Instancia o Clique
-            holder.checkBox_favorite.setChecked(!makeup.isFavorite());
-            clickRecyclerView.onClickFavorite(makeup, position);
-        });
     }
 
-    //Conta os Itens da Lista
+    /**
+     * Conta a quantidade de Itens no {@link RecyclerView}
+     *
+     * @return int
+     */
     @Override
     public int getItemCount() {
+        // Caso a Lista não seja Vazia, retorna a Quantidade de Itens da Lista
         if (makeupList != null && !makeupList.isEmpty()) {
+            // Caso Possua Header, adiciona mais um Item
             if (header != null) return makeupList.size() + 1;
             return makeupList.size();
         } else return 0;
     }
 
+    /**
+     * Verifica se a Posição Atual é a Do Header
+     *
+     * @return true|false
+     * @see #VIEW_TYPE_HEADER
+     * @see #getItemViewType(int)
+     */
     public boolean isHeader(int positionItem) {
-        return positionItem == NUMBER_HEADER;
+        return positionItem == VIEW_TYPE_HEADER;
     }
 
-    // Classe que retorna os campos usados já referenciados
+    /**
+     * Classe que possui a Instancia dos Itens do Layout dos Cards de {@link Makeup}
+     */
     protected static class ViewHolderListMakeup extends RecyclerView.ViewHolder {
 
         private final MaterialCardView cardView;
@@ -153,7 +192,11 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerListMakeup.
         private final ImageView image;
         private final CheckBox checkBox_favorite;
 
-        // Recupera os valores definidos no Layout do RecycleAdpater
+        /**
+         * Recupera os Valors da View Informada
+         *
+         * @param itemView {@link View} que será obtida as Instancias
+         */
         protected ViewHolderListMakeup(@NonNull View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.cardView_recyclerList);
@@ -162,6 +205,16 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerListMakeup.
             name = itemView.findViewById(R.id.txt_nameMakeupList);
             currency_price = itemView.findViewById(R.id.txt_priceMakeupList);
             amount_favorite = itemView.findViewById(R.id.txt_amountFavorite);
+        }
+    }
+
+    /**
+     * Classe que dos itens que despreza a Instancia dos seus elementps
+     */
+    protected static class ViewHoldWithOfInstance extends RecyclerView.ViewHolder {
+
+        public ViewHoldWithOfInstance(@NonNull View itemView) {
+            super(itemView);
         }
     }
 

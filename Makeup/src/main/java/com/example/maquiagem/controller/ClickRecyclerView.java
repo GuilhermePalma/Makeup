@@ -2,9 +2,17 @@ package com.example.maquiagem.controller;
 
 import com.example.maquiagem.model.entity.Makeup;
 
-// Trata os Cliques no RecyclerView
+/**
+ * Interface que controla as Ações dos Itens do RecyclerView {@link RecyclerListMakeup}
+ */
 public interface ClickRecyclerView {
+    /**
+     * Metodo que será sobrescrito do Clique em um Produto
+     */
     void onClickProduct(Makeup makeup_select);
 
+    /**
+     * Metodo que será sobrescrito do Clique de Favoritar um Produto
+     */
     void onClickFavorite(Makeup makeup_select, int position_item);
 }

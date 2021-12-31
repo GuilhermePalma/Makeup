@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ManagerDatabase;
-import com.example.maquiagem.controller.ManagerKeyboard;
+import com.example.maquiagem.controller.ManagerResources;
 import com.example.maquiagem.controller.ManagerSharedPreferences;
 import com.example.maquiagem.model.entity.User;
 import com.example.maquiagem.view.CustomAlertDialog;
@@ -20,6 +20,9 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Objects;
 
+/**
+ * Activity responsavel pelo Cadastro do Usuario no Sistemas
+ */
 public class SingUpActivity extends AppCompatActivity {
 
     private TextInputEditText edit_name;
@@ -31,7 +34,6 @@ public class SingUpActivity extends AppCompatActivity {
     private Button btn_singUp;
     private Button btn_goLogin;
     private MaterialCheckBox checkBox_remember;
-    private ManagerKeyboard managerKeyboard;
     private CustomAlertDialog customDialog;
     private User user;
     private Context context;
@@ -42,7 +44,7 @@ public class SingUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sing_up);
 
         // Instancia os Itens que serão Usados e Configura o AutoCompleteText Idioms
-        instanceItens();
+        instanceItems();
         setInputIdioms();
 
         // Listener dos cliques no Botão "Cadastrar" e "Login"
@@ -53,7 +55,10 @@ public class SingUpActivity extends AppCompatActivity {
         });
     }
 
-    private void instanceItens() {
+    /**
+     * Instancia os Itens que serão usados na Activity
+     */
+    private void instanceItems() {
         edit_name = findViewById(R.id.editText_registerName);
         edit_nickname = findViewById(R.id.editText_registerNickname);
         edit_email = findViewById(R.id.editText_registerEmail);
@@ -67,13 +72,12 @@ public class SingUpActivity extends AppCompatActivity {
 
         context = SingUpActivity.this;
 
-        managerKeyboard = new ManagerKeyboard(context);
         customDialog = new CustomAlertDialog(context);
         user = new User(context);
     }
 
     /**
-     * Configuração e Listener do AutoCompleteText de Idioms
+     * Configuração e Listener do AutoCompleteText de Idiomas
      */
     private void setInputIdioms() {
         // Configura o AutoCompleteText e suas opções
@@ -90,7 +94,7 @@ public class SingUpActivity extends AppCompatActivity {
     }
 
     /**
-     * Valida os Inputs(Campos) e trata os Erros se Houverem
+     * Valida os Inputs(Campos) e exibe os erros (se existirem)
      */
     private boolean validationInputs() {
         String name = Objects.requireNonNull(edit_name.getText()).toString();
@@ -121,7 +125,7 @@ public class SingUpActivity extends AppCompatActivity {
         } else if (!user.validationIdiom(user.getIdiom())) {
             autoComplete_idioms.setError(getString(R.string.error_valueRequired), null);
             autoComplete_idioms.requestFocus();
-            managerKeyboard.openKeyboard(autoComplete_idioms);
+            ManagerResources.openKeyboard(context, autoComplete_idioms);
             return false;
         } else {
             // Reatribui um novo Valor à Classe user e Define por Padrão o Tema Claro
@@ -131,7 +135,7 @@ public class SingUpActivity extends AppCompatActivity {
     }
 
     /**
-     * Listener do Botão "Cadastrar". Cadastra um novo Usuario se passar pelas Validações
+     * Listener do Botão "Cadastrar". Cadastra um novo Usuario caso passe pelas Validações
      */
     private void executeSingUp() {
         btn_singUp.setOnClickListener(v -> {
@@ -156,7 +160,7 @@ public class SingUpActivity extends AppCompatActivity {
 
                     // Salva o Usuario no Banco de Dados
                     ManagerDatabase database = new ManagerDatabase(this);
-                    if(!database.insertUser(userInformation)){
+                    if (!database.insertUser(userInformation)) {
                         customDialog.defaultMessage(R.string.title_errorAPI, R.string.error_database,
                                 null, null, true).show();
                         return;
@@ -178,19 +182,28 @@ public class SingUpActivity extends AppCompatActivity {
         });
     }
 
-    // todo: impementar inserção do usuario na API
+    /**
+     * Insere um Novo Usuario na API
+     */
     private boolean insertInApi(User user) {
+        // Todo: impementar Cadastro do usuario na API
         return true;
     }
 
 
-    // todo: implementar obter informações
+    /**
+     * Obtem os Dados do Usuario na API
+     */
     private User getInformationUser(User user) {
+        // todo: implementar obter informações
         return user;
     }
 
-    // todo implementar obtenção do JWT
+    /**
+     * Gera o JWT do Usuario na API
+     */
     public String getJsonWebToken(User user) {
+        // todo implementar obtenção do JWT
         return "JWT";
     }
 
@@ -200,7 +213,7 @@ public class SingUpActivity extends AppCompatActivity {
     private void errorInput(TextInputEditText inputEditText, String error) {
         inputEditText.setError(error, null);
         inputEditText.requestFocus();
-        managerKeyboard.openKeyboard(inputEditText);
+        ManagerResources.openKeyboard(context, inputEditText);
     }
 
 }

@@ -22,48 +22,93 @@ import com.example.maquiagem.view.activities.MakeupDetailsActivity;
 
 import java.util.List;
 
+/**
+ * Classe que Configura o Fragment que manipulará e Exibira as {@link Makeup}. Ele possui metodos
+ * herdados da Classe {@link Fragment} e possui uma Interface Implementada ({@link ClickRecyclerView})
+ * para tratar os Cliques nos Itens da Lista
+ */
 public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
 
+    /**
+     * Constante que define o tipo de Fragment como Catalogo (Exibição de Produtos Varidados
+     */
     public static final String TYPE_CATALOG = "catalog";
+    /**
+     * Constante que define o tipo de Fragment como as {@link Makeup} Favoritas do Usuario
+     */
     public static final String TYPE_MY_FAVORITE = "my_favorites";
+    /**
+     * Constante que define o tipo de Fragment como as Maquiagens mais Pesquisadas pelos Usuarios
+     */
     public static final String TYPE_MORE_LIKED = "more_search";
+    /**
+     * Constante que define o tipo de Fragment como o Historico Local de Busca do Usuario
+     */
     public static final String TYPE_HISTORIC = "historic";
-    private static final String TYPE = "type_fragment";
-    private View header_view;
+    /**
+     * Constante que define a Key para obter o tipo de Fragment
+     */
+    private static final String KEY_TYPE = "type_fragment";
+    /**
+     * {@link List} de Makeups que serão exibidas
+     */
+    private final List<Makeup> makeupList;
     private RecyclerView recyclerView;
+    /**
+     * Classe Adapter para manipular e Gerenciar o RecyclerView
+     */
     private RecyclerListMakeup recyclerListMakeup;
     private String type_fragment;
     private Context context;
-    private List<Makeup> makeupList;
     private CustomAlertDialog customDialog;
 
-    // Contrutor Vazio do Fragment
-    public FragmentListMakeup() {
+    /**
+     * Construor da Classe {@link FragmentListMakeup}
+     *
+     * @param makeupsList {@link List} das {@link Makeup} que serão exibidas
+     */
+    private FragmentListMakeup(List<Makeup> makeupsList) {
+        this.makeupList = makeupsList;
     }
 
-    // Contrutor passando a List (RecyclerView) e Context (DataBase)
-    public FragmentListMakeup(List<Makeup> makeups) {
-        this.makeupList = makeups;
-    }
-
-    // Intancia do Fragment ---> Inserindo o Valor Instanciado do Titulo, Context e List Usada
-    public static FragmentListMakeup newInstance(List<Makeup> makeups, String type) {
-        FragmentListMakeup fragment = new FragmentListMakeup(makeups);
+    /**
+     * Metodo Estatico Responsavel pela Instancia do {@link FragmentListMakeup}
+     *
+     * @param makeupsList {@link List} das {@link Makeup} que serão exibidas
+     * @param type        {@link String} que diz qual é o Tipo do Fragment
+     * @see #TYPE_CATALOG
+     * @see #TYPE_HISTORIC
+     * @see #TYPE_MORE_LIKED
+     * @see #TYPE_MY_FAVORITE
+     */
+    public static FragmentListMakeup newInstance(List<Makeup> makeupsList, String type) {
+        FragmentListMakeup fragment = new FragmentListMakeup(makeupsList);
         Bundle args = new Bundle();
-        args.putString(TYPE, type);
+        args.putString(KEY_TYPE, type);
         fragment.setArguments(args);
         return fragment;
     }
 
-    // Recupera o valor inserido
+    /**
+     * Criação da View do Fragment. Obtem o TYPE do Fragment Informado
+     *
+     * @see #KEY_TYPE
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            type_fragment = getArguments().getString(TYPE);
+            type_fragment = getArguments().getString(KEY_TYPE);
         }
     }
 
+    /**
+     * Cria e Configura a View do {@link Fragment}
+     *
+     * @param container Local onde o {@link Fragment} será Infaldo
+     * @param inflater  Instancia do {@link LayoutInflater} responsavel por Inflar/Criar a {@link View}
+     * @return {@link View}
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,16 +130,16 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
         return view;
     }
 
+    /**
+     * Configura o {@link RecyclerView} do {@link Fragment}
+     */
     private void setUpRecyclerList() {
         // Configura o Layout do RecyclerView
         GridLayoutManager gridLayout = new GridLayoutManager(context, 2);
         recyclerView.setLayoutManager(gridLayout);
 
-        // Configura o Header do RecyclerView
-        setUpHeader();
-
-        // Define o adapter (Classe que configura o RecyclerView) do RecyclerView
-        recyclerListMakeup = new RecyclerListMakeup(context, header_view, makeupList, this);
+        // Passa as Propriedades para o RecyclerView
+        recyclerListMakeup = new RecyclerListMakeup(context, setUpHeader(), makeupList, this);
         recyclerView.setAdapter(recyclerListMakeup);
 
         // Define a disposição do Layout (4 Blocos Pequenos (1 | 1) e o 5° Grande (2))
@@ -106,8 +151,13 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
         });
     }
 
-    private void setUpHeader() {
-        header_view = LayoutInflater.from(context)
+    /**
+     * Configura o Heaader ({@link View}) que será inserido no {@link FragmentListMakeup}
+     *
+     * @return {@link View}|null
+     */
+    private View setUpHeader() {
+        View header_view = LayoutInflater.from(context)
                 .inflate(R.layout.layout_header_list, recyclerView, false);
 
         TextView header_title = header_view.findViewById(R.id.txt_titleHeaderList);
@@ -137,8 +187,13 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
                 header_view = null;
                 break;
         }
+        return header_view;
     }
 
+    /**
+     * Metodo da Interface {@link ClickRecyclerView} que manipula o Clique em uma {@link Makeup}.
+     * Ao clicar na Makeup, inicializa a {@link MakeupDetailsActivity}
+     */
     @Override
     public void onClickProduct(Makeup makeup_click) {
         Intent details_makeup = new Intent(context, MakeupDetailsActivity.class);
@@ -155,6 +210,12 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
         startActivity(details_makeup);
     }
 
+    /**
+     * Metodo da Interface {@link ClickRecyclerView} que manipula o ato de Favoritar/Desfavoritar
+     * uma {@link Makeup}
+     *
+     * @see ManagerDatabase#setFavoriteMakeup(Makeup)
+     */
     @Override
     public void onClickFavorite(Makeup makeup_click, int position_item) {
         // Obtem a Posição do Item na Lista

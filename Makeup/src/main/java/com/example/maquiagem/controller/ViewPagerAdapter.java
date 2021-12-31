@@ -12,18 +12,31 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.example.maquiagem.R;
 
+/**
+ * Classe que Gerencia a Exibição do Itens do ViewPager. Ela herda as propriedades da Classe {@link PagerAdapter}
+ */
 public class ViewPagerAdapter extends PagerAdapter {
 
     private final LayoutInflater layoutInflater;
     private final Context context;
 
-    // Inicializador da Classe
-    public ViewPagerAdapter(Context context){
+    /**
+     * Inicializador da Classe {@link ViewPagerAdapter}
+     *
+     * @param context {@link Context} utilizado na Manipulação dos Itens
+     */
+    public ViewPagerAdapter(Context context) {
         this.context = context;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    // Instancia o Item
+    /**
+     * Metodo responsavel por Instanciar um Item
+     *
+     * @param container Local onde será Exibido o Item
+     * @param position  Posição do Item
+     * @return {@link Object}
+     */
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
@@ -38,7 +51,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         TextView description = view.findViewById(R.id.txt_slideDescription);
 
         // Caracteristicas de Cada Item
-        switch (position){
+        switch (position) {
             case 0:
                 imageItem.setImageResource(R.drawable.cosmetics);
                 imageItem.setContentDescription(context.getString(R.string.descriptionImg_api));
@@ -65,19 +78,24 @@ public class ViewPagerAdapter extends PagerAdapter {
         return view;
     }
 
-    // Retorna o Numero de Total de Paginas
+    /**
+     * Retorna o Numero total de Itens Exibidos
+     *
+     * @return int
+     */
     @Override
     public int getCount() {
         return 3;
     }
 
-    // Retorna o Numero de Paginas
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         return view == object;
     }
 
-    // Exclui a View
+    /**
+     * Exclui a View
+     */
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);

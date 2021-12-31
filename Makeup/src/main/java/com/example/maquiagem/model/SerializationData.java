@@ -12,7 +12,6 @@ import com.example.maquiagem.controller.ManagerResources;
 import com.example.maquiagem.model.entity.Makeup;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -20,18 +19,42 @@ import java.util.List;
 
 public class SerializationData {
 
+    /**
+     * Consntante com a quantidade Padrão de Itens que serão serializados
+     */
     public static final int DEFAULT_QUANTITY = 40;
+    /**
+     * Constante com o Valor informando que será serializado todos o Itens
+     */
     public static final int ALL_ITEMS_JSON = -1;
-    private static final String URL_NO_IMAGE = "https://github.com/GuilhermeCallegari/Maquiagem/blob" +
-            "/main/app/src/main/res/drawable/makeup_no_image.jpg";
+
+    // TODO: Alterar e Colocar uma URL da Imagem Fora do Projeto GitHub
+    /**
+     * Constante com o Valor de uma URL que será utilzida quando uma Makeup não possuir Imagem
+     */
+    private static final String URL_NO_IMAGE = "https://github.com/GuilhermePalma/Makeup/blob/main/" +
+            "Makeup/src/main/res/drawable/makeup_no_image.jpg";
 
     private final Context context;
 
+    /**
+     * Construtor da Classe {@link SerializationData}
+     *
+     * @param context {@link Context} utilizado na manipulação de recursos do APP
+     */
     public SerializationData(Context context) {
         this.context = context;
     }
 
-    // Tratamento/Serialização do JSON recebido
+    /**
+     * Metodo responsavel por Serializar um JSON de {@link Makeup} recebidas
+     *
+     * @param json          {@link String} Json que será serializado
+     * @param quantity_show Quantiade de Itens que serão serializados
+     * @return {@link List}|null
+     * @see #ALL_ITEMS_JSON
+     * @see #DEFAULT_QUANTITY
+     */
     public List<Makeup> serializationJsonMakeup(String json, int quantity_show) {
 
         List<Makeup> makeupList = new ArrayList<>();
@@ -105,59 +128,71 @@ public class SerializationData {
             // Após ler a Quantidade de Itens do Array ---> Retorna uma List ou Null
             return makeupList.isEmpty() ? null : makeupList;
 
-        } catch (JSONException e) {
+        } catch (Exception ex) {
             // Erro na criação do Array
-            Log.e("NOT VALID ARRAY", "Erro no Array ou no Recebimento da String\n" + e);
-            e.printStackTrace();
+            Log.e("Erro JSON", "Erro ao Serilizar o JSON. Exceção: " + ex);
+            ex.printStackTrace();
             return null;
         }
     }
 
-    // Tratamento/Serialização de Dados do Banco Local (SQLite)
+    /**
+     * Serialização de um {@link Cursor} resultante de um SELECT no Banco de Dados Local
+     * ({@link ManagerDatabase}).
+     *
+     * @param select {@link String} SELECT de consulta no Banco de Dados Local
+     * @return {@link List}|null
+     */
     public List<Makeup> serializationSelectMakeup(String select) {
-        ManagerDatabase database = new ManagerDatabase(context);
-        Cursor cursor = database.selectMakeup(select);
-        List<Makeup> list_resultSelect = new ArrayList<>();
+        List<Makeup> list_resultSelect = null;
+        Cursor cursor = null;
 
-        // Caso haja posição para o Cursor
-        if (cursor != null && !cursor.isClosed() && cursor.moveToFirst()) {
+        try {
+            ManagerDatabase database = new ManagerDatabase(context);
+            cursor = database.selectMakeup(select);
 
-            String brand, name, price, currency, type, description, urlImage;
-            int id, intFavorite;
-            boolean isFavorite;
+            // Caso haja posição para o Cursor = Possui Registros
+            if (cursor != null && !cursor.isClosed() && cursor.moveToFirst()) {
 
-            // Pega os dados enquanto o Cursor tiver proxima posição
-            do {
-                id = cursor.getInt(cursor.getColumnIndexOrThrow(ManagerDatabase.ID_MAKEUP));
-                brand = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.BRAND_MAKEUP));
-                name = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.NAME_MAKEUP));
-                type = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.TYPE_MAKEUP));
-                price = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.PRICE_MAKEUP));
-                currency = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.CURRENCY_MAKEUP));
-                description = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.DESCRIPTION_MAKEUP));
-                urlImage = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.URL_IMAGE_MAKEUP));
-                intFavorite = cursor.getInt(cursor.getColumnIndexOrThrow(ManagerDatabase.IS_FAVORITE_MAKEUP));
-                isFavorite = intFavorite == 1;
+                list_resultSelect = new ArrayList<>();
+                String brand, name, price, currency, type, description, urlImage;
+                int id, intFavorite;
+                boolean isFavorite;
 
-                Makeup makeup = new Makeup(id, brand, name, type, price, currency, description,
-                        urlImage);
-                makeup.setFavorite(isFavorite);
+                // Pega os dados enquanto o Cursor tiver proxima posição
+                do {
+                    id = cursor.getInt(cursor.getColumnIndexOrThrow(ManagerDatabase.ID_MAKEUP));
+                    brand = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.BRAND_MAKEUP));
+                    name = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.NAME_MAKEUP));
+                    type = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.TYPE_MAKEUP));
+                    price = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.PRICE_MAKEUP));
+                    currency = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.CURRENCY_MAKEUP));
+                    description = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.DESCRIPTION_MAKEUP));
+                    urlImage = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.URL_IMAGE_MAKEUP));
+                    intFavorite = cursor.getInt(cursor.getColumnIndexOrThrow(ManagerDatabase.IS_FAVORITE_MAKEUP));
+                    isFavorite = intFavorite == 1;
 
-                // Adiciona o Item à Lista
-                list_resultSelect.add(makeup);
+                    Makeup makeup = new Makeup(id, brand, name, type, price, currency, description,
+                            urlImage);
+                    makeup.setFavorite(isFavorite);
 
-            } while (cursor.moveToNext());
+                    // Adiciona o Item à Lista
+                    list_resultSelect.add(makeup);
 
-            if (!cursor.isClosed()) cursor.close();
-            database.close();
-        } else {
-            // Não possui dados na Tabela
-            Log.e("EMPTY DATABASE", "Não foi encontrado nenhum " +
-                    "dado no Banco de Dados");
-            return null;
+                } while (cursor.moveToNext());
+
+                if (!cursor.isClosed()) cursor.close();
+            }
+        } catch (Exception ex) {
+            // Erro na criação do Array
+            Log.e("Erro SQLITE", "Erro ao Serilizar o SELECT do SQLite. Exceção: " + ex);
+            ex.printStackTrace();
+            list_resultSelect = null;
+        } finally {
+            if (cursor != null) cursor.close();
         }
 
-        return list_resultSelect.isEmpty() ? null : list_resultSelect;
+        return list_resultSelect;
     }
 
     // todo: Implementar serialização da API_Local

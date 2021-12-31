@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -23,9 +22,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ManagerDatabase;
+import com.example.maquiagem.controller.ManagerResources;
 import com.example.maquiagem.model.entity.Location;
 import com.example.maquiagem.view.CustomAlertDialog;
-import com.example.maquiagem.view.fragments.FeedbackLocation;
+import com.example.maquiagem.view.fragments.FragmentFeedbackLocation;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
@@ -34,6 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Activity Responsavel por Obter a Localização atual do Usuario
+ */
 public class LocationActivity extends AppCompatActivity {
 
     static final String STATE_FRAGMENT = "STATE FRAGMENT";
@@ -62,7 +65,7 @@ public class LocationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_location);
 
         setUpToolBar();
-        recoveryId();
+        instanceItems();
 
         classLocation = new Location();
         managerDatabase = new ManagerDatabase(context);
@@ -76,9 +79,12 @@ public class LocationActivity extends AppCompatActivity {
 
         getLastLocation();
         listenerReset();
-
+        listenerButtonFragment();
     }
 
+    /**
+     * Listener do Botão "Tentar Novamente" que recarrega a Activity
+     */
     private void listenerReset() {
         btn_reset.setOnClickListener(v -> {
             overridePendingTransition(0, 0);
@@ -87,7 +93,9 @@ public class LocationActivity extends AppCompatActivity {
         });
     }
 
-    // Configura a ToolBar
+    /**
+     * Configura a Toolbar e o Retorno para a {@link MainActivity}
+     */
     private void setUpToolBar() {
         // Criação da ToolBar e Criação da seta de voltar
         Toolbar toolbar = findViewById(R.id.toolBar);
@@ -103,8 +111,10 @@ public class LocationActivity extends AppCompatActivity {
         }
     }
 
-    // Recupera os ID dos Itens
-    private void recoveryId() {
+    /**
+     * Metodo Responsavel por obter os IDs e Instanciar os Itens que serão usados
+     */
+    private void instanceItems() {
         context = LocationActivity.this;
         layout_data = findViewById(R.id.layout_data);
         layout_address = findViewById(R.id.layout_address);
@@ -120,17 +130,23 @@ public class LocationActivity extends AppCompatActivity {
         txt_wait = findViewById(R.id.txt_wait);
     }
 
-    // Metodo ao clicar no ImageButton ---> Setinha em baixo da Localização
-    public void buttonFragment(View view) {
-        // Caso o Fragment esteja ativo --> Fecha. Se não está ativo ----> Abre
-        if (activeFragment) {
-            closeFragment();
-        } else {
-            showFragment();
-        }
+    /**
+     * Listener do Botão de Abrir e Fechar o Fragment
+     */
+    public void listenerButtonFragment() {
+        btnFragment.setOnClickListener((v) -> {
+            // Caso o Fragment esteja ativo --> Fecha. Se não está ativo ----> Abre
+            if (activeFragment) {
+                closeFragment();
+            } else {
+                showFragment();
+            }
+        });
     }
 
-    // Metodo que recupera a Ultima Localização Conhecida
+    /**
+     * Metodo que tenta obter a ultima localização conhecida do Usuario
+     */
     public void getLastLocation() {
 
         // Serviço do Google para Manipular Localizações
@@ -178,17 +194,15 @@ public class LocationActivity extends AppCompatActivity {
                                         + "\n" + addresses.get(0).getAddressLine(0));
 
                                 // Instancia a classe de Localização
-                                classLocation = new Location(
-                                        actualId,
-                                        addresses.get(0).getThoroughfare(),
-                                        addresses.get(0).getFeatureName(),
-                                        addresses.get(0).getAdminArea(),
-                                        addresses.get(0).getSubAdminArea(),
-                                        addresses.get(0).getSubThoroughfare(),
-                                        addresses.get(0).getPostalCode(),
-                                        addresses.get(0).getCountryName(),
-                                        addresses.get(0).getCountryCode()
-                                );
+                                classLocation.setLastId(actualId);
+                                classLocation.setAddress(addresses.get(0).getThoroughfare());
+                                classLocation.setDistrict(addresses.get(0).getFeatureName());
+                                classLocation.setState(addresses.get(0).getAdminArea());
+                                classLocation.setCity(addresses.get(0).getSubAdminArea());
+                                classLocation.setNumber(addresses.get(0).getSubThoroughfare());
+                                classLocation.setPostalCode(addresses.get(0).getPostalCode());
+                                classLocation.setCountryName(addresses.get(0).getCountryName());
+                                classLocation.setCountryCode(addresses.get(0).getCountryCode());
 
                                 // Insere a Localização no BD e Exibe o Endereço
                                 if (!managerDatabase.insertLocation(classLocation)) {
@@ -226,9 +240,12 @@ public class LocationActivity extends AppCompatActivity {
                 );
     }
 
-    // Mostra o Layout do Endereço
+    /**
+     * Exibe o Layout e Dados da {@link Location}
+     *
+     * @param location {@link Location} que será exibida
+     */
     private void showWindow(Location location) {
-
         loading_location.setProgress(10);
         loading_location.setVisibility(View.GONE);
         txt_wait.setVisibility(View.GONE);
@@ -236,13 +253,14 @@ public class LocationActivity extends AppCompatActivity {
         layout_data.setVisibility(View.VISIBLE);
         btnFragment.setVisibility(View.VISIBLE);
 
-        country.setText(Html.fromHtml(String.format(getString(R.string.txt_country),
-                location.countryName, location.countryCode)));
-        state.setText(Html.fromHtml(String.format(getString(R.string.txt_city),
-                location.city, location.state)));
-        address.setText(Html.fromHtml(String.format(getString(R.string.txt_address),
-                location.address, location.district, location.number)));
-        cep.setText(Html.fromHtml(String.format(getString(R.string.txt_cep), location.postalCode)));
+        country.setText(ManagerResources.getStringIdNormalized(context, R.string.txt_country,
+                new String[]{location.getCountryName(), location.getCountryCode()}));
+        state.setText(ManagerResources.getStringIdNormalized(context, R.string.txt_city,
+                new String[]{location.getCity(), location.getState()}));
+        address.setText(ManagerResources.getStringIdNormalized(context, R.string.txt_address,
+                new String[]{location.getAddress(), location.getDistrict(), location.getNumber()}));
+        cep.setText(ManagerResources.getStringIdNormalized(context, R.string.txt_cep,
+                new String[]{location.getPostalCode()}));
 
         country.setVisibility(View.VISIBLE);
         state.setVisibility(View.VISIBLE);
@@ -250,9 +268,10 @@ public class LocationActivity extends AppCompatActivity {
         cep.setVisibility(View.VISIBLE);
     }
 
-    // Mostra o Layout de Erro
+    /**
+     * Exibe o Layout de Erro na Tela
+     */
     public void showError() {
-
         loading_location.setProgress(10);
         loading_location.setVisibility(View.GONE);
         txt_wait.setVisibility(View.GONE);
@@ -261,14 +280,16 @@ public class LocationActivity extends AppCompatActivity {
         layout_data.setVisibility(View.VISIBLE);
 
         btn_reset.setVisibility(View.VISIBLE);
-        txt_error.setText(Html.fromHtml(getString(R.string.txt_noSearch)));
+        txt_error.setText(ManagerResources.getStringIdNormalized(context, R.string.txt_noSearch, null));
         txt_error.setVisibility(View.VISIBLE);
     }
 
-    // Mostra o Fragment na Tela
+    /**
+     * Exibe o Frangment de Localização na Tela
+     */
     public void showFragment() {
         // Instancia a classe do Fragment ---> Envia um Context p/ acessar o Banco de Dados
-        FeedbackLocation feedbackLocation = FeedbackLocation.newInstance(context);
+        FragmentFeedbackLocation fragmentFeedbackLocation = FragmentFeedbackLocation.newInstance(context);
 
         // Dá suporte ao Fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -276,7 +297,7 @@ public class LocationActivity extends AppCompatActivity {
         // Cria uma ação a ser executada
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        fragmentTransaction.add(R.id.fragment_location, feedbackLocation).
+        fragmentTransaction.add(R.id.fragment_location, fragmentFeedbackLocation).
                 addToBackStack(null).commit();
 
         // Altera o Icone para Setinha para Cima
@@ -284,21 +305,23 @@ public class LocationActivity extends AppCompatActivity {
         activeFragment = true;
     }
 
-    // Fecha o Fragment
+    /**
+     * Fecha o Frangment de Localização da Tela
+     */
     public void closeFragment() {
         //Obtem o gerenciametno de Fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         // Instancia a Classe do Fragment e busca se existe um Fragment Ativo no ID Informado
-        FeedbackLocation feedbackLocation = (FeedbackLocation) fragmentManager.
+        FragmentFeedbackLocation fragmentFeedbackLocation = (FragmentFeedbackLocation) fragmentManager.
                 findFragmentById(R.id.fragment_location);
 
         // Existe o Fragment no id Informado
-        if (feedbackLocation != null) {
+        if (fragmentFeedbackLocation != null) {
             // Cria uma ação a ser executada
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-            fragmentTransaction.remove(feedbackLocation).commit();
+            fragmentTransaction.remove(fragmentFeedbackLocation).commit();
         }
 
         // Altera o Icone para Setinha para Baixo
@@ -306,6 +329,7 @@ public class LocationActivity extends AppCompatActivity {
         activeFragment = false;
     }
 
+    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Salva/Armazena o estado do Fragment, usando uma key e um valor Boolean
         savedInstanceState.putBoolean(STATE_FRAGMENT, activeFragment);

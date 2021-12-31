@@ -12,6 +12,10 @@ import com.example.maquiagem.model.entity.Location;
 import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.model.entity.User;
 
+/**
+ * Classe Responsavel pela manipulação do Banco de Dados Local SQLite. Ele herda os metodos da Classe
+ * {@link SQLiteOpenHelper}
+ */
 public class ManagerDatabase extends SQLiteOpenHelper {
 
     //Definição das Constantes Usadas
@@ -116,14 +120,17 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Insere um Usuario no Banco de Dados
+     * Insere um Usuario no Banco de Dados. Caso já exista um registro salvo, limpa o Banco de Dados.
+     *
+     * @param user {@link User} que será Inserido no Banco de Dados
+     * @return true|false
      */
     public boolean insertUser(User user) {
         SQLiteDatabase database = null;
         boolean isInserted;
 
         try {
-            if (selectUser() != null) deleteAllUsers();
+            if (selectUser() != null) clearTables();
 
             database = this.getWritableDatabase();
             ContentValues values = new ContentValues();
@@ -145,7 +152,10 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Inserção de Dados no Banco de Dados ---> Usa a classe model/Makeup
+     * Insere uma Makeup no Banco de Dados
+     *
+     * @param makeup {@link Makeup} que será inserida no Banco de Dados
+     * @return true|false
      */
     public boolean insertMakeup(Makeup makeup) {
         SQLiteDatabase database = null;
@@ -181,7 +191,10 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Inserção de Dados no Banco de Dados ---> Usa a classe model/Location
+     * Insere uma {@link Location} no Banco de Dados
+     *
+     * @param location {@link Location} que será inserida no Banco de Dados
+     * @return true|false
      */
     public boolean insertLocation(Location location) {
         SQLiteDatabase database = null;
@@ -215,7 +228,11 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Insere se a busca da Localização é correta
+     * Define se a {@link Location} que existe no Banco de Dados está ou não correta
+     *
+     * @param idLocation     ID da {@link Location} que será alterada
+     * @param returnLocation Valor boolean, que define se a {@link Location} está ou não correta
+     * @return true|false
      */
     public boolean setCorrectLocation(int idLocation, boolean returnLocation) {
         SQLiteDatabase database = null;
@@ -241,7 +258,10 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Atualiza uma Makeup Pesquisada para Favorita
+     * Atualiza uma Makeup no Banco de Dados, Favoritando ou Desfavoritando
+     *
+     * @param makeup {@link Makeup} que será atualizada
+     * @return true|false
      */
     public boolean setFavoriteMakeup(Makeup makeup) {
         SQLiteDatabase database = null;
@@ -270,7 +290,10 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Atualiza os dados do Usuario
+     * Atualiza os dados de um Usuario no Banco de Dados Local
+     *
+     * @param user {@link User} que será atualizado
+     * @return true|false
      */
     public boolean updateUser(User user) {
         SQLiteDatabase database = null;
@@ -299,7 +322,9 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Recupera o Total de Maquiagens do Banco de Dados
+     * Recupera o Total de {@link Makeup} do Banco de Dados
+     *
+     * @return int
      */
     public int amountMakeupSearch() {
         SQLiteDatabase database = null;
@@ -320,7 +345,9 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Recupera o Total de Posições do Banco de Dados
+     * Recupera o Total de {@link Location} do Banco de Dados
+     *
+     * @return int
      */
     public int amountLocation() {
         SQLiteDatabase database = null;
@@ -341,7 +368,9 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Recupera a quantidade de posições CERTAS
+     * Recupera a quantidade de {@link Location} informadas como "Corretas"
+     *
+     * @return int
      */
     public int amountCorrectLocation() {
         SQLiteDatabase database = null;
@@ -363,7 +392,9 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Recupera a quantidade de posições ERRADAS
+     * Recupera a quantidade de {@link Location} informadas como "Erradas"
+     *
+     * @return int
      */
     public int amountWrongLocation() {
         SQLiteDatabase database = null;
@@ -385,7 +416,10 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Verifica se existe o Produto buscados
+     * Verifica se existe a {@link Makeup} informada
+     *
+     * @param makeup {@link Makeup} que será verificada
+     * @return true|false
      */
     private boolean existsInMakeup(Makeup makeup) {
         SQLiteDatabase database = null;
@@ -413,7 +447,10 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Seleciona um Produto atravez de um SELECT passado
+     * Seleciona uma ou varias {@link Makeup} atravez de um SELECT passado
+     *
+     * @param select {@link String} do Select
+     * @return {@link Cursor}
      */
     public Cursor selectMakeup(String select) {
         SQLiteDatabase database;
@@ -430,7 +467,9 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Retorna o resgistro do Usaurio já serializado
+     * Retorna o resgistro de um {@link User} já serializado e Instanciado
+     *
+     * @return {@link User}
      */
     public User selectUser() {
         SQLiteDatabase database = null;
@@ -462,23 +501,9 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     * Apaga todos os Usuarios
-     */
-    private void deleteAllUsers() {
-        SQLiteDatabase database = null;
-        try {
-            database = this.getWritableDatabase();
-            database.delete(TABLE_USER, "1", null);
-        } catch (Exception ex) {
-            Log.e("Error Database", "Erro ao Excluir Todos os Usuario. Exceção: " + ex);
-            ex.printStackTrace();
-        } finally {
-            if (database != null) database.close();
-        }
-    }
-
-    /**
-     * Apaga todos os Dados da Tabela
+     * Apaga todos os Dados das Tabelas do Banco de Dados
+     *
+     * @return true|false
      */
     public boolean clearTables() {
         SQLiteDatabase database = null;

@@ -17,11 +17,21 @@ import com.example.maquiagem.controller.ManagerSharedPreferences;
 import java.text.DateFormat;
 import java.util.Date;
 
+/**
+ * Classe Responsavel por Controlar o Widget padrão do APP
+ */
 public class WidgetApp extends AppWidgetProvider {
 
-    // Metodo que atualiza o Widget
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+    /**
+     * Metodo responsavel por Atualizar o Widget
+     *
+     * @param context          {@link Context} utilizado na Configuração do Widget
+     * @param appWidgetId      ID do Widget que será atualizado
+     * @param appWidgetManager Instancia do {@link AppWidgetManager} que gerencia as propriedades do
+     *                         Widget
+     */
+    private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+                                        int appWidgetId) {
 
         // Obtem o arquivo que armazena o contador
         ManagerSharedPreferences managerPreferences = new ManagerSharedPreferences(context);
@@ -104,9 +114,10 @@ public class WidgetApp extends AppWidgetProvider {
     /**
      * Sobrescreve o metodo onUpdate para lidar com todas as atualizações do Widget
      *
-     * @param context          Contexto da Aplicação
-     * @param appWidgetManager Widget manager.
-     * @param appWidgetIds     Array com ID do Widget
+     * @param context          {@link Context} dos Widgets
+     * @param appWidgetManager Instancia do {@link AppWidgetManager} que controla as Propriedades
+     *                         do Widget
+     * @param appWidgetIds     Array com os ID do Widget
      */
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,

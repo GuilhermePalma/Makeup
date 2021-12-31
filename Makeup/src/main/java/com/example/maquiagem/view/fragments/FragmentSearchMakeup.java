@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,9 +31,15 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe responsavel pelo {@link Fragment} de Pesquisa de {@link Makeup Makeups}. Ela herda metodos
+ * da Classe {@link Fragment} para a Contrução e COnfiguração do Fragment
+ */
 public class FragmentSearchMakeup extends Fragment {
 
-    // Chave do Intent.put
+    /**
+     * KeY que será utilizada para manipular a URI Gerada para a Pesquisa
+     */
     public static final String KEY_URI = "url_search";
 
     // Widgets Utilizados
@@ -55,7 +60,10 @@ public class FragmentSearchMakeup extends Fragment {
     private CustomAlertDialog customDialog;
 
     /**
-     * Construtor da Classe do Fragment SearchMakeup
+     * Construtor da Classe do {@link FragmentSearchMakeup}
+     *
+     * @param context  {@link Context} que será usado na configuração do {@link Fragment}
+     * @param activity {@link Activity} necessaria para a Criação de {@link Chip}
      */
     public FragmentSearchMakeup(Activity activity, Context context) {
         this.activity = activity;
@@ -63,7 +71,12 @@ public class FragmentSearchMakeup extends Fragment {
     }
 
     /**
-     * Criação e Configuração dos Itens do Fragment
+     * Criação e Configuração dos Itens do {@link FragmentSearchMakeup}
+     *
+     * @param inflater  Instancia do {@link LayoutInflater} que será responsavel por Inflar/Criar o
+     *                  {@link Fragment}
+     * @param container {@link View} em que o {@link FragmentSearchMakeup} será Inflado
+     * @return {@link View}
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -123,7 +136,9 @@ public class FragmentSearchMakeup extends Fragment {
     }
 
     /**
-     * Adiciona e Configura Chips a partir de um Array de Tags
+     * Adiciona e Configura um {@link Chip} a partir de um Array de Tags
+     *
+     * @param text_item {@link String} do Texto que será exibido no {@link Chip}
      */
     private void addChip(String text_item) {
         Chip itemChip = new Chip(activity, null, R.style.Widget_MaterialComponents_Chip_Choice);
@@ -158,7 +173,9 @@ public class FragmentSearchMakeup extends Fragment {
     }
 
     /**
-     * Fomra a URL para pesquisar
+     * Formata a URL de Pesquisa de {@link Makeup}
+     *
+     * @return {@link String}
      */
     private String buildUri() {
         String brand_formatted = makeup.getBrand();
@@ -228,7 +245,7 @@ public class FragmentSearchMakeup extends Fragment {
         });
         inputLayout_category.setEndIconOnClickListener(v -> {
             if (array_category.length < 1) {
-                customDialog.defaultMessage(R.string.error_valueRequired,R.string.error_category,
+                customDialog.defaultMessage(R.string.error_valueRequired, R.string.error_category,
                         null, null, true).show();
             } else autoComplete_category.showDropDown();
         });

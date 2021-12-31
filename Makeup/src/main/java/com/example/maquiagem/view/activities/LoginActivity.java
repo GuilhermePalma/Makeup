@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ManagerDatabase;
-import com.example.maquiagem.controller.ManagerKeyboard;
 import com.example.maquiagem.controller.ManagerResources;
 import com.example.maquiagem.controller.ManagerSharedPreferences;
 import com.example.maquiagem.model.entity.User;
@@ -27,7 +26,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button btn_singUp;
     private Button btn_login;
     private User user;
-    private ManagerKeyboard managerKeyboard;
     private CustomAlertDialog customDialog;
     private Context context;
 
@@ -65,7 +63,6 @@ public class LoginActivity extends AppCompatActivity {
         btn_login = findViewById(R.id.btn_login);
         context = LoginActivity.this;
         customDialog = new CustomAlertDialog(context);
-        managerKeyboard = new ManagerKeyboard(context);
     }
 
     /**
@@ -94,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     // Salva o Usuario no Banco de Dados
                     ManagerDatabase database = new ManagerDatabase(this);
-                    if(!database.insertUser(user)){
+                    if (!database.insertUser(user)) {
                         customDialog.defaultMessage(R.string.title_errorAPI, R.string.error_database,
                                 null, null, true).show();
                         return;
@@ -140,22 +137,38 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    // todo: implementar metodo da API
+    /**
+     * Verifica se o Usuario existe na API
+     *
+     * @param user Instancia de um {@link User} que será verificado
+     * @return true|false
+     */
     private boolean existUserApi(User user) {
+        // todo: implementar metodo da API
+
         // Verifica se o Usuario existe no Banco de Dados Local ---> Exibe o Email no Input
         // Se não, Solicita o novo Login --> Autentica --> Gera o Token --> Salva o Usuario
 
         return true;
     }
 
-    //todo implementar = obter informações
+    /**
+     * Obtem as Informações do Usuario na API
+     *
+     * @param user Instancia do {@link User} com dados que serão utilizados para obter os demais
+     *             dados da API
+     * @return {@link User}
+     */
     private User getInformationUser(User user) {
+        //todo implementar = obter informações
         return user;
     }
 
 
     /**
      * Obtem um JWT Valioo para usar nas Opreações da API
+     *
+     * @param user Instancia de um {@link User} que obterá o JWT
      */
     private String getJsonWebToken(User user) {
         // retorna o jwt p/ salvar no banco de dados
@@ -164,10 +177,13 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Configuração do Erro nos Inputs Invalidos
+     *
+     * @param inputEditText {@link TextInputEditText} em que o erro será exibido
+     * @param error         {@link String} informando o Erro
      */
     private void errorInput(TextInputEditText inputEditText, String error) {
         inputEditText.setError(error, null);
         inputEditText.requestFocus();
-        managerKeyboard.openKeyboard(inputEditText);
+        ManagerResources.openKeyboard(context, inputEditText);
     }
 }

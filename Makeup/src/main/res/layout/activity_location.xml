@@ -128,7 +128,6 @@
         android:layout_marginRight="20dp"
         android:background="?attr/colorOnPrimary"
         android:contentDescription="@string/btn_showFragment"
-        android:onClick="buttonFragment"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layout_data"

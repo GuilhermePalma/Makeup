@@ -14,16 +14,19 @@ import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ManagerSharedPreferences;
 import com.example.maquiagem.controller.ViewPagerAdapter;
 
+/**
+ * Activvity responsavel pela Apresentação das Funções do APP. A apresentação é feita por meio do {@link ViewPager}
+ */
 public class SlideScreen extends AppCompatActivity {
 
     private Context context;
     private ViewPager viewPager;
-    private TextView dot1;
-    private TextView dot2;
-    private TextView dot3;
+    private TextView txt_dot1;
+    private TextView txt_dot2;
+    private TextView txt_dot3;
 
-    private Button next;
-    private Button back;
+    private Button btn_next;
+    private Button btn_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,19 +39,21 @@ public class SlideScreen extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager_initial);
         viewPager.setAdapter(viewPagerAdapter);
 
-        next = findViewById(R.id.btn_next);
-        dot1 = findViewById(R.id.txt_dotOne);
-        dot2 = findViewById(R.id.txt_dotTwo);
-        dot3 = findViewById(R.id.txt_dotThree);
-        back = findViewById(R.id.btn_back);
+        btn_next = findViewById(R.id.btn_next);
+        txt_dot1 = findViewById(R.id.txt_dotOne);
+        txt_dot2 = findViewById(R.id.txt_dotTwo);
+        txt_dot3 = findViewById(R.id.txt_dotThree);
+        btn_back = findViewById(R.id.btn_back);
 
         listenerChangePage();
         listenerSkip();
     }
 
-    // Listener do Botão "Pular" --> Pula a apresentação do APP
+    /**
+     * Lister do Botão de "Pular" as Apresentações
+     */
     private void listenerSkip() {
-        next.setOnClickListener(v -> {
+        btn_next.setOnClickListener(v -> {
             // Define que não é o Primeiro Acesso do Usuario p/ não apresentar novamente o APP
             new ManagerSharedPreferences(context).setFirstLogin(false);
             finish();
@@ -56,7 +61,9 @@ public class SlideScreen extends AppCompatActivity {
         });
     }
 
-    // Listener de Mudança das Paginas do Pager View
+    /**
+     * Listener das Mudanças entre Paginas
+     */
     private void listenerChangePage() {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -64,23 +71,23 @@ public class SlideScreen extends AppCompatActivity {
                 // Tratamento especial p/ cada Item da Lista
                 switch (position) {
                     case 0:
-                        back.setVisibility(View.INVISIBLE);
-                        dot1.setTextColor(getResources().getColor(R.color.red));
-                        dot2.setTextColor(getResources().getColor(R.color.black));
+                        btn_back.setVisibility(View.INVISIBLE);
+                        txt_dot1.setTextColor(getResources().getColor(R.color.red));
+                        txt_dot2.setTextColor(getResources().getColor(R.color.black));
                         break;
                     case 1:
-                        back.setVisibility(View.VISIBLE);
-                        back.setOnClickListener(v -> listenerBack(position));
-                        dot1.setTextColor(getResources().getColor(R.color.black));
-                        dot2.setTextColor(getResources().getColor(R.color.red));
-                        dot3.setTextColor(getResources().getColor(R.color.black));
-                        next.setText(R.string.btn_skip);
+                        btn_back.setVisibility(View.VISIBLE);
+                        btn_back.setOnClickListener(v -> listenerBack(position));
+                        txt_dot1.setTextColor(getResources().getColor(R.color.black));
+                        txt_dot2.setTextColor(getResources().getColor(R.color.red));
+                        txt_dot3.setTextColor(getResources().getColor(R.color.black));
+                        btn_next.setText(R.string.btn_skip);
                         break;
                     case 2:
-                        back.setOnClickListener(v -> listenerBack(position));
-                        dot2.setTextColor(getResources().getColor(R.color.black));
-                        dot3.setTextColor(getResources().getColor(R.color.red));
-                        next.setText(R.string.btn_next);
+                        btn_back.setOnClickListener(v -> listenerBack(position));
+                        txt_dot2.setTextColor(getResources().getColor(R.color.black));
+                        txt_dot3.setTextColor(getResources().getColor(R.color.red));
+                        btn_next.setText(R.string.btn_next);
                         break;
                 }
             }

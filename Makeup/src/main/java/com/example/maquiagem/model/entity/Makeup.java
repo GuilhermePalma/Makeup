@@ -1,5 +1,6 @@
 package com.example.maquiagem.model.entity;
 
+import static com.example.maquiagem.model.SearchInternet.METHOD_GET;
 import static com.example.maquiagem.model.SearchInternet.PARAM_BRAND;
 import static com.example.maquiagem.model.SearchInternet.PARAM_RATING_GREATER;
 import static com.example.maquiagem.model.SearchInternet.URL_MAKEUP;
@@ -20,8 +21,12 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+/**
+ * Classe das Maquiagens
+ */
 public class Makeup {
 
+    // Atributos da Classe
     private int id;
     private String brand = "";
     private String name = "";
@@ -34,14 +39,34 @@ public class Makeup {
     private boolean isFavorite = false;
     private Context context;
 
+    /**
+     * Construtor Vazio da Classe {@link Makeup}
+     */
     public Makeup() {
     }
 
+    /**
+     * Construtor da Classe {@link Makeup}
+     *
+     * @param context {@link Context} necessario para obter recursos do APP
+     * @see #getMakeups(ExecutorService, Uri, int)
+     */
     public Makeup(Context context) {
         this.context = context;
     }
 
-    //Contrutor usando ID
+    /**
+     * Construtor passando todos os Dados de uma {@link Makeup }
+     *
+     * @param id          ID da {@link Makeup}
+     * @param type        Tipo da {@link Makeup}
+     * @param price       Preço da {@link Makeup}
+     * @param brand       Marcada {@link Makeup}
+     * @param currency    Moeda da {@link Makeup}
+     * @param description Descrição da {@link Makeup}
+     * @param name        Nome da {@link Makeup}
+     * @param urlImage    URL da {@link Makeup}
+     */
     public Makeup(int id, String brand, String name, String type, String price, String currency,
                   String description, String urlImage) {
         this.id = id;
@@ -54,9 +79,20 @@ public class Makeup {
         this.urlImage = urlImage;
     }
 
+    /**
+     * A partir de uma {@link Uri} realiza uma busca assincrona na {@link SearchInternet#URL_MAKEUP API Makeup}
+     * para obter uma {@link List} de {@link Makeup}
+     *
+     * @param executorService {@link ExecutorService} que executa a Atitividade Assincrona (Necessario
+     *                        para não quebrar a UI do APP)
+     * @param uri_search      {@link Uri} em que a {@link Makeup} será Obtida
+     * @param quantity_items  Quantidade de Itens que será Serializado
+     * @return {@link List}|null
+     * @see SerializationData#ALL_ITEMS_JSON
+     */
     public List<Makeup> getMakeups(ExecutorService executorService, Uri uri_search, int quantity_items) {
         // Todo: Remover, temporario enquanto não se tem a API Interna
-        if(uri_search.toString().equals("In Develop 1")){
+        if (uri_search.toString().equals("In Develop 1")) {
             String select_favorite = String.format("SELECT * FROM %1$s WHERE %2$s=1",
                     ManagerDatabase.TABLE_MAKEUP, ManagerDatabase.IS_FAVORITE_MAKEUP);
             return new SerializationData(context).serializationSelectMakeup(select_favorite);
@@ -64,7 +100,7 @@ public class Makeup {
 
         // Configura a Execução da Tarefa Assincrona
         Set<Callable<String>> callableTaskAPI = new HashSet<>();
-        callableTaskAPI.add(() -> SearchInternet.searchByUrl(context, uri_search.toString(), "GET"));
+        callableTaskAPI.add(() -> SearchInternet.searchByUrl(context, uri_search, METHOD_GET));
 
         try {
             // Obtem o Resultado da Busca Assincrona
@@ -82,6 +118,14 @@ public class Makeup {
         }
     }
 
+    /**
+     * Metodo de Formatação da URI conforma o Tipo de Busca Informado
+     *
+     * @param type_search Tipo da Busca
+     * @see MainActivity#OPTION_HOME_MAKEUP
+     * @see MainActivity#OPTION_MY_FAVORITE_MAKEUPS
+     * @see MainActivity#OPTION_MORE_FAVORITES
+     */
     public Uri getUri(int type_search) {
         switch (type_search) {
             case MainActivity.OPTION_HOME_MAKEUP:
@@ -104,6 +148,7 @@ public class Makeup {
         }
     }
 
+    // Getters and Setters of Classe Makeup
     public String getCategory() {
         return category;
     }

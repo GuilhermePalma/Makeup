@@ -13,6 +13,10 @@ import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.controller.ManagerSharedPreferences;
 import com.example.maquiagem.model.entity.User;
 
+/**
+ * Activity da Tela de Abertura do APP. Nessa Activity, faz as verificações de Acesso e Login para
+ * redirecionar as Activities corretas
+ */
 public class SplashScreen extends AppCompatActivity {
 
     @Override
@@ -48,10 +52,14 @@ public class SplashScreen extends AppCompatActivity {
         }, 2500);
     }
 
-
-    // todo: Verificaçãoo do Usuario na API
+    /**
+     * A partir de um {@link User} executa o Login na API
+     *
+     * @param user Instancia do {@link User} que será enviado à API
+     * @return true|false
+     */
     public boolean executeLogin(User user) {
-
+        // Todo: Adicionar Metodos da API Interna
         // Verifica se o Usuario é Nulo
         return user != null;
 
@@ -59,8 +67,14 @@ public class SplashScreen extends AppCompatActivity {
         // generationNewToken(user)
     }
 
-    // todo: Geração de um Novo Tokne
+    /**
+     * A partir de um {@link User} obtem o Token do Usuario na API
+     *
+     * @param user Instancia do {@link User} que será enviado à API
+     * @return {@link User}|""
+     */
     public String generationNewToken(User user) {
+        // Todo: Adicionar Geração do TOken na API Interna
         // Tenta Gerar novo Token com os Dados do Usuario, se não consegue retorna ""(Vazio)
         return "JWT";
     }

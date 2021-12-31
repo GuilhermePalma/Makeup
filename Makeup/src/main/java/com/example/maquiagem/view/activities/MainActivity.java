@@ -5,6 +5,7 @@ import static com.example.maquiagem.model.SerializationData.DEFAULT_QUANTITY;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -39,6 +40,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Activity Principal. A partir dela será possivel acessar as demais funções do Sistema
+ */
 public class MainActivity extends AppCompatActivity {
 
     public static final int OPTION_MY_FAVORITE_MAKEUPS = R.id.option_favoriteMakeup;
@@ -92,13 +96,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Configuração no Tamanho do Nome e Nickname no Header do Menu Lateral
         txt_nameHeader.setText(user != null
-                ? user.customStringFormat(user.getName(), null, 21) : "");
+                ? ManagerResources.customStringFormat(user.getName(), null, 21) : "");
         txt_nicknameHeader.setText(user != null
-                ? user.customStringFormat(user.getNickname(), "@", 21) : "");
+                ? ManagerResources.customStringFormat(user.getNickname(), "@", 21) : "");
     }
 
     /**
-     * Instancia os Itens que serão Usados
+     * Instancia os Itens e Obtem os IDs que serão Usados
      */
     private void instanceItems() {
         toolbar = findViewById(R.id.toolBar);
@@ -260,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
                                 ManagerDatabase.TABLE_MAKEUP, ManagerDatabase.IS_FAVORITE_MAKEUP);
                         List<Makeup> list_favorites = new SerializationData(context)
                                 .serializationSelectMakeup(select_favorite);
-                        setUpListFragment(list_favorites, FragmentListMakeup.TYPE_MY_FAVORITE);
+                        initializeFragmentList(list_favorites, FragmentListMakeup.TYPE_MY_FAVORITE);
                     }
                     break;
 
@@ -282,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
 
                     List<Makeup> list_historicSearches = new SerializationData(context)
                             .serializationSelectMakeup(select_historic);
-                    setUpListFragment(list_historicSearches, FragmentListMakeup.TYPE_HISTORIC);
+                    initializeFragmentList(list_historicSearches, FragmentListMakeup.TYPE_HISTORIC);
                     break;
 
                 case OPTION_LOCATION:
@@ -318,6 +322,12 @@ public class MainActivity extends AppCompatActivity {
      * Metodo responsavel pela busca de forma Assincrona nas APIs (Local ou Externa). A partir do
      * ID do Menu Lateral, configura os dados obtidos e quantidade de resultados. Tambem é tratado a
      * exibição dos itens no do Fragment
+     *
+     * @param option_search ID da Opção Selecionada para Formar a URI de Pesquisa
+     * @see Makeup#getMakeups(ExecutorService, Uri, int)
+     * @see #OPTION_HOME_MAKEUP
+     * @see #OPTION_MORE_FAVORITES
+     * @see #OPTION_MY_FAVORITE_MAKEUPS
      */
     private void asyncGetMakeups(int option_search) {
         // Quantidade de Itens que serão Exibidos
@@ -363,7 +373,7 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                         }
                         // Configura o Fragment
-                        setUpListFragment(async_list, type_fragment);
+                        initializeFragmentList(async_list, type_fragment);
                     }
                 });
 
@@ -388,9 +398,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Configura instancias dos Fragment de Lista (Catalogo, Favoritas, Historico)
+     * Configura e instancia o Fragment de Lista (Catalogo, Favoritas, Historico)
+     *
+     * @param makeupList    {@link List} de {@link Makeup} que será exibida
+     * @param type_fragment {@link String} do Tipo de Fragment
+     * @see FragmentListMakeup
      */
-    private void setUpListFragment(List<Makeup> makeupList, String type_fragment) {
+    private void initializeFragmentList(List<Makeup> makeupList, String type_fragment) {
         if (makeupList == null) {
             showError();
         } else {
@@ -439,6 +453,9 @@ public class MainActivity extends AppCompatActivity {
                 null, true).show();
     }
 
+    /**
+     * Mensagem de Erro Informando que a busca não foi Concluida
+     */
     private void showWaitLoading() {
         customAlertDialog.defaultMessage(R.string.title_noData, R.string.error_waitLoading, null,
                 null, false).show();

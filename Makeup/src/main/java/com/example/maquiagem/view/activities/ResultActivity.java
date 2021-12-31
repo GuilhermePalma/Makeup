@@ -1,6 +1,9 @@
 package com.example.maquiagem.view.activities;
 
+import static com.example.maquiagem.model.SerializationData.ALL_ITEMS_JSON;
+
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,26 +14,25 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ManagerDatabase;
-import com.example.maquiagem.model.SearchInternet;
-import com.example.maquiagem.model.SerializationData;
 import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.view.CustomAlertDialog;
 import com.example.maquiagem.view.fragments.FragmentListMakeup;
 import com.example.maquiagem.view.fragments.FragmentSearchMakeup;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Activity responsavel por Realizar a Busca e Exibir os Resultados das Maquiagens.
+ */
 public class ResultActivity extends AppCompatActivity {
 
     private TextView title_loading;
     private CircularProgressIndicator progressIndicator_loading;
     private String uri_received;
     private CustomAlertDialog customDialog;
-    private List<Makeup> makeupListSearch;
     private FrameLayout frameLayout_fragment;
     private Context context;
 
@@ -66,7 +68,6 @@ public class ResultActivity extends AppCompatActivity {
      */
     private void instanceItems() {
         frameLayout_fragment = findViewById(R.id.frame_forFragmentSearch);
-        makeupListSearch = new ArrayList<>();
         context = ResultActivity.this;
         customDialog = new CustomAlertDialog(context);
         title_loading = findViewById(R.id.txt_titleLoadingSearch);
@@ -86,21 +87,19 @@ public class ResultActivity extends AppCompatActivity {
 
         // Execução da Tarefa de Forma Assincrona
         executorService.execute(() -> {
-            // Obtem o JSON
-            String jsonReciver_search = SearchInternet.searchByUrl(context, uri_received, "GET");
 
+            // Obtem as Makeups
+            Makeup makeup = new Makeup(context);
+            List<Makeup> async_list = makeup.getMakeups(executorService, Uri.parse(uri_received), ALL_ITEMS_JSON);
+
+            // Exibe os Resultados na Tela
             runOnUiThread(() -> {
-                // Tratamento do JSON
-                if (jsonReciver_search == null || jsonReciver_search.equals("")) {
+                if (async_list == null || async_list.isEmpty()) {
                     customDialog.messageWithCloseWindow(this, R.string.title_noExist,
                             R.string.error_noExists, null, null).show();
                 } else {
-                    // Serializa O JSON e Adiciona ele na List usada no Fragment
-                    makeupListSearch = new SerializationData(context).serializationJsonMakeup(
-                            jsonReciver_search, SerializationData.ALL_ITEMS_JSON);
-
-                    // Verifica se Há Itens na Lista e se Realizou Inserção no Banco de Dados
-                    if (makeupListSearch == null || makeupListSearch.isEmpty() || !insertInDataBase(makeupListSearch)) {
+                    // Verifica se realizou a Inserção no Banco de Dados
+                    if (!insertInDataBase(async_list)) {
                         customDialog.messageWithCloseWindow(this, R.string.title_invalidData,
                                 R.string.error_noExists, null, null).show();
                     } else {
@@ -108,8 +107,7 @@ public class ResultActivity extends AppCompatActivity {
                         progressIndicator_loading.setVisibility(View.GONE);
                         frameLayout_fragment.setVisibility(View.VISIBLE);
                         // Instancia e Coloca o Fragment List
-                        FragmentListMakeup fragmentListMakeup = FragmentListMakeup
-                                .newInstance(makeupListSearch, "");
+                        FragmentListMakeup fragmentListMakeup = FragmentListMakeup.newInstance(async_list, "");
                         getSupportFragmentManager().beginTransaction().replace(
                                 frameLayout_fragment.getId(), fragmentListMakeup).commit();
                     }
@@ -133,11 +131,7 @@ public class ResultActivity extends AppCompatActivity {
                 allInserted = managerDatabase.insertMakeup(makeupItem) ? allInserted : allInserted + 1;
             }
 
-            if (allInserted > 0) {
-                customDialog.defaultMessage(R.string.title_possibleError, R.string.error_syncFavorites,
-                        null, new String[]{"Pesquisadas"}, false).show();
-            }
-            return true;
+            return allInserted == 0;
         } else {
             return false;
         }

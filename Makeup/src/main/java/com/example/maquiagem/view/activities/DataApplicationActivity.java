@@ -7,6 +7,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.maquiagem.R;
 
+/**
+ * Activity Responsavel por Exibir os Dados de Uso do APP
+ */
 public class DataApplicationActivity extends AppCompatActivity {
 
     @Override
@@ -17,7 +20,9 @@ public class DataApplicationActivity extends AppCompatActivity {
         setUpToolBar();
     }
 
-    // Configura a ToolBar
+    /**
+     * Configura a ToolBar e seu Retorno para a {@link MainActivity}
+     */
     private void setUpToolBar() {
         // Criação da ToolBar e Criação da seta de voltar
         Toolbar toolbar = findViewById(R.id.toolbar3);
