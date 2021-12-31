@@ -54,6 +54,9 @@ jobs:
           distribution: 'adopt'
           cache: gradle
 
+      - name: Grand Permission
+        run:  chmod +x gradlew
+
       - name: Unit Tests
         run: ./gradlew test --stacktrace
         
