@@ -1,13 +1,13 @@
 name: Android CD
 
 on:
-  # Executa na Branch Main ou Manualmente
+  # Executa apenas na Branch Main
   push:
     branches:
-      - 'main'  # Exclui a Branch main
+      - main
   pull_request:
-    branches: 
-      - 'main'
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -94,7 +94,7 @@ jobs:
 
   # Executa os AndroidTest (Test UI) - CIclo CD
   deploy:
-    name: Android Instrumentation Test
+    name: Deploy APP
     needs: [android_unit_tests, android_instrument_tests]
 
       - name: Checkout Branch
