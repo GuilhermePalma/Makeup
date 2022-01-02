@@ -101,6 +101,6 @@ e crie uma nova Issue. Nessa Issue, adicione a label **bug**, descreva o problem
 saiba de alguma forma de resolução, comente tambem.
 
 ### Referencias e Guias
-**[Guia Simplificado (Explicação Simples) de como Contribuir - PT-BR](https://github.com/firstcontributions/first-contributions/blob/master/translations/README.pt_br.md)**
-[Documentação Git - Pull Request (Linha de Comando)](https://git-scm.com/docs/git-request-pull)
-[Documentação GitHub - Pull Request (Pelo Github)](https://docs.github.com/pt/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
+- **[Guia Simplificado (Explicação Simples) de como Contribuir - PT-BR](https://github.com/firstcontributions/first-contributions/blob/master/translations/README.pt_br.md)**
+- **[Documentação Git: Pull Request (Linha de Comando)](https://git-scm.com/docs/git-request-pull)**
+- **[Documentação GitHub: Pull Request (Pelo Github)](https://docs.github.com/pt/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)**

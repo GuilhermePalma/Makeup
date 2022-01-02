@@ -2,22 +2,17 @@
 
    <h1 id="title">💄 API - Maquiagem</h1>
 
-<h3>💄 Busca de Maquiagens na <a href="http://makeup-api.herokuapp.com" tagert="_blank">
-API - Makeup</a></h3>
-
-   <a href="#icons">
-      <img alt="Quantiade de Linguagens do Repositorio"
-           src="https://img.shields.io/github/languages/count/GuilhermePalma/Makeup?color=2304D361">
-   </a>
+<h3>💄 Busca de Maquiagens na <a href="http://makeup-api.herokuapp.com" tagert="_blank">API - Makeup</a></h3>
+<a href="#icons">
+<img alt="Quantiade de Linguagens do Repositorio" src="https://img.shields.io/github/languages/count/GuilhermePalma/Makeup?color=2304D361">
+</a>
 
    <a href="https://github.com/GuilhermePalma/Makeup">
-      <img alt="Tamanho do Respositorio"
-           src="https://img.shields.io/github/repo-size/GuilhermePalma/Makeup">
+      <img alt="Tamanho do Respositorio" src="https://img.shields.io/github/repo-size/GuilhermePalma/Makeup">
    </a>
 
    <a href="https://github.com/GuilhermePalma/Makeup/commits/main">
-      <img alt="Ultimo Commit"
-           src="https://img.shields.io/github/last-commit/GuilhermePalma/Makeup">
+      <img alt="Ultimo Commit" src="https://img.shields.io/github/last-commit/GuilhermePalma/Makeup">
    </a>
 
    <a href="LICENSE">
@@ -26,29 +21,16 @@ API - Makeup</a></h3>
 
 <h4>🚧  Em Desenvolvimento 🚀 🚧</h4>
 
-<img alt="Imagem da Tela Principal" title="Inicio"
-src="./printscreen/LightMode/Index.jpeg" width="200px">
-
-<img alt="Imagem do Menu de Opções" title="Menu"
-src="./printscreen/LightMode/MenuOptions.jpeg" width="200px">
-
-<img alt="Imagem da Tela com Dados de Pesquisa" title="CustomView"
-src="./printscreen/LightMode/CustomView.jpeg" width="200px">
-
-<img alt="Imagem da Tela de Resultados" title="ResultadosAPI"
-src="./printscreen/LightMode/ResultApi.jpeg" width="200px">
-
-<img alt="Imagem da Tela Localização Atual" title="Localizacao"
-src="./printscreen/LightMode/Location.jpeg" width="200px">
-
-<img alt="Imagem do Feedback da Localização" title="FeedbackLocalizacao"
-src="./printscreen/LightMode/LocationWithFragment.jpeg" width="200px">
-
-<img alt="Imagem do Sensor de Proximidade Longe" title="SensorLonge"
-src="./printscreen/LightMode/SensorProximity.jpeg" width="200px">
-
-<img alt="Imagem do Sensor de Proximidade Perto" title="SensorPerto"
-src="./printscreen/LightMode/SensorProximityOff.jpeg" width="200px">
+   <p>
+      <img alt="Imagem da Tela Principal" title="Inicio" src="./printscreen/LightMode/Index.jpeg" width="200px">
+      <img alt="Imagem do Menu de Opções" title="Menu" src="./printscreen/LightMode/MenuOptions.jpeg" width="200px">
+      <img alt="Imagem da Tela com Dados de Pesquisa" title="CustomView" src="./printscreen/LightMode/CustomView.jpeg" width="200px">
+      <img alt="Imagem da Tela de Resultados" title="ResultadosAPI" src="./printscreen/LightMode/ResultApi.jpeg" width="200px">
+      <img alt="Imagem da Tela Localização Atual" title="Localizacao" src="./printscreen/LightMode/Location.jpeg" width="200px">
+      <img alt="Imagem do Feedback da Localização" title="FeedbackLocalizacao" src="./printscreen/LightMode/LocationWithFragment.jpeg" width="200px">
+      <img alt="Imagem do Sensor de Proximidade Longe" title="SensorLonge" src="./printscreen/LightMode/SensorProximity.jpeg" width="200px">
+      <img alt="Imagem do Sensor de Proximidade Perto" title="SensorPerto" src="./printscreen/LightMode/SensorProximityOff.jpeg" width="200px">
+   </p>
 
 </div>
 
@@ -56,14 +38,14 @@ Tabela de conteúdos
 =================
 <!--ts-->
 * [Sobre o projeto](#-sobre-o-projeto)
-    * [Funcionalidades](#funcionalidades)
-    * [Layout](#-layout)
-        * [Mobile](#mobile)
-    * [Como executar o projeto](#-como-executar-o-projeto)
-        * [Pré-requisitos](#pré-requisitos)
-    * [Tecnologias](#-tecnologias)
-    * [Contribuidores](#-contribuidores)
-    * [Como contribuir no projeto](#-como-contribuir-no-projeto-?)
+  * [Funcionalidades](#funcionalidades)
+  * [Layout](#-layout)
+    * [Mobile](#mobile)
+  * [Como executar o projeto](#-como-executar-o-projeto)
+    * [Pré-requisitos](#pré-requisitos)
+  * [Tecnologias](#-tecnologias)
+  * [Contribuidores](#-contribuidores)
+  * [Como contribuir no projeto](#-como-contribuir-no-projeto-?)
 <!--te-->
 
 
@@ -83,21 +65,21 @@ O Projeto utilizou a API Makeup. Para ver sua documentação, acesse [API Makeup
 ## Funcionalidades
 
 - [x] Os usuarios podem pesquisar na API usando os filtros de:
-    - [x] Marca
-    - [x] Tags
-    - [x] Tipo
+  - [x] Marca
+  - [x] Tags
+  - [x] Tipo
 
 - [x] A Aplicação ira exibir:
-    - [X] Imagem
-    - [x] Nome
-    - [x] Preço
-    - [x] Marca
-    - [x] Tipo
-    - [x] Descrição
+  - [X] Imagem
+  - [x] Nome
+  - [x] Preço
+  - [x] Marca
+  - [x] Tipo
+  - [x] Descrição
 
 - [x] Outros Recuros:
-    - [X] Localização
-    - [x] Tema Escuro
+  - [X] Localização
+  - [x] Tema Escuro
 
 ---
 
