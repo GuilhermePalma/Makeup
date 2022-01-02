@@ -38,7 +38,7 @@ jobs:
     name: Android Unit Test
     needs: build-gradle
       
-    # Executa os Testes Unitarios no APP (Desabilitado por Erros)
+    # Executa os Testes Unitarios no APP
     runs-on: [ubuntu-latest]
     steps:
       - name: Checkout Branch
@@ -93,9 +93,12 @@ jobs:
             ./gradlew connectedCheck --stacktrace
 
   # Executa os AndroidTest (Test UI) - CIclo CD
-  deploy:
+  android_deploy:
     name: Deploy APP
     needs: [android_unit_tests, android_instrument_tests]
+
+    runs-on: [ubuntu-latest]
+    steps:
 
       - name: Checkout Branch
         uses: actions/checkout@v2
