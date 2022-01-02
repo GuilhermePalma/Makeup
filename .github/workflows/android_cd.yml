@@ -1,0 +1,124 @@
+name: Android CD
+
+on:
+  # Executa na Branch Main ou Manualmente
+  push:
+    branches:
+      - 'main'  # Exclui a Branch main
+  pull_request:
+    branches: 
+      - 'main'
+  workflow_dispatch:
+
+jobs:
+
+  # Executa o Build do Gradle do APP 
+  build-gradle:
+    name: Set Up Environment
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Chckout Branch
+      uses: actions/checkout@v2
+    
+    - name: Set Up JDK 11
+      uses: actions/setup-java@v2
+      with:  
+        java-version: 11
+        distribution: 'adopt'
+        cache: gradle
+    - name: Grant Execute Permission for Gradlew
+      run: chmod +x gradlew
+      
+    - name: Build with Gradle
+      run: ./gradlew build
+        
+  # Executa o AndroidTest do APP (Após Executar o Build) - Ciclo CI
+  android_unit_tests:
+    name: Android Unit Test
+    needs: build-gradle
+      
+    # Executa os Testes Unitarios no APP (Desabilitado por Erros)
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v2
+
+      - name: Set Up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Grand Permission
+        run:  chmod +x gradlew
+
+      - name: Unit Tests
+        run: ./gradlew test --stacktrace
+        
+      - name: Unit Tests Results
+        uses: actions/upload-artifact@v1
+        with:
+          name: Results of Unit Test
+          path: Makeup/build/reports/tests/testDebugUnitTest/index.html
+   
+  # Executa os AndroidTest (Test UI) - Ciclo CI
+  android_instrument_tests:
+    name: Android Instrumentation Test
+    needs: build-gradle
+    
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        api-level: [29]
+        target: [default]
+    
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v2
+        
+      - name: Set Up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+          
+      - name: Run Instrumentation Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          arch: x86
+          script: |
+            chmod +x gradlew
+            ./gradlew connectedCheck --stacktrace
+
+  # Executa os AndroidTest (Test UI) - CIclo CD
+  deploy:
+    name: Android Instrumentation Test
+    needs: [android_unit_tests, android_instrument_tests]
+
+      - name: Checkout Branch
+        uses: actions/checkout@v2
+        
+      - name: Set Up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Grand Permission
+        run:  chmod +x gradlew
+
+      - name: Build APK
+        uses: r0adkll/sign-android-release@v1.0.1
+        with:
+          releaseDirectory: app/build/outputs/apk/ourbuildtype/release
+          signingKeyBase64: ${{ secrets.KEYSTORE }}
+          keyStorePassword: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          alias: ${{ secrets.SIGNING_KEY_ALIAS }}
+          keyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v2.2.0
+        with:
+          name: Release artifact
+          path: app/build/outputs/apk/ourbuildtype/release/app-artifact-*.apk
