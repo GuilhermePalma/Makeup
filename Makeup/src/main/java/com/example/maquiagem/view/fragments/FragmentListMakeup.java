@@ -3,6 +3,7 @@ package com.example.maquiagem.view.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -197,15 +198,17 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
     @Override
     public void onClickProduct(Makeup makeup_click) {
         Intent details_makeup = new Intent(context, MakeupDetailsActivity.class);
-        details_makeup.putExtra(ManagerDatabase.ID_MAKEUP, makeup_click.getId());
-        details_makeup.putExtra(ManagerDatabase.BRAND_MAKEUP, makeup_click.getBrand());
-        details_makeup.putExtra(ManagerDatabase.NAME_MAKEUP, makeup_click.getName());
-        details_makeup.putExtra(ManagerDatabase.PRICE_MAKEUP, makeup_click.getPrice());
-        details_makeup.putExtra(ManagerDatabase.CURRENCY_MAKEUP, makeup_click.getCurrency());
-        details_makeup.putExtra(ManagerDatabase.DESCRIPTION_MAKEUP, makeup_click.getDescription());
-        details_makeup.putExtra(ManagerDatabase.TYPE_MAKEUP, makeup_click.getType());
-        details_makeup.putExtra(ManagerDatabase.URL_IMAGE_MAKEUP, makeup_click.getOriginalUrlImage());
-        details_makeup.putExtra(ManagerDatabase.IS_FAVORITE_MAKEUP, makeup_click.isFavorite());
+        details_makeup.putExtra(MakeupDetailsActivity.ID_MAKEUP, makeup_click.getId());
+        details_makeup.putExtra(MakeupDetailsActivity.BRAND_MAKEUP, makeup_click.getBrand());
+        details_makeup.putExtra(MakeupDetailsActivity.NAME_MAKEUP, makeup_click.getName());
+        details_makeup.putExtra(MakeupDetailsActivity.PRICE_MAKEUP, makeup_click.getPrice());
+        details_makeup.putExtra(MakeupDetailsActivity.CURRENCY_MAKEUP, makeup_click.getCurrency());
+        details_makeup.putExtra(MakeupDetailsActivity.DESCRIPTION_MAKEUP, makeup_click.getDescription());
+        details_makeup.putExtra(MakeupDetailsActivity.TYPE_MAKEUP, makeup_click.getType());
+        details_makeup.putExtra(MakeupDetailsActivity.URL_IMAGE_MAKEUP, makeup_click.getOriginalUrlImage());
+        details_makeup.putExtra(MakeupDetailsActivity.IS_FAVORITE_MAKEUP, makeup_click.isFavorite());
+        details_makeup.putExtra(MakeupDetailsActivity.CHAR_PRICE_MAKEUP, makeup_click.getCharPrice());
+        details_makeup.putExtra(MakeupDetailsActivity.RATING_MAKEUP, makeup_click.getRatingProduct());
 
         startActivity(details_makeup);
     }

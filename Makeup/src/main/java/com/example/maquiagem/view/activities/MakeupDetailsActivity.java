@@ -1,5 +1,8 @@
 package com.example.maquiagem.view.activities;
 
+import static com.example.maquiagem.controller.ManagerResources.getStringIdNormalized;
+import static com.example.maquiagem.controller.ManagerResources.isNullOrEmpty;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,11 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatRatingBar;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ManagerDatabase;
-import com.example.maquiagem.controller.ManagerResources;
 import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.view.CustomAlertDialog;
 import com.squareup.picasso.Picasso;
@@ -23,6 +26,18 @@ import com.squareup.picasso.Picasso;
  */
 public class MakeupDetailsActivity extends AppCompatActivity {
 
+    public static final String ID_MAKEUP = "id";
+    public static final String BRAND_MAKEUP = "brand";
+    public static final String NAME_MAKEUP = "name";
+    public static final String TYPE_MAKEUP = "type";
+    public static final String PRICE_MAKEUP = "price";
+    public static final String CURRENCY_MAKEUP = "currency";
+    public static final String DESCRIPTION_MAKEUP = "description";
+    public static final String URL_IMAGE_MAKEUP = "image";
+    public static final String IS_FAVORITE_MAKEUP = "is_favorite";
+    public static final String CHAR_PRICE_MAKEUP = "char_price";
+    public static final String RATING_MAKEUP = "rating_makeup";
+    AppCompatRatingBar ratingBar_product;
     private Context context;
     private TextView name;
     private TextView brandType;
@@ -30,7 +45,7 @@ public class MakeupDetailsActivity extends AppCompatActivity {
     private TextView description;
     private ImageView image_product;
     private CheckBox cbx_favorite;
-
+    private TextView txt_currency;
     private Makeup makeup;
 
     @Override
@@ -45,14 +60,16 @@ public class MakeupDetailsActivity extends AppCompatActivity {
         Intent intentMakeup = getIntent();
         if (intentMakeup != null) {
             makeup = new Makeup();
-            makeup.setName(intentMakeup.getStringExtra(ManagerDatabase.NAME_MAKEUP));
-            makeup.setType(intentMakeup.getStringExtra(ManagerDatabase.TYPE_MAKEUP));
-            makeup.setBrand(intentMakeup.getStringExtra(ManagerDatabase.BRAND_MAKEUP));
-            makeup.setCurrency(intentMakeup.getStringExtra(ManagerDatabase.CURRENCY_MAKEUP));
-            makeup.setPrice(intentMakeup.getDoubleExtra(ManagerDatabase.PRICE_MAKEUP, -1));
-            makeup.setDescription(intentMakeup.getStringExtra(ManagerDatabase.DESCRIPTION_MAKEUP));
-            makeup.setOriginalUrlImage(intentMakeup.getStringExtra(ManagerDatabase.URL_IMAGE_MAKEUP));
-            makeup.setFavorite(intentMakeup.getBooleanExtra(ManagerDatabase.IS_FAVORITE_MAKEUP, false));
+            makeup.setName(intentMakeup.getStringExtra(NAME_MAKEUP));
+            makeup.setType(intentMakeup.getStringExtra(TYPE_MAKEUP));
+            makeup.setBrand(intentMakeup.getStringExtra(BRAND_MAKEUP));
+            makeup.setCurrency(intentMakeup.getStringExtra(CURRENCY_MAKEUP));
+            makeup.setPrice(intentMakeup.getDoubleExtra(PRICE_MAKEUP, -1));
+            makeup.setDescription(intentMakeup.getStringExtra(DESCRIPTION_MAKEUP));
+            makeup.setOriginalUrlImage(intentMakeup.getStringExtra(URL_IMAGE_MAKEUP));
+            makeup.setFavorite(intentMakeup.getBooleanExtra(IS_FAVORITE_MAKEUP, false));
+            makeup.setCharPrice(intentMakeup.getStringExtra(CHAR_PRICE_MAKEUP));
+            makeup.setRatingProduct(intentMakeup.getFloatExtra(RATING_MAKEUP, 0));
 
             if (makeup.getName() == null && makeup.getPrice() == -1) {
                 showWindowWithoutData();
@@ -94,6 +111,8 @@ public class MakeupDetailsActivity extends AppCompatActivity {
         description = findViewById(R.id.txt_descriptionProduct);
         image_product = findViewById(R.id.img_detailsProduct);
         cbx_favorite = findViewById(R.id.checkBox_favoriteDetails);
+        txt_currency = findViewById(R.id.txt_currencyProduct);
+        ratingBar_product = findViewById(R.id.ratingBar_makeup);
     }
 
     /**
@@ -105,14 +124,26 @@ public class MakeupDetailsActivity extends AppCompatActivity {
                 .error(R.drawable.makeup_no_image)
                 .into(image_product);
 
-        name.setText(ManagerResources.getStringIdNormalized(context, R.string.formatted_name,
-                new String[]{makeup.getName()}));
-        brandType.setText(ManagerResources.getStringIdNormalized(context, R.string.formatted_brandType,
+        name.setText(getStringIdNormalized(context, R.string.formatted_name, new String[]{makeup.getName()}));
+        brandType.setText(getStringIdNormalized(context, R.string.formatted_brandType,
                 new String[]{makeup.getBrand(), makeup.getType()}));
-        currency_price.setText(ManagerResources.getStringIdNormalized(context, R.string.formatted_currencyPrice,
-                new String[]{makeup.getCurrency(), String.valueOf(makeup.getPrice())}));
+        currency_price.setText(getStringIdNormalized(context, R.string.formatted_price,
+                new String[]{makeup.getCharPrice(), String.valueOf(makeup.getPrice())}));
         description.setText(makeup.getDescription());
         cbx_favorite.setChecked(makeup.isFavorite());
+
+        if (isNullOrEmpty(makeup.getCurrency())) {
+            txt_currency.setVisibility(View.GONE);
+        } else {
+            txt_currency.setText(getStringIdNormalized(context, R.string.formatted_currency,
+                    new String[]{makeup.getCurrency()}));
+        }
+
+        if (makeup.getRatingProduct() < 0) {
+            ratingBar_product.setVisibility(View.GONE);
+        } else {
+            ratingBar_product.setRating(makeup.getRatingProduct());
+        }
     }
 
     /**

@@ -70,7 +70,7 @@
             android:layout_marginRight="16dp"
             android:fontFamily="@font/ubuntu_bold"
             android:gravity="center"
-            android:text="@string/formatted_currencyPrice"
+            android:text="@string/formatted_price"
             android:textAppearance="?attr/textAppearanceBody1"
             android:textSize="22sp"
             app:layout_constraintEnd_toEndOf="parent"

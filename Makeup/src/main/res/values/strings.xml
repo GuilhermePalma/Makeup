@@ -280,9 +280,12 @@
     <!--Activity Details Product-->
     <string name="title_details">Detalhes do Produto</string>
     <string name="label_details">Detalhes</string>
+    <string name="label_colors">Cores Disponiveis:</string>
+    <string name="label_tags">Tags do Produto:</string>
     <string name="formatted_name">&lt;u>%s&lt;/u></string>
     <string name="formatted_brandType">%1$s - %2$s</string>
-    <string name="formatted_currencyPrice">%1$s %2$s</string>
+    <string name="formatted_price">%1$s %2$s</string>
+    <string name="formatted_currency">($s)</string>
     <string name="error_name">Produto sem Nome</string>
     <string name="error_brandType">Produto sem Marca e Tipo</string>
     <string name="error_price">Produto sem Preço</string>

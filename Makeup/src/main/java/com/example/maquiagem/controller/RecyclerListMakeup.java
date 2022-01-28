@@ -126,7 +126,7 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerView.ViewHo
             // Exibe os Dados na Tela
             ((ViewHolderListMakeup) holder).name.setText(name_formatted);
             ((ViewHolderListMakeup) holder).currency_price.setText(ManagerResources.getStringIdNormalized(
-                    context, R.string.formatted_currencyPrice, new String[]{makeup.getCurrency(),
+                    context, R.string.formatted_price, new String[]{makeup.getCurrency(),
                             String.valueOf(makeup.getPrice())}));
 
             // TODO: Implementação da Contagem de Favoritos na API

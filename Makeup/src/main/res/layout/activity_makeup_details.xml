@@ -39,6 +39,16 @@
             android:scaleType="fitCenter"
             android:src="@drawable/makeup_no_image" />
 
+        <androidx.appcompat.widget.AppCompatRatingBar
+            android:id="@+id/ratingBar_makeup"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:max="5"
+            android:numStars="5" />
+
         <TextView
             android:id="@+id/txt_nameProduct"
             android:layout_width="match_parent"
@@ -74,8 +84,22 @@
             android:layout_marginRight="35dp"
             android:fontFamily="@font/ubuntu_bold"
             android:gravity="center"
-            android:text="@string/formatted_currencyPrice"
+            android:text="@string/formatted_price"
             android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txt_currencyProduct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="35dp"
+            android:layout_marginRight="35dp"
+            android:fontFamily="@font/ubuntu_regular"
+            android:gravity="center"
+            android:text="@string/formatted_currency"
+            android:textColor="@color/light_grey"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <View
@@ -97,7 +121,6 @@
             android:text="@string/label_details"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
 
-
         <TextView
             android:id="@+id/txt_descriptionProduct"
             android:layout_width="match_parent"
@@ -106,7 +129,6 @@
             android:layout_marginLeft="40dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="40dp"
-            android:layout_marginBottom="25dp"
             android:fontFamily="@font/ubuntu_medium"
             android:text="Description for Item Makeup"
             android:textSize="16sp"

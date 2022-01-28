@@ -28,22 +28,22 @@ import java.util.concurrent.Future;
 public class Makeup {
 
     // Atributos da Classe
-    private int id;
-    private String brand;
-    private String name;
-    private String category;
-    private double price;
-    private String charPrice;
-    private String currency;
-    private String description;
-    private String type;
-    private String originalUrlImage;
-    private double ratingProduct;
-    private String apiUrlImage;
+    private int id = 0;
+    private String brand = "";
+    private String name = "";
+    private String category = "";
+    private double price = -1;
+    private String charPrice = "";
+    private String currency = "";
+    private String description = "";
+    private String type = "";
+    private String originalUrlImage = "";
+    private float ratingProduct = -1;
+    private String apiUrlImage = "";
     private boolean isFavorite = false;
     private Context context;
-    private String[] tags;
-    private Map<String, Integer> colors;
+    private String[] tags = null;
+    private Map<String, Integer> colors = null;
     private String urlInAPI;
 
     /**
@@ -132,11 +132,11 @@ public class Makeup {
         this.charPrice = charPrice;
     }
 
-    public double getRatingProduct() {
+    public float getRatingProduct() {
         return ratingProduct;
     }
 
-    public void setRatingProduct(double ratingProduct) {
+    public void setRatingProduct(float ratingProduct) {
         this.ratingProduct = ratingProduct;
     }
 
