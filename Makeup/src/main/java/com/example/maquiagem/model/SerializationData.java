@@ -8,9 +8,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.util.Log;
 
-import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ManagerDatabase;
-import com.example.maquiagem.controller.ManagerResources;
 import com.example.maquiagem.model.entity.Makeup;
 
 import org.json.JSONArray;
@@ -149,7 +147,8 @@ public class SerializationData {
                             valuesJSON.put(keyOfSubJsonObject, valueJsonObject);
                     }
                 } else if (objectValue instanceof String || objectValue instanceof Boolean
-                        || objectValue instanceof Integer) {
+                        || objectValue instanceof Integer || objectValue instanceof Double ||
+                        objectValue instanceof Float) {
                     valuesJSON.put(key, objectValue);
                 }
             }
@@ -279,8 +278,14 @@ public class SerializationData {
                     }
 
                     makeup.setDescription(finalDescription);
-                    makeup.setRatingProduct(itemMap.get(getParam[9]) instanceof Double
-                            ? (double) itemMap.get(getParam[9]) : -1);
+
+                    // A avaliação do Produto pode ser um Float ou um Double
+                    if (itemMap.get(getParam[9]) instanceof Float) {
+                        makeup.setRatingProduct((float) itemMap.get(getParam[9]));
+                    } else if (itemMap.get(getParam[9]) instanceof Integer
+                            ||itemMap.get(getParam[9]) instanceof Double) {
+                        makeup.setRatingProduct(Float.parseFloat(String.valueOf(itemMap.get(getParam[9]))));
+                    }
                     makeup.setCategory(getNormalizedString((String) itemMap.get(getParam[10])));
                     makeup.setType(getNormalizedString((String) itemMap.get(getParam[11])));
                     makeup.setUrlInAPI((String) itemMap.get(getParam[13]));
