@@ -175,7 +175,7 @@ public class ManagerDatabase extends SQLiteOpenHelper {
             values.put(PRICE_MAKEUP, makeup.getPrice());
             values.put(CURRENCY_MAKEUP, makeup.getCurrency());
             values.put(DESCRIPTION_MAKEUP, makeup.getDescription());
-            values.put(URL_IMAGE_MAKEUP, makeup.getUrlImage());
+            values.put(URL_IMAGE_MAKEUP, makeup.getOriginalUrlImage());
             values.put(IS_FAVORITE_MAKEUP, makeup.isFavorite() ? TRUE : FALSE);
 
             isInserted = database.insert(TABLE_MAKEUP, null, values) != NOT_INSERTED;

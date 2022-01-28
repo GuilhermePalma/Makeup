@@ -49,12 +49,12 @@ public class MakeupDetailsActivity extends AppCompatActivity {
             makeup.setType(intentMakeup.getStringExtra(ManagerDatabase.TYPE_MAKEUP));
             makeup.setBrand(intentMakeup.getStringExtra(ManagerDatabase.BRAND_MAKEUP));
             makeup.setCurrency(intentMakeup.getStringExtra(ManagerDatabase.CURRENCY_MAKEUP));
-            makeup.setPrice(intentMakeup.getStringExtra(ManagerDatabase.PRICE_MAKEUP));
+            makeup.setPrice(intentMakeup.getDoubleExtra(ManagerDatabase.PRICE_MAKEUP, -1));
             makeup.setDescription(intentMakeup.getStringExtra(ManagerDatabase.DESCRIPTION_MAKEUP));
-            makeup.setUrlImage(intentMakeup.getStringExtra(ManagerDatabase.URL_IMAGE_MAKEUP));
+            makeup.setOriginalUrlImage(intentMakeup.getStringExtra(ManagerDatabase.URL_IMAGE_MAKEUP));
             makeup.setFavorite(intentMakeup.getBooleanExtra(ManagerDatabase.IS_FAVORITE_MAKEUP, false));
 
-            if (makeup.getName() == null && makeup.getPrice() == null) {
+            if (makeup.getName() == null && makeup.getPrice() == -1) {
                 showWindowWithoutData();
             } else {
                 showWindowData();
@@ -101,7 +101,7 @@ public class MakeupDetailsActivity extends AppCompatActivity {
      */
     private void showWindowData() {
         // Biblioteca Picasso (Converte URL da IMG ---> IMG)
-        Picasso.get().load(makeup.getUrlImage())
+        Picasso.get().load(makeup.getOriginalUrlImage())
                 .error(R.drawable.makeup_no_image)
                 .into(image_product);
 
@@ -110,7 +110,7 @@ public class MakeupDetailsActivity extends AppCompatActivity {
         brandType.setText(ManagerResources.getStringIdNormalized(context, R.string.formatted_brandType,
                 new String[]{makeup.getBrand(), makeup.getType()}));
         currency_price.setText(ManagerResources.getStringIdNormalized(context, R.string.formatted_currencyPrice,
-                new String[]{makeup.getCurrency(), makeup.getPrice()}));
+                new String[]{makeup.getCurrency(), String.valueOf(makeup.getPrice())}));
         description.setText(makeup.getDescription());
         cbx_favorite.setChecked(makeup.isFavorite());
     }

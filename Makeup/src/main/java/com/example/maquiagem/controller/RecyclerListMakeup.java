@@ -114,7 +114,7 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerView.ViewHo
         /// Verifica se o Item está na Posição de Item que será configurado como Makeup
         if (holder instanceof ViewHolderListMakeup) {
             // Subtrai 1 da Posição se Exisitr Header
-            int position_real = header != null ? position : position - 1;
+            int position_real = header == null ? position : Math.min(position - 1, makeupList.size() - 1);
 
             // Obtem a Makeup que será exibida
             Makeup makeup = makeupList.get(position_real);
@@ -127,7 +127,7 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerView.ViewHo
             ((ViewHolderListMakeup) holder).name.setText(name_formatted);
             ((ViewHolderListMakeup) holder).currency_price.setText(ManagerResources.getStringIdNormalized(
                     context, R.string.formatted_currencyPrice, new String[]{makeup.getCurrency(),
-                            makeup.getPrice()}));
+                            String.valueOf(makeup.getPrice())}));
 
             // TODO: Implementação da Contagem de Favoritos na API
             Random numberRandom = new Random();
@@ -139,7 +139,7 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerView.ViewHo
             ((ViewHolderListMakeup) holder).checkBox_favorite.setChecked(makeup.isFavorite());
 
             // Biblioteca Picasso (Converte URL da IMG ---> IMG)
-            Picasso.get().load(makeup.getUrlImage())
+            Picasso.get().load(makeup.getOriginalUrlImage())
                     .error(R.drawable.makeup_no_image)
                     .into(((ViewHolderListMakeup) holder).image);
 
@@ -163,9 +163,9 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerView.ViewHo
     public int getItemCount() {
         // Caso a Lista não seja Vazia, retorna a Quantidade de Itens da Lista
         if (makeupList != null && !makeupList.isEmpty()) {
-            // Caso Possua Header, adiciona mais um Item
-            if (header != null) return makeupList.size() + 1;
-            return makeupList.size();
+            // Caso Possua Header, adiciona deixa o Index do Ultimo Elemento + 1
+            if (header != null) return makeupList.size();
+            return makeupList.size() - 1;
         } else return 0;
     }
 

@@ -1,9 +1,11 @@
 package com.example.maquiagem.model;
 
+import static com.example.maquiagem.controller.ManagerResources.getNormalizedString;
 import static com.example.maquiagem.controller.ManagerResources.isNullOrEmpty;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.util.Log;
 
 import com.example.maquiagem.R;
@@ -13,9 +15,14 @@ import com.example.maquiagem.model.entity.Makeup;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class SerializationData {
 
@@ -27,13 +34,6 @@ public class SerializationData {
      * Constante com o Valor informando que será serializado todos o Itens
      */
     public static final int ALL_ITEMS_JSON = -1;
-
-    // TODO: Alterar e Colocar uma URL da Imagem Fora do Projeto GitHub
-    /**
-     * Constante com o Valor de uma URL que será utilzida quando uma Makeup não possuir Imagem
-     */
-    private static final String URL_NO_IMAGE = "https://github.com/GuilhermePalma/Makeup/blob/main/" +
-            "Makeup/src/main/res/drawable/makeup_no_image.jpg";
 
     private final Context context;
 
@@ -47,93 +47,311 @@ public class SerializationData {
     }
 
     /**
-     * Metodo responsavel por Serializar um JSON de {@link Makeup} recebidas
+     * Serializa o JSON de Forma Dinamica, obtendo is parametros do  JsonObject/JsonArray/String.
      *
-     * @param json          {@link String} Json que será serializado
+     * @param json          JSON que será Serializado (Não Nulo ou Vazio)
+     * @param definedKeys   String Array com as Chaves Definidas que se deseja Obter. Caso queira obter
+     *                      todas as Keys do JSON, passe <b>null</b>
      * @param quantity_show Quantiade de Itens que serão serializados
-     * @return {@link List}|null
+     * @return {@link List<Map> List< Map< Key,Value > >} |null
      * @see #ALL_ITEMS_JSON
      * @see #DEFAULT_QUANTITY
      */
-    public List<Makeup> serializationJsonMakeup(String json, int quantity_show) {
+    public static List<Map<String, Object>> serializationJOSN(final String json, final int quantity_show,
+                                                              final String[] definedKeys) {
 
-        List<Makeup> makeupList = new ArrayList<>();
-        JSONArray itemsArray;
+        // Verifica o JSON e Instancia a Variavel que armazenara os valores
+        if (isNullOrEmpty(json)) return null;
+        List<Map<String, Object>> serializedJSON = new ArrayList<>();
 
         try {
-            itemsArray = new JSONArray(json);
-            // Recebe o valor do Tamanho da List com os Produtos
-            int quantity_array = itemsArray.length();
-            int max_result;
+            // Obtem o Proximo valor do JSON e Verifica se é null
+            Object objectJSON = new JSONTokener(json).nextValue();
+            if (objectJSON == null) return null;
 
-            // Define a Quantidade de Resultados
-            max_result = quantity_show == ALL_ITEMS_JSON ? quantity_array : Math.min(quantity_show, quantity_array);
-
-            for (int i = 0; i < max_result; i++) {
-                // Pega um objeto de acordo com a Posição (Posição = Item/Produto)
-                JSONObject jsonObject = new JSONObject(itemsArray.getString(i));
-
-                try {
-                    Makeup makeupLoop = new Makeup();
-
-                    // Obtem os Dados do JSON, atravez do nome dos campos
-                    makeupLoop.setId(Integer.parseInt(jsonObject.getString("id")));
-                    makeupLoop.setBrand(jsonObject.getString("brand"));
-                    makeupLoop.setName(jsonObject.getString("name"));
-                    makeupLoop.setPrice(jsonObject.getString("price").
-                            replaceAll("[^0-9^,.]", ""));
-                    makeupLoop.setCurrency(jsonObject.getString("currency"));
-                    makeupLoop.setType(jsonObject.getString("product_type"));
-                    makeupLoop.setDescription(jsonObject.getString("description").
-                            replaceAll("\n", "&lt;br />"));
-                    makeupLoop.setUrlImage(jsonObject.getString("image_link"));
-                    makeupLoop.setFavorite(false);
-
-                    // Normaliza as Strings Recebidas (HTML Tags ---> String)
-                    makeupLoop.setBrand(ManagerResources.getNormalizedString(makeupLoop.getBrand()));
-                    makeupLoop.setName(ManagerResources.getNormalizedString(makeupLoop.getName()));
-                    makeupLoop.setCurrency(ManagerResources.getNormalizedString(makeupLoop.getCurrency()));
-                    makeupLoop.setType(ManagerResources.getNormalizedString(makeupLoop.getType()));
-                    makeupLoop.setDescription(ManagerResources.getNormalizedString(makeupLoop.getDescription()));
-
-                    //Caso não tenha dados inseridos
-                    if (makeupLoop.getName().equals("null") || isNullOrEmpty(makeupLoop.getName())) {
-                        makeupLoop.setName(context.getString(R.string.empty_name));
-                    }
-                    if (makeupLoop.getPrice().equals("null") || isNullOrEmpty(makeupLoop.getPrice())) {
-                        makeupLoop.setPrice(context.getString(R.string.empty_price));
-                    }
-                    if (makeupLoop.getCurrency().equals("null") || isNullOrEmpty(makeupLoop.getCurrency())) {
-                        makeupLoop.setCurrency("U$");
-                    }
-                    if (makeupLoop.getDescription().equals("null") ||
-                            isNullOrEmpty(makeupLoop.getDescription())) {
-                        makeupLoop.setDescription(context.getString(R.string.empty_description));
-                    }
-                    if (makeupLoop.getUrlImage().equals("null") || isNullOrEmpty(makeupLoop.getUrlImage())) {
-                        makeupLoop.setUrlImage(URL_NO_IMAGE);
-                    }
-
-                    // Intancia a Classe e Insere no Banco de Dados
-                    makeupList.add(makeupLoop);
-
-                } catch (Exception e) {
-                    Log.e("RECOVERY ARRAY", "Erro ao recuperar os valores do Array " +
-                            "dos Produtos\n" + e);
-                    e.printStackTrace();
-                    return null;
-                }
+            // Verifica o Tipo de Varivavel o JSON recebido
+            if (objectJSON instanceof JSONArray) {
+                // Serializa o JSONObject e Instancia a Lista com a Lista Recebida
+                serializedJSON = serializationJsonArray((JSONArray) objectJSON, quantity_show, definedKeys);
+            } else if (objectJSON instanceof JSONObject) {
+                // Serializa o JSONObject e Insere na Lista
+                final Map<String, Object> serializedJsonObject = serializationJsonObject(
+                        (JSONObject) objectJSON, definedKeys);
+                serializedJSON.add(serializedJsonObject);
+            } else if (objectJSON instanceof String) {
+                // Armazenará as Keys/Values da String
+                Map<String, Object> value = new HashMap<>();
+                value.put("item", (String) objectJSON);
+                serializedJSON.add(value);
             }
 
-            // Após ler a Quantidade de Itens do Array ---> Retorna uma List ou Null
-            return makeupList.isEmpty() ? null : makeupList;
-
         } catch (Exception ex) {
-            // Erro na criação do Array
-            Log.e("Erro JSON", "Erro ao Serilizar o JSON. Exceção: " + ex);
+            Log.e("Erro JSON", "Erro ao Serilizar o JSON. Exceção: " + ex.getClass().getName());
             ex.printStackTrace();
-            return null;
+            serializedJSON = null;
         }
+        return serializedJSON;
+    }
+
+    /**
+     * Serializa um {@link JSONObject}, retornando um {@link Map} com as Keys Obtidas e seus Valores
+     * dinamicos
+     *
+     * @param jsonObject  {@link JSONObject} que será serializado
+     * @param definedKeys String Array especificando quais chaves serão obtidas
+     * @return {@link Map}|null
+     */
+    private static Map<String, Object> serializationJsonObject(final JSONObject jsonObject,
+                                                               final String[] definedKeys) {
+        // Verifica se o JSON é Nulo e cria a variavel que armazenará os Dados
+        if (jsonObject == null) return null;
+        Map<String, Object> valuesJSON;
+
+        try {
+            // Obtem as Chaves do JSONObject
+            final Iterator<String> listKeys = jsonObject.keys();
+
+            // Não há nenhuma Chave
+            if (!listKeys.hasNext()) return null;
+
+            // Define quais Keys seão obtidas do JSON
+            List<String> finalKeys = new ArrayList<>();
+            if (definedKeys == null) {
+                while (listKeys.hasNext()) {
+                    finalKeys.add(listKeys.next());
+                }
+            } else finalKeys.addAll(Arrays.asList(definedKeys));
+
+            // Inicializa a Classe que Map que armazena os Resultados
+            valuesJSON = new HashMap<>();
+
+            // Obtem todas os valores das Keys
+            for (String key : finalKeys) {
+
+                // Verifica se o valor é null e obtem o Item. Em seguida serializa conforme o Valor
+                final Object objectValue = jsonObject.isNull(key) ? "" : jsonObject.get(key);
+                if (objectValue instanceof JSONArray) {
+                    // Obtem a Lista de Valores do JSON Array e Insere nos Valores
+                    final List<Map<String, Object>> valuesList = serializationJsonArray(
+                            (JSONArray) objectValue, ALL_ITEMS_JSON, null);
+
+                    if (valuesList != null) valuesJSON.put(key, valuesList);
+                } else if (objectValue instanceof JSONObject) {
+                    // Obtem o JSONObject e Obtem suas Chaves
+                    final JSONObject subJsonObject = (JSONObject) objectValue;
+                    final Iterator<String> keysSubJsonObject = subJsonObject.keys();
+
+                    while (keysSubJsonObject.hasNext()) {
+                        // Usa a chave, Obtem o Item (Se não for null) e Insere a Key/Value
+                        final String keyOfSubJsonObject = keysSubJsonObject.next();
+                        Object valueJsonObject = subJsonObject.isNull(key) ? null : subJsonObject.get(key);
+                        if (valueJsonObject != null)
+                            valuesJSON.put(keyOfSubJsonObject, valueJsonObject);
+                    }
+                } else if (objectValue instanceof String || objectValue instanceof Boolean
+                        || objectValue instanceof Integer) {
+                    valuesJSON.put(key, objectValue);
+                }
+            }
+        } catch (Exception ex) {
+            Log.e("Erro JSON", "Erro ao Serilizar o JSON Object. Exceção: " + ex.getClass().getName());
+            ex.printStackTrace();
+            valuesJSON = null;
+        }
+        return valuesJSON;
+    }
+
+    /**
+     * Serializa um {@link JSONArray}, retornando uma {@link List} com os {@link Map} (que contem as
+     * Keys Obtidas e seus Valores dinamicos). Cada Item da {@link List}, representa um Item do
+     * {@link JSONArray}. Enquanto cada item do {@link Map}, representa os dados de um Item Especifico
+     * do {@link JSONArray}
+     * <p>
+     * * Itens sem Keys, serão obtidas e armazenadas no {@link Map} com a Key "item"
+     *
+     * @param jsonArray   {@link JSONArray} que será serializado
+     * @param definedKeys String Array especificando quais chaves serão obtidas
+     * @return {@link Map}|null
+     */
+    private static List<Map<String, Object>> serializationJsonArray(final JSONArray jsonArray,
+                                                                    final int quantity_show,
+                                                                    final String[] definedKeys) {
+
+        // Verifica se o JSONArray é Nulo e cria a Variavel que armazenará os Valores
+        if (jsonArray == null) return null;
+        List<Map<String, Object>> listValues = new ArrayList<>();
+
+        try {
+            // Define a quantidade de Itens do JSON Array que serão obtidos
+            int maxIndexArray = quantity_show == ALL_ITEMS_JSON
+                    ? jsonArray.length() : Math.min(jsonArray.length(), quantity_show);
+
+            // Obtem os Valores dentro do Array
+            for (int i = 0; i < maxIndexArray; i++) {
+                // Reinicia o Map das Keys/Values a cada Objeto
+                Map<String, Object> valuesItem = new HashMap<>();
+
+                // Obtem o Item dentro de uma Posição Especifica do JSONArray
+                Object objectArray = jsonArray.get(i);
+
+                // Verifica o Tipo de Item Recebido
+                if (objectArray instanceof JSONArray) {
+
+                    // Caso seja um Array, obtem Item por Item e Serializa conforme as Opções
+                    JSONArray subJsonArray = (JSONArray) objectArray;
+                    for (int u = 0; i < subJsonArray.length(); u++) {
+                        Object objectSubJsonArray = subJsonArray.get(u);
+
+                        // Obtem os Dados de um JSON Object OU o Valor contido dentro do Array
+                        if (objectSubJsonArray instanceof JSONObject) {
+                            valuesItem.putAll(serializationJsonObject((JSONObject) objectSubJsonArray, null));
+                        } else if (objectSubJsonArray instanceof String || objectSubJsonArray instanceof Boolean
+                                || objectSubJsonArray instanceof Integer) {
+                            valuesItem.put("item", objectSubJsonArray);
+                        }
+                    }
+                } else if (objectArray instanceof JSONObject) {
+                    valuesItem.putAll(serializationJsonObject((JSONObject) objectArray, definedKeys));
+                } else if (objectArray instanceof String || objectArray instanceof Boolean
+                        || objectArray instanceof Integer) {
+                    // Adiciona o Item com uma Key Generica
+                    valuesItem.put("item", objectArray);
+                }
+
+                // Adiciona os Itens serializados do Item Selecionado do JSONArray
+                listValues.add(valuesItem);
+            }
+        } catch (Exception ex) {
+            Log.e("Erro JSON", "Erro ao Serilizar o JSON Array. Exceção: " + ex.getClass().getName());
+            ex.printStackTrace();
+            listValues = null;
+        }
+        return listValues;
+    }
+
+    /**
+     * Serializa uma {@link List} com varios {@link Map}, tendo como base os parametros existentes
+     * na Classe {@link Makeup}
+     *
+     * @param context     {@link Context} utilizado para Instanciar a classe {@link Makeup}
+     * @param itemsMakeup {@link List} com os {@link Map} que tem os dados de cada Makeup
+     * @return {@link List}|null
+     * @see Makeup#getParametersJSON()
+     */
+    public static List<Makeup> instanceMakeups(final Context context, final List<Map<String, Object>> itemsMakeup) {
+
+        // Cria a Varivael que armazenará as Makeups e Obtem as Keys que serão Obtidos
+        List<Makeup> makeupList = new ArrayList<>();
+        final String[] getParam = Makeup.getParametersJSON();
+
+        try {
+            // Serializa cada Item dentro da Lista de Map
+            for (Map<String, Object> itemMap : itemsMakeup) {
+
+                if (itemMap != null) {
+                    Makeup makeup = new Makeup(context);
+
+                    makeup.setId(itemMap.get(getParam[0]) instanceof Integer ? (int) itemMap.get(getParam[0]) : 0);
+                    makeup.setBrand(getNormalizedString((String) itemMap.get(getParam[1])));
+                    makeup.setName(getNormalizedString((String) itemMap.get(getParam[2])));
+
+                    // Normaliza e Converte o Preço de Forma apropriada
+                    String rawPrice = (String) itemMap.get(getParam[3]);
+                    double price = 0;
+                    if (!isNullOrEmpty(rawPrice)) {
+                        rawPrice = rawPrice.replaceAll("[^0-9^,.]", "");
+                        price = (Double) Double.parseDouble(rawPrice);
+                    }
+
+                    makeup.setPrice(price);
+                    makeup.setCharPrice((String) itemMap.get(getParam[4]));
+                    makeup.setCurrency((String) itemMap.get(getParam[5]));
+                    makeup.setOriginalUrlImage((String) itemMap.get(getParam[6]));
+                    makeup.setApiUrlImage((String) itemMap.get(getParam[7]));
+
+                    // Serializa e Retira os Possiveis caracteres que podem gerar erros
+                    final String rawDescription = (String) itemMap.get(getParam[8]);
+                    String finalDescription = "";
+                    if (!isNullOrEmpty(rawDescription)) {
+                        finalDescription = rawDescription.replaceAll("\n", "&lt;br />")
+                                .replaceAll("<", "&lt;");
+                        finalDescription = getNormalizedString(finalDescription);
+                    }
+
+                    makeup.setDescription(finalDescription);
+                    makeup.setRatingProduct(itemMap.get(getParam[9]) instanceof Double
+                            ? (double) itemMap.get(getParam[9]) : -1);
+                    makeup.setCategory(getNormalizedString((String) itemMap.get(getParam[10])));
+                    makeup.setType(getNormalizedString((String) itemMap.get(getParam[11])));
+                    makeup.setUrlInAPI((String) itemMap.get(getParam[13]));
+
+                    // Tenta Obter os Parametros das Tags do Produto
+                    if (itemMap.get(getParam[12]) instanceof List) {
+
+                        List<Map<String, Object>> tags = (List<Map<String, Object>>) itemMap.get(getParam[12]);
+
+                        if (tags != null) {
+                            // Armazenará os Valores das Tags
+                            List<String> finalTags = new ArrayList<>();
+
+                            // Obtem Valor por Valor da List de Map das Tags
+                            for (Map<String, Object> mapOfList : tags) {
+                                // Cria uma Lista com os Objects da Lista
+                                Object[] valuesOfMap = mapOfList.values().toArray();
+
+                                // Obtem Object por Object e tenta adicionar à Lista de Tags
+                                for (Object itemOfMap : valuesOfMap) {
+                                    if (itemOfMap instanceof String)
+                                        finalTags.add((String) itemOfMap);
+                                }
+                            }
+                            // Adiciona à Classe Makeup a lista de Tags Serializada
+                            makeup.setTags(finalTags.toArray(new String[0]));
+                        }
+                    }
+
+                    // Tenta Obter os Dados da Cor da Makeup
+                    if (itemMap.get(getParam[14]) instanceof List) {
+
+                        List<Map<String, Object>> colors = (List<Map<String, Object>>) itemMap.get(getParam[14]);
+
+                        if (colors != null) {
+
+                            // Cria duas Listas que armazenarão o Nome e Codigo Hexa Decimal da Cor
+                            List<String> colorHex = new ArrayList<>();
+                            List<String> colorName = new ArrayList<>();
+
+                            // Variavel que armazenará os Valores das Cores
+                            Map<String, Integer> listColors = new HashMap<>();
+
+                            // Obtem os Maps da List de Cores
+                            for (Map<String, Object> itemColor : colors) {
+                                if (itemColor.get("hex_value") instanceof String && itemColor.get("colour_name") instanceof String) {
+                                    // Obtem o Codigo da Cor
+                                    int codeColor = Color.parseColor((String) itemColor.get("hex_value"));
+
+                                    // Insere na Lista de Cores o nome e o Codigo Hexadecinal
+                                    listColors.put((String) itemColor.get("colour_name"), codeColor);
+                                } else if (itemColor.get("hex_value") instanceof String) {
+                                    // Quando se tem apenas tem o Codigo da Cor
+                                    listColors.put("", Color.parseColor((String) itemColor.get("hex_value")));
+                                }
+                            }
+                            // Insere a Lista de cores na Makeup
+                            makeup.setColors(listColors);
+                        }
+                    }
+
+                    // Insere o valor da Makeup na Lista Retornada
+                    makeupList.add(makeup);
+                }
+            }
+        } catch (Exception ex) {
+            Log.e("Erro Makeup", "Erro ao Serilizar o Map para Makeup. Exceção: " + ex.getClass().getName());
+            ex.printStackTrace();
+            makeupList = null;
+        }
+        return makeupList;
     }
 
     /**
@@ -172,7 +390,7 @@ public class SerializationData {
                     intFavorite = cursor.getInt(cursor.getColumnIndexOrThrow(ManagerDatabase.IS_FAVORITE_MAKEUP));
                     isFavorite = intFavorite == 1;
 
-                    Makeup makeup = new Makeup(id, brand, name, type, price, currency, description,
+                    Makeup makeup = new Makeup(id, brand, name, type, 054.5, currency, description,
                             urlImage);
                     makeup.setFavorite(isFavorite);
 
@@ -194,6 +412,4 @@ public class SerializationData {
 
         return list_resultSelect;
     }
-
-    // todo: Implementar serialização da API_Local
 }

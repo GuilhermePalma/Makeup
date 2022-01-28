@@ -204,7 +204,7 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
         details_makeup.putExtra(ManagerDatabase.CURRENCY_MAKEUP, makeup_click.getCurrency());
         details_makeup.putExtra(ManagerDatabase.DESCRIPTION_MAKEUP, makeup_click.getDescription());
         details_makeup.putExtra(ManagerDatabase.TYPE_MAKEUP, makeup_click.getType());
-        details_makeup.putExtra(ManagerDatabase.URL_IMAGE_MAKEUP, makeup_click.getUrlImage());
+        details_makeup.putExtra(ManagerDatabase.URL_IMAGE_MAKEUP, makeup_click.getOriginalUrlImage());
         details_makeup.putExtra(ManagerDatabase.IS_FAVORITE_MAKEUP, makeup_click.isFavorite());
 
         startActivity(details_makeup);

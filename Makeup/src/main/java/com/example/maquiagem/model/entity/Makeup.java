@@ -16,6 +16,7 @@ import com.example.maquiagem.view.activities.MainActivity;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -28,16 +29,22 @@ public class Makeup {
 
     // Atributos da Classe
     private int id;
-    private String brand = "";
-    private String name = "";
-    private String category = "";
-    private String price = "";
-    private String currency = "";
-    private String description = "";
-    private String type = "";
-    private String urlImage = "";
+    private String brand;
+    private String name;
+    private String category;
+    private double price;
+    private String charPrice;
+    private String currency;
+    private String description;
+    private String type;
+    private String originalUrlImage;
+    private double ratingProduct;
+    private String apiUrlImage;
     private boolean isFavorite = false;
     private Context context;
+    private String[] tags;
+    private Map<String, Integer> colors;
+    private String urlInAPI;
 
     /**
      * Construtor Vazio da Classe {@link Makeup}
@@ -58,17 +65,17 @@ public class Makeup {
     /**
      * Construtor passando todos os Dados de uma {@link Makeup }
      *
-     * @param id          ID da {@link Makeup}
-     * @param type        Tipo da {@link Makeup}
-     * @param price       Preço da {@link Makeup}
-     * @param brand       Marcada {@link Makeup}
-     * @param currency    Moeda da {@link Makeup}
-     * @param description Descrição da {@link Makeup}
-     * @param name        Nome da {@link Makeup}
-     * @param urlImage    URL da {@link Makeup}
+     * @param id               ID da {@link Makeup}
+     * @param type             Tipo da {@link Makeup}
+     * @param price            Preço da {@link Makeup}
+     * @param brand            Marcada {@link Makeup}
+     * @param currency         Moeda da {@link Makeup}
+     * @param description      Descrição da {@link Makeup}
+     * @param name             Nome da {@link Makeup}
+     * @param originalUrlImage URL da {@link Makeup}
      */
-    public Makeup(int id, String brand, String name, String type, String price, String currency,
-                  String description, String urlImage) {
+    public Makeup(int id, String brand, String name, String type, double price, String currency,
+                  String description, String originalUrlImage) {
         this.id = id;
         this.brand = brand;
         this.name = name;
@@ -76,7 +83,69 @@ public class Makeup {
         this.price = price;
         this.currency = currency;
         this.description = description;
-        this.urlImage = urlImage;
+        this.originalUrlImage = originalUrlImage;
+    }
+
+    public static String[] getParametersJSON() {
+        return new String[]{"id", "brand", "name", "price", "price_sign", "currency", "image_link",
+                "api_featured_image", "description", "rating", "category", "product_type", "tag_list",
+                "product_api_url", "product_colors"};
+    }
+
+    public Map<String, Integer> getColors() {
+        return colors;
+    }
+
+    public void setColors(Map<String, Integer> colors) {
+        this.colors = colors;
+    }
+
+    public String getUrlInAPI() {
+        return urlInAPI;
+    }
+
+    public void setUrlInAPI(String urlInAPI) {
+        this.urlInAPI = urlInAPI;
+    }
+
+    public String[] getTags() {
+        return tags;
+    }
+
+    public void setTags(String[] tags) {
+        this.tags = tags;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getCharPrice() {
+        return charPrice;
+    }
+
+    public void setCharPrice(String charPrice) {
+        this.charPrice = charPrice;
+    }
+
+    public double getRatingProduct() {
+        return ratingProduct;
+    }
+
+    public void setRatingProduct(double ratingProduct) {
+        this.ratingProduct = ratingProduct;
+    }
+
+    public String getApiUrlImage() {
+        return apiUrlImage;
+    }
+
+    public void setApiUrlImage(String apiUrlImage) {
+        this.apiUrlImage = apiUrlImage;
     }
 
     /**
@@ -109,8 +178,9 @@ public class Makeup {
 
             if (json == null || json.equals("")) return null;
 
-            // Retorna o JSON Serializado ou null
-            return new SerializationData(context).serializationJsonMakeup(json, quantity_items);
+            List<Map<String, Object>> jsonSerialized =
+                    SerializationData.serializationJOSN(json, quantity_items, getParametersJSON());
+            return SerializationData.instanceMakeups(context, jsonSerialized);
         } catch (Exception ex) {
             Log.e("Error", "Erro ao manipular o JSON ou na sua Serialização. " + ex);
             ex.printStackTrace();
@@ -181,14 +251,6 @@ public class Makeup {
         this.name = name;
     }
 
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
     public String getCurrency() {
         return currency;
     }
@@ -213,12 +275,12 @@ public class Makeup {
         this.type = type;
     }
 
-    public String getUrlImage() {
-        return urlImage;
+    public String getOriginalUrlImage() {
+        return originalUrlImage;
     }
 
-    public void setUrlImage(String urlImage) {
-        this.urlImage = urlImage;
+    public void setOriginalUrlImage(String originalUrlImage) {
+        this.originalUrlImage = originalUrlImage;
     }
 
     public boolean isFavorite() {

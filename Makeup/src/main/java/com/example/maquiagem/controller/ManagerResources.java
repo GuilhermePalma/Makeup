@@ -125,6 +125,7 @@ public class ManagerResources {
      */
     public static String getNormalizedString(String string_not_normalized) {
         try {
+            if (isNullOrEmpty(string_not_normalized)) return "";
             return Html.fromHtml(string_not_normalized).toString();
         } catch (Exception ex) {
             Log.e("ERROR STRING", "Não foi foi possivel Normalizar a String. Exceção: " + ex);
