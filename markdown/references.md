@@ -16,6 +16,6 @@
 - Melhorias e Correções
   - **[Exemplo PagerView: Android Hive](https://www.androidhive.info/2016/05/android-build-intro-slider-app/)**
   - **[Seleção Customizada do Menu Lateral: Stack Overflow](https://stackoverflow.com/questions/36051045/how-to-uncheck-checked-items-in-navigation-view)**
-
-
+  - **[Comparação de Imagens: Stack Overflow](https://stackoverflow.com/questions/37575857/android-compare-imageview-with-image)**
+  - **[Pixel to DP: Stack Overflow](https://stackoverflow.com/questions/4605527/converting-pixels-to-dp)**
 > Todas as Referencias respeitam os direitos de seus proprietarios. Caso haja algo incorreto, por favor inicie uma [Issue](https://github.com/GuilhermePalma/Makeup/issues)

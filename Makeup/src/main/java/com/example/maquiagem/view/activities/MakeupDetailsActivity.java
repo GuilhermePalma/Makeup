@@ -6,15 +6,23 @@ import static com.example.maquiagem.controller.ManagerResources.isNullOrEmpty;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatRatingBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ManagerDatabase;
@@ -149,10 +157,43 @@ public class MakeupDetailsActivity extends AppCompatActivity {
      * Exibe os Dados da Makeup na Activity
      */
     private void showWindowData() {
+        // Obtem o valor da desnsidade (DP) do Dispositivo
+        float valueDevice = Resources.getSystem().getDisplayMetrics().density;
+
+        // Configura as Proporções da ImageView
+        image_product.setMinimumHeight((int) (valueDevice * 170));
+        image_product.setMaxHeight((int) (valueDevice * 350));
+        image_product.setMinimumWidth((int) (valueDevice * 200));
+        image_product.setMaxWidth((int) (valueDevice * 350));
+
         // Biblioteca Picasso (Converte URL da IMG ---> IMG)
-        Picasso.get().load(makeup.getOriginalUrlImage())
+        Picasso.get().load(makeup.getApiUrlImage())
                 .error(R.drawable.makeup_no_image)
                 .into(image_product);
+
+        // O Hanlder é preciso para que a Biblioteca Picasso carregue a foto (Loop) e dpois verifica a imagem Exibida
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            if (image_product.getDrawable() != null) {
+                Bitmap bitmapImageShow = ((BitmapDrawable) image_product.getDrawable()).getBitmap();
+
+                Drawable errorImage = ResourcesCompat.getDrawable(getResources(), R.drawable.makeup_no_image, null);
+
+                if (errorImage != null) {
+                    final Bitmap bitmap_errorImage = ((BitmapDrawable) errorImage).getBitmap();
+                    if (bitmapImageShow.sameAs(bitmap_errorImage)) {
+                        Picasso.get().load(makeup.getOriginalUrlImage())
+                                .error(R.drawable.makeup_no_image)
+                                .into(image_product);
+                    }
+                }
+            }
+            // Remove os Itens do Loading e Exibe a Imagem
+            TextView txt_loadingImage = findViewById(R.id.txt_loadingImage);
+            txt_loadingImage.setVisibility(View.GONE);
+            ProgressBar progressBar_loading = findViewById(R.id.progressBar_image);
+            progressBar_loading.setVisibility(View.GONE);
+            image_product.setVisibility(View.VISIBLE);
+        }, 2000);
 
         name.setText(getStringIdNormalized(context, R.string.formatted_name, new String[]{makeup.getName()}));
 

@@ -30,15 +30,34 @@
             android:drawableRight="@drawable/custom_icon_favorite"
             android:padding="7dp" />
 
+        <TextView
+            android:id="@+id/txt_loadingImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:text="Carregando Imagem"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+
+        <ProgressBar
+            android:id="@+id/progressBar_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="40dp"
+            android:indeterminate="true" />
+
         <ImageView
             android:id="@+id/img_detailsProduct"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginLeft="35dp"
             android:layout_marginRight="35dp"
+            android:visibility="gone"
             android:contentDescription="@string/description_imageProduct"
-            android:scaleType="fitCenter"
-            android:src="@drawable/makeup_no_image" />
+            android:scaleType="fitCenter" />
+
 
         <androidx.appcompat.widget.AppCompatRatingBar
             android:id="@+id/ratingBar_makeup"
