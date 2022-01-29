@@ -3,7 +3,6 @@ package com.example.maquiagem.view.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,9 @@ import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.view.CustomAlertDialog;
 import com.example.maquiagem.view.activities.MakeupDetailsActivity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Classe que Configura o Fragment que manipulará e Exibira as {@link Makeup}. Ele possui metodos
@@ -209,7 +210,26 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
         details_makeup.putExtra(MakeupDetailsActivity.IS_FAVORITE_MAKEUP, makeup_click.isFavorite());
         details_makeup.putExtra(MakeupDetailsActivity.CHAR_PRICE_MAKEUP, makeup_click.getCharPrice());
         details_makeup.putExtra(MakeupDetailsActivity.RATING_MAKEUP, makeup_click.getRatingProduct());
+        details_makeup.putExtra(MakeupDetailsActivity.TAGS_MAKEUP, makeup_click.getTags());
 
+        // Obtem as cores da Makeup
+        Map<String,Integer > listColors = makeup_click.getColors();
+        if(listColors!= null && !listColors.isEmpty()){
+
+            // Armazenarão os dados do Array
+            ArrayList<String> nameColors = new ArrayList<>();
+            ArrayList<Integer> valueColors = new ArrayList<>();
+
+            // Obtem e insere as keys(name)/values(int value hex)
+            for (Map.Entry<String, Integer> entry : listColors.entrySet()) {
+                nameColors.add(entry.getKey());
+                valueColors.add(entry.getValue());
+            }
+
+            // Insere as Keys (nomes) e values (values int) das Cores
+            details_makeup.putExtra(MakeupDetailsActivity.COLORS_KEY_MAKEUP, nameColors);
+            details_makeup.putExtra(MakeupDetailsActivity.COLORS_VALUE_MAKEUP, valueColors);
+        }
         startActivity(details_makeup);
     }
 
