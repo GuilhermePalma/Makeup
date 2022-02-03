@@ -8,9 +8,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.example.maquiagem.model.SerializationData;
 import com.example.maquiagem.model.entity.Location;
 import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.model.entity.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe Responsavel pela manipulação do Banco de Dados Local SQLite. Ele herda os metodos da Classe
@@ -26,13 +30,7 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     // Constantes das Colunas da Tabela "Makeups"
     public static final String TABLE_MAKEUP = "makeups";
     public static final String ID_MAKEUP = "id";
-    public static final String BRAND_MAKEUP = "brand";
-    public static final String NAME_MAKEUP = "name";
-    public static final String TYPE_MAKEUP = "type";
-    public static final String PRICE_MAKEUP = "price";
-    public static final String CURRENCY_MAKEUP = "currency";
-    public static final String DESCRIPTION_MAKEUP = "description";
-    public static final String URL_IMAGE_MAKEUP = "image";
+    public static final String URL_API_MAKEUP = "url_api";
     public static final String IS_FAVORITE_MAKEUP = "is_favorite";
     // Constantes das Colunas da Tabela "Location"
     public static final String TABLE_LOCATION = "location";
@@ -76,13 +74,7 @@ public class ManagerDatabase extends SQLiteOpenHelper {
         db.execSQL(
                 "create table " + TABLE_MAKEUP + " (" +
                         ID_MAKEUP + " INTEGER PRIMARY KEY, " +
-                        BRAND_MAKEUP + " text, " +
-                        NAME_MAKEUP + " text, " +
-                        TYPE_MAKEUP + " text, " +
-                        PRICE_MAKEUP + " text, " +
-                        CURRENCY_MAKEUP + " varchar(5), " +
-                        DESCRIPTION_MAKEUP + " text, " +
-                        URL_IMAGE_MAKEUP + " text, " +
+                        URL_API_MAKEUP + " text, " +
                         IS_FAVORITE_MAKEUP + " integer)"
         );
         db.execSQL(
@@ -162,20 +154,14 @@ public class ManagerDatabase extends SQLiteOpenHelper {
         boolean isInserted;
 
         try {
-            if (existsInMakeup(makeup))
+            if (existsInMakeup(makeup.getId()))
                 return setFavoriteMakeup(makeup);
 
             database = this.getWritableDatabase();
 
             ContentValues values = new ContentValues();
             values.put(ID_MAKEUP, makeup.getId());
-            values.put(BRAND_MAKEUP, makeup.getBrand());
-            values.put(NAME_MAKEUP, makeup.getName());
-            values.put(TYPE_MAKEUP, makeup.getType());
-            values.put(PRICE_MAKEUP, makeup.getPrice());
-            values.put(CURRENCY_MAKEUP, makeup.getCurrency());
-            values.put(DESCRIPTION_MAKEUP, makeup.getDescription());
-            values.put(URL_IMAGE_MAKEUP, makeup.getOriginalUrlImage());
+            values.put(URL_API_MAKEUP, makeup.getUrlInAPI());
             values.put(IS_FAVORITE_MAKEUP, makeup.isFavorite() ? TRUE : FALSE);
 
             isInserted = database.insert(TABLE_MAKEUP, null, values) != NOT_INSERTED;
@@ -273,11 +259,8 @@ public class ManagerDatabase extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             values.put(IS_FAVORITE_MAKEUP, makeup.isFavorite() ? TRUE : FALSE);
 
-            String whereClause = String.format("%1$s= ? AND %2$s= ? AND %3$s= ?", NAME_MAKEUP,
-                    BRAND_MAKEUP, TYPE_MAKEUP);
-            String[] valuesWhere = new String[]{makeup.getName(), makeup.getBrand(), makeup.getType()};
-
-            isUpdated = database.update(TABLE_MAKEUP, values, whereClause, valuesWhere) != NOT_CHANGED;
+            isUpdated = database.update(TABLE_MAKEUP, values, String.format("%1$s= ?", ID_MAKEUP),
+                    new String[]{String.valueOf(makeup.getId())}) != NOT_CHANGED;
         } catch (Exception ex) {
             Log.e("Error Database", "Erro ao Favoritar a Maquiagem. Exceção: " + ex);
             ex.printStackTrace();
@@ -418,22 +401,17 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     /**
      * Verifica se existe a {@link Makeup} informada
      *
-     * @param makeup {@link Makeup} que será verificada
+     * @param idMakeup ID da {@link Makeup} que será buscada
      * @return true|false
      */
-    private boolean existsInMakeup(Makeup makeup) {
+    private boolean existsInMakeup(int idMakeup) {
         SQLiteDatabase database = null;
         int quantity_locations;
 
         try {
             database = this.getReadableDatabase();
-
-            String whereClause = String.format("%1$s= ? AND %2$s= ? AND %3$s= ?", TYPE_MAKEUP,
-                    BRAND_MAKEUP, NAME_MAKEUP);
-            String[] whereArgs = new String[]{makeup.getType(), makeup.getBrand(), makeup.getName()};
-
             quantity_locations = (int) DatabaseUtils.queryNumEntries(database, TABLE_MAKEUP,
-                    whereClause, whereArgs);
+                    String.format("%1$s= ?", ID_MAKEUP), new String[]{String.valueOf(idMakeup)});
         } catch (Exception ex) {
             Log.e("Error Database", "Erro ao Obter a Quantidade de Maquiagens. Exceção: " + ex);
             ex.printStackTrace();
@@ -446,24 +424,37 @@ public class ManagerDatabase extends SQLiteOpenHelper {
         return quantity_locations > 0;
     }
 
-    /**
-     * Seleciona uma ou varias {@link Makeup} atravez de um SELECT passado
-     *
-     * @param select {@link String} do Select
-     * @return {@link Cursor}
-     */
-    public Cursor selectMakeup(String select) {
+    public List<Makeup> getFavoritesMakeup() {
         SQLiteDatabase database;
-        Cursor cursor;
+        List<Makeup> makeupsFavorites;
         try {
             database = this.getReadableDatabase();
-            cursor = database.rawQuery(select, null);
+            // Realiza um Select e Envia o Resultado para ser Serializado
+            String select_favorite = String.format("SELECT * FROM %1$s WHERE %2$s=%3$s",
+                    ManagerDatabase.TABLE_MAKEUP, ManagerDatabase.IS_FAVORITE_MAKEUP, TRUE);
+            makeupsFavorites = SerializationData.serializationDatabaseMakeup(
+                    database.rawQuery(select_favorite, null));
         } catch (Exception ex) {
             Log.e("Error Database", "Erro ao Selecionar uma Maquiagem. Exceção: " + ex);
             ex.printStackTrace();
-            cursor = null;
+            makeupsFavorites = null;
         }
-        return cursor;
+        return makeupsFavorites;
+    }
+
+    public List<Makeup> getAllMakeups() {
+        SQLiteDatabase database;
+        List<Makeup> makeupsFavorites;
+        try {
+            database = this.getReadableDatabase();
+            makeupsFavorites = SerializationData.serializationDatabaseMakeup(
+                    database.query(TABLE_MAKEUP,null,null,null,null,null,null));
+        } catch (Exception ex) {
+            Log.e("Error Database", "Erro ao Selecionar uma Maquiagem. Exceção: " + ex);
+            ex.printStackTrace();
+            makeupsFavorites = null;
+        }
+        return makeupsFavorites;
     }
 
     /**

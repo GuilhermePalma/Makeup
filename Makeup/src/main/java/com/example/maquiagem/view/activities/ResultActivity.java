@@ -89,8 +89,8 @@ public class ResultActivity extends AppCompatActivity {
         executorService.execute(() -> {
 
             // Obtem as Makeups
-            Makeup makeup = new Makeup(context);
-            List<Makeup> async_list = makeup.getMakeups(executorService, Uri.parse(uri_received), ALL_ITEMS_JSON);
+            List<Makeup> async_list = Makeup.getMakeups(context, executorService,
+                    Uri.parse(uri_received), ALL_ITEMS_JSON);
 
             // Exibe os Resultados na Tela
             runOnUiThread(() -> {

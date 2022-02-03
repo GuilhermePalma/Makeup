@@ -1,5 +1,8 @@
 package com.example.maquiagem.view.activities;
 
+import static com.example.maquiagem.model.SearchInternet.PARAM_BRAND;
+import static com.example.maquiagem.model.SearchInternet.PARAM_RATING_GREATER;
+import static com.example.maquiagem.model.SearchInternet.URL_MAKEUP;
 import static com.example.maquiagem.model.SerializationData.ALL_ITEMS_JSON;
 import static com.example.maquiagem.model.SerializationData.DEFAULT_QUANTITY;
 
@@ -28,7 +31,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.controller.ManagerResources;
-import com.example.maquiagem.model.SerializationData;
 import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.model.entity.User;
 import com.example.maquiagem.view.CustomAlertDialog;
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int OPTION_HOME_MAKEUP = R.id.option_homeMakeup;
     private final int OPTION_SEARCH_MAKEUP = R.id.option_searchMakeup;
     private final int OPTION_LOCATION = R.id.option_location;
+    private final int OPTION_HISTORIC_MAKEUP = R.id.option_historicMakeup;
     private final int POSITION_TOP_MENU_SEARCH = 0;
     private final int POSITION_TOP_MENU_HOME = 1;
 
@@ -198,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
         final int OPTION_CONFIG = R.id.option_config;
         final int OPTION_DATA_USED = R.id.option_dataUsed;
         final int OPTION_EXIT = R.id.option_exit;
-        final int OPTION_HISTORIC_MAKEUP = R.id.option_historicMakeup;
 
         // Trata o Clique nos Itens
         navigationView.setNavigationItemSelectedListener(item -> {
@@ -214,16 +216,18 @@ public class MainActivity extends AppCompatActivity {
             int id_item = item.getItemId();
 
             // Caso seja o Item de Localização ---> Valida Conexão com Internet e GPS
-            if (id_item == OPTION_LOCATION) {
+            if (id_item == OPTION_LOCATION && !ManagerResources.hasConnectionGps(context)) {
+                customAlertDialog.defaultMessage(R.string.title_noGps, R.string.error_connection,
+                        null, new String[]{"GPS"}, true).show();
+                drawer.closeDrawer(GravityCompat.START);
+                return false;
+            } else if (id_item == OPTION_HOME_MAKEUP || id_item == OPTION_MY_FAVORITE_MAKEUPS ||
+                    id_item == OPTION_SEARCH_MAKEUP || id_item == OPTION_MORE_FAVORITES ||
+                    id_item == OPTION_HISTORIC_MAKEUP || id_item == OPTION_EXIT) {
                 if (!ManagerResources.hasConnectionInternet(context)) {
                     customAlertDialog.defaultMessage(R.string.title_noConnection,
                             R.string.error_connection, null, new String[]{"Internet"},
                             true).show();
-                    drawer.closeDrawer(GravityCompat.START);
-                    return false;
-                } else if (!ManagerResources.hasConnectionGps(context)) {
-                    customAlertDialog.defaultMessage(R.string.title_noGps, R.string.error_connection,
-                            null, new String[]{"GPS"}, true).show();
                     drawer.closeDrawer(GravityCompat.START);
                     return false;
                 }
@@ -255,17 +259,8 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case OPTION_MY_FAVORITE_MAKEUPS:
-                    if (ManagerResources.hasConnectionInternet(context)) {
-                        // Obtem os Dados da API e Sincroniza o Banco de Dados Local
-                        asyncGetMakeups(OPTION_MY_FAVORITE_MAKEUPS);
-                    } else {
-                        // Obtem os Dados Salvos do Banco Local (Sem Internet)
-                        String select_favorite = String.format("SELECT * FROM %1$s WHERE %2$s=1",
-                                ManagerDatabase.TABLE_MAKEUP, ManagerDatabase.IS_FAVORITE_MAKEUP);
-                        List<Makeup> list_favorites = new SerializationData(context)
-                                .serializationSelectMakeup(select_favorite);
-                        initializeFragmentList(list_favorites, FragmentListMakeup.TYPE_MY_FAVORITE);
-                    }
+                    // Obtem os Dados da API e Sincroniza o Banco de Dados Local
+                    asyncGetMakeups(OPTION_MY_FAVORITE_MAKEUPS);
                     break;
 
                 case OPTION_SEARCH_MAKEUP:
@@ -282,11 +277,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case OPTION_HISTORIC_MAKEUP:
-                    String select_historic = String.format("SELECT * FROM %s", ManagerDatabase.TABLE_MAKEUP);
-
-                    List<Makeup> list_historicSearches = new SerializationData(context)
-                            .serializationSelectMakeup(select_historic);
-                    initializeFragmentList(list_historicSearches, FragmentListMakeup.TYPE_HISTORIC);
+                    asyncGetMakeups(OPTION_HISTORIC_MAKEUP);
                     break;
 
                 case OPTION_LOCATION:
@@ -324,10 +315,13 @@ public class MainActivity extends AppCompatActivity {
      * exibição dos itens no do Fragment
      *
      * @param option_search ID da Opção Selecionada para Formar a URI de Pesquisa
-     * @see Makeup#getMakeups(ExecutorService, Uri, int)
+     * @see Makeup#getMakeups(Context, ExecutorService, Uri, int)
+     * @see Makeup#getHistoricSearch(Context, ExecutorService)
+     * @see Makeup#getHistoricSearch(Context, ExecutorService)
      * @see #OPTION_HOME_MAKEUP
      * @see #OPTION_MORE_FAVORITES
      * @see #OPTION_MY_FAVORITE_MAKEUPS
+     * @see #OPTION_HISTORIC_MAKEUP
      */
     private void asyncGetMakeups(int option_search) {
         // Quantidade de Itens que serão Exibidos
@@ -350,9 +344,24 @@ public class MainActivity extends AppCompatActivity {
                 handler.post(() -> isLoading = true);
 
                 // Obtem as Makeups
-                Makeup makeup = new Makeup(context);
-                List<Makeup> async_list = makeup.getMakeups(executorService, makeup.getUri(option_search),
-                        quantity_items);
+                List<Makeup> async_list;
+
+                if (option_search == OPTION_MY_FAVORITE_MAKEUPS) {
+                    async_list = Makeup.getFavoritesMakeup(context, executorService);
+                } else if (option_search == OPTION_HISTORIC_MAKEUP) {
+                    async_list = Makeup.getHistoricSearch(context, executorService);
+                } else if (option_search == OPTION_MORE_FAVORITES) {
+                    // todo: Implementar API_Interna
+                    Uri uriMoreLiked = Uri.parse(URL_MAKEUP).buildUpon()
+                            .appendQueryParameter(PARAM_BRAND, "l'oreal").build();
+                    // Envia uma solicitação à Makeup_API & Obtem o JSON
+                    async_list = Makeup.getMakeups(context, executorService, uriMoreLiked, quantity_items);
+                } else {
+                    Uri uriHome = Uri.parse(URL_MAKEUP).buildUpon()
+                            .appendQueryParameter(PARAM_RATING_GREATER, "4.8").build();
+                    // Envia uma solicitação à Makeup_API & Obtem o JSON
+                    async_list = Makeup.getMakeups(context, executorService, uriHome, quantity_items);
+                }
 
                 // Atribui a Lista usada o Valor Oficial das Maquiagens
                 handler.post(() -> {

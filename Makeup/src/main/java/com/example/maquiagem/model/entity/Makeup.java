@@ -14,6 +14,7 @@ import com.example.maquiagem.model.SearchInternet;
 import com.example.maquiagem.model.SerializationData;
 import com.example.maquiagem.view.activities.MainActivity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,6 @@ public class Makeup {
     private float ratingProduct = -1;
     private String apiUrlImage = "";
     private boolean isFavorite = false;
-    private Context context;
     private String[] tags = null;
     private Map<String, Integer> colors = null;
     private String urlInAPI;
@@ -50,16 +50,6 @@ public class Makeup {
      * Construtor Vazio da Classe {@link Makeup}
      */
     public Makeup() {
-    }
-
-    /**
-     * Construtor da Classe {@link Makeup}
-     *
-     * @param context {@link Context} necessario para obter recursos do APP
-     * @see #getMakeups(ExecutorService, Uri, int)
-     */
-    public Makeup(Context context) {
-        this.context = context;
     }
 
     /**
@@ -159,14 +149,7 @@ public class Makeup {
      * @return {@link List}|null
      * @see SerializationData#ALL_ITEMS_JSON
      */
-    public List<Makeup> getMakeups(ExecutorService executorService, Uri uri_search, int quantity_items) {
-        // Todo: Remover, temporario enquanto não se tem a API Interna
-        if (uri_search.toString().equals("In Develop 1")) {
-            String select_favorite = String.format("SELECT * FROM %1$s WHERE %2$s=1",
-                    ManagerDatabase.TABLE_MAKEUP, ManagerDatabase.IS_FAVORITE_MAKEUP);
-            return new SerializationData(context).serializationSelectMakeup(select_favorite);
-        }
-
+    public static List<Makeup> getMakeups(Context context, ExecutorService executorService, Uri uri_search, int quantity_items) {
         // Configura a Execução da Tarefa Assincrona
         Set<Callable<String>> callableTaskAPI = new HashSet<>();
         callableTaskAPI.add(() -> SearchInternet.searchByUrl(context, uri_search, METHOD_GET));
@@ -188,33 +171,53 @@ public class Makeup {
         }
     }
 
-    /**
-     * Metodo de Formatação da URI conforma o Tipo de Busca Informado
-     *
-     * @param type_search Tipo da Busca
-     * @see MainActivity#OPTION_HOME_MAKEUP
-     * @see MainActivity#OPTION_MY_FAVORITE_MAKEUPS
-     * @see MainActivity#OPTION_MORE_FAVORITES
-     */
-    public Uri getUri(int type_search) {
-        switch (type_search) {
-            case MainActivity.OPTION_HOME_MAKEUP:
-                return Uri.parse(URL_MAKEUP).buildUpon()
-                        .appendQueryParameter(PARAM_RATING_GREATER, "4.8").build();
+    public static List<Makeup> getFavoritesMakeup(Context context, ExecutorService executorService) {
+        try {
+            ManagerDatabase database = new ManagerDatabase(context);
+            List<Makeup> makeupsFavorite = database.getFavoritesMakeup();
 
-            case MainActivity.OPTION_MY_FAVORITE_MAKEUPS:
-                // todo: Implementar API_Interna
-                // Envia uma solicitação à Makeup_API & Obtem o JSON & Atualiza o Banco de Dados
-                return Uri.parse("In Develop 1");
+            if (makeupsFavorite == null || makeupsFavorite.isEmpty()) return null;
 
-            case MainActivity.OPTION_MORE_FAVORITES:
-                // todo: Implementar API_Interna
-                // Envia uma solicitação à Makeup_API & Obtem o JSON
-                return Uri.parse(URL_MAKEUP).buildUpon()
-                        .appendQueryParameter(PARAM_BRAND, "l'oreal").build();
+            List<Makeup> makeupsWithData = new ArrayList<>();
 
-            default:
-                return null;
+            for (Makeup makeupItem : makeupsFavorite) {
+                Uri uriItem = Uri.parse(makeupItem.getUrlInAPI());
+
+                // Obtem a Makeup Serializada e adiciona o unico item à Lista
+                List<Makeup> makeupSerialized = getMakeups(context, executorService, uriItem, 1);
+                if (makeupSerialized != null) makeupsWithData.add(makeupSerialized.get(0));
+            }
+
+            return makeupsWithData;
+        } catch (Exception ex) {
+            Log.e("Error", "Erro ao manipular o JSON ou na sua Serialização. " + ex);
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<Makeup> getHistoricSearch(Context context, ExecutorService executorService) {
+        try {
+            ManagerDatabase database = new ManagerDatabase(context);
+            List<Makeup> makeupsFavorite = database.getAllMakeups();
+
+            if (makeupsFavorite == null || makeupsFavorite.isEmpty()) return null;
+
+            List<Makeup> makeupsWithData = new ArrayList<>();
+
+            for (Makeup makeupItem : makeupsFavorite) {
+                Uri uriItem = Uri.parse(makeupItem.getUrlInAPI());
+
+                // Obtem a Makeup Serializada e adiciona o unico item à Lista
+                List<Makeup> makeupSerialized = getMakeups(context, executorService, uriItem, 1);
+                if (makeupSerialized != null) makeupsWithData.add(makeupSerialized.get(0));
+            }
+
+            return makeupsWithData;
+        } catch (Exception ex) {
+            Log.e("Error", "Erro ao manipular o JSON ou na sua Serialização. " + ex);
+            ex.printStackTrace();
+            return null;
         }
     }
 

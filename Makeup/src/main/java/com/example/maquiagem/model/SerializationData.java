@@ -79,7 +79,7 @@ public class SerializationData {
             } else if (objectJSON instanceof String) {
                 // Armazenará as Keys/Values da String
                 Map<String, Object> value = new HashMap<>();
-                value.put("item", (String) objectJSON);
+                value.put("item", objectJSON);
                 serializedJSON.add(value);
             }
 
@@ -244,11 +244,15 @@ public class SerializationData {
         final String[] getParam = Makeup.getParametersJSON();
 
         try {
+
+            // Obtem as Makeups Favoritas
+            final List<Makeup> listFavorites = new ManagerDatabase(context).getFavoritesMakeup();
+
             // Serializa cada Item dentro da Lista de Map
             for (Map<String, Object> itemMap : itemsMakeup) {
 
                 if (itemMap != null) {
-                    Makeup makeup = new Makeup(context);
+                    Makeup makeup = new Makeup();
 
                     makeup.setId(itemMap.get(getParam[0]) instanceof Integer ? (int) itemMap.get(getParam[0]) : 0);
                     makeup.setBrand(getNormalizedString((String) itemMap.get(getParam[1])));
@@ -259,7 +263,7 @@ public class SerializationData {
                     double price = 0;
                     if (!isNullOrEmpty(rawPrice)) {
                         rawPrice = rawPrice.replaceAll("[^0-9^,.]", "");
-                        price = (Double) Double.parseDouble(rawPrice);
+                        price = Double.parseDouble(rawPrice);
                     }
 
                     makeup.setPrice(price);
@@ -283,7 +287,7 @@ public class SerializationData {
                     if (itemMap.get(getParam[9]) instanceof Float) {
                         makeup.setRatingProduct((float) itemMap.get(getParam[9]));
                     } else if (itemMap.get(getParam[9]) instanceof Integer
-                            ||itemMap.get(getParam[9]) instanceof Double) {
+                            || itemMap.get(getParam[9]) instanceof Double) {
                         makeup.setRatingProduct(Float.parseFloat(String.valueOf(itemMap.get(getParam[9]))));
                     }
                     makeup.setCategory(getNormalizedString((String) itemMap.get(getParam[10])));
@@ -347,6 +351,13 @@ public class SerializationData {
                         }
                     }
 
+                    // Define se a Makeup está entre as Favoritas
+                    if (listFavorites!= null && !listFavorites.isEmpty()){
+                        for (Makeup makeupFavorite : listFavorites) {
+                            if (makeupFavorite.getId() == makeup.getId()) makeup.setFavorite(true);
+                        }
+                    }
+
                     // Insere o valor da Makeup na Lista Retornada
                     makeupList.add(makeup);
                 }
@@ -359,62 +370,28 @@ public class SerializationData {
         return makeupList;
     }
 
-    /**
-     * Serialização de um {@link Cursor} resultante de um SELECT no Banco de Dados Local
-     * ({@link ManagerDatabase}).
-     *
-     * @param select {@link String} SELECT de consulta no Banco de Dados Local
-     * @return {@link List}|null
-     */
-    public List<Makeup> serializationSelectMakeup(String select) {
-        List<Makeup> list_resultSelect = null;
-        Cursor cursor = null;
+    public static List<Makeup> serializationDatabaseMakeup(Cursor cursor) {
+        List<Makeup> makeupsFavorites = null;
 
         try {
-            ManagerDatabase database = new ManagerDatabase(context);
-            cursor = database.selectMakeup(select);
-
-            // Caso haja posição para o Cursor = Possui Registros
             if (cursor != null && !cursor.isClosed() && cursor.moveToFirst()) {
+                makeupsFavorites = new ArrayList<>();
 
-                list_resultSelect = new ArrayList<>();
-                String brand, name, price, currency, type, description, urlImage;
-                int id, intFavorite;
-                boolean isFavorite;
-
-                // Pega os dados enquanto o Cursor tiver proxima posição
                 do {
-                    id = cursor.getInt(cursor.getColumnIndexOrThrow(ManagerDatabase.ID_MAKEUP));
-                    brand = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.BRAND_MAKEUP));
-                    name = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.NAME_MAKEUP));
-                    type = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.TYPE_MAKEUP));
-                    price = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.PRICE_MAKEUP));
-                    currency = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.CURRENCY_MAKEUP));
-                    description = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.DESCRIPTION_MAKEUP));
-                    urlImage = cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.URL_IMAGE_MAKEUP));
-                    intFavorite = cursor.getInt(cursor.getColumnIndexOrThrow(ManagerDatabase.IS_FAVORITE_MAKEUP));
-                    isFavorite = intFavorite == 1;
+                    Makeup makeup = new Makeup();
+                    makeup.setId(cursor.getInt(cursor.getColumnIndexOrThrow(ManagerDatabase.ID_MAKEUP)));
+                    makeup.setUrlInAPI(cursor.getString(cursor.getColumnIndexOrThrow(ManagerDatabase.URL_API_MAKEUP)));
+                    final int valueFavorite = cursor.getInt(cursor.getColumnIndexOrThrow(ManagerDatabase.IS_FAVORITE_MAKEUP));
+                    makeup.setFavorite(valueFavorite == ManagerDatabase.TRUE);
 
-                    Makeup makeup = new Makeup(id, brand, name, type, 054.5, currency, description,
-                            urlImage);
-                    makeup.setFavorite(isFavorite);
-
-                    // Adiciona o Item à Lista
-                    list_resultSelect.add(makeup);
-
+                    makeupsFavorites.add(makeup);
                 } while (cursor.moveToNext());
-
-                if (!cursor.isClosed()) cursor.close();
             }
         } catch (Exception ex) {
-            // Erro na criação do Array
-            Log.e("Erro SQLITE", "Erro ao Serilizar o SELECT do SQLite. Exceção: " + ex);
+            Log.e("Error Database", "Erro ao Serializar uma Makeup do Banco de Dados. Exceção: " + ex);
             ex.printStackTrace();
-            list_resultSelect = null;
-        } finally {
-            if (cursor != null) cursor.close();
+            makeupsFavorites = null;
         }
-
-        return list_resultSelect;
+        return makeupsFavorites;
     }
 }
