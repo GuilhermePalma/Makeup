@@ -266,7 +266,6 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
             }
         } else {
             makeupList.set(index_list, makeup_click);
-            recyclerListMakeup.notifyItemChanged(position_item);
         }
     }
 }

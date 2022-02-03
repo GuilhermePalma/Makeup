@@ -57,7 +57,7 @@ public class MakeupDetailsActivity extends AppCompatActivity {
     public static final String COLORS_KEY_MAKEUP = "key_colors_makeup";
     public static final String COLORS_VALUE_MAKEUP = "values_color_makeup";
     private static final int NO_USE_COLOR = -10;
-    AppCompatRatingBar ratingBar_product;
+    private AppCompatRatingBar ratingBar_product;
     private Context context;
     private TextView name;
     private TextView txt_brandType;
@@ -82,6 +82,7 @@ public class MakeupDetailsActivity extends AppCompatActivity {
         Intent intentMakeup = getIntent();
         if (intentMakeup != null) {
             makeup = new Makeup();
+            makeup.setId(intentMakeup.getIntExtra(ID_MAKEUP, 0));
             makeup.setName(intentMakeup.getStringExtra(NAME_MAKEUP));
             makeup.setType(intentMakeup.getStringExtra(TYPE_MAKEUP));
             makeup.setBrand(intentMakeup.getStringExtra(BRAND_MAKEUP));

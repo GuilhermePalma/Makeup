@@ -113,13 +113,11 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         /// Verifica se o Item está na Posição de Item que será configurado como Makeup
         if (holder instanceof ViewHolderListMakeup) {
-            // Subtrai 1 da Posição se Exisitr Header
-            int position_real = header == null ? position : Math.min(position - 1, makeupList.size() - 1);
+            // Configura o Index da Makeup à ser Obtida, caso haja ou não o Header
+            int realPostion = header == null ? position : Math.min(position - 1, makeupList.size() - 1);
 
-            // Obtem a Makeup que será exibida
-            Makeup makeup = makeupList.get(position_real);
-
-            // Formata o Nome (Evitar Cortar ou Passar do Tamanho do Card)
+            // Obtem e Formata os Dados da Makeup
+            Makeup makeup = makeupList.get(realPostion);
             String name_formatted = ManagerResources.customStringFormat(
                     makeup.getName(), null, position % 5 == 0 ? 28 : 12);
 
@@ -163,9 +161,8 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerView.ViewHo
     public int getItemCount() {
         // Caso a Lista não seja Vazia, retorna a Quantidade de Itens da Lista
         if (makeupList != null && !makeupList.isEmpty()) {
-            // Caso Possua Header, adiciona deixa o Index do Ultimo Elemento + 1
-            if (header != null) return makeupList.size();
-            return makeupList.size() - 1;
+            // Caso possua Header, adiciona mais um Item à lista. Se não, apenas o Tamanho da Lista
+            return header != null ? makeupList.size() + 1 : makeupList.size();
         } else return 0;
     }
 
