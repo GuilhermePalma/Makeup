@@ -1,4 +1,7 @@
-- [ ] Salvar URL da Makeup ao Favoritar e Obter Produto por Produto ao Listar as Favoritas
-- [ ] Alteração no Layout dos Detalhes da Makeup
+- [X] Alteração no Layout dos Detalhes da Makeup
+- [X] Salvar URL da Makeup ao Favoritar e Obter Produto por Produto ao Listar as Favoritas
+- [X] Refataração do SQLite (novos dados Makeup)
+- [ ] Correção na Busca de Makeups
 - [ ] Novo KeyStore (Sem erro na Criação)
-- [ ] Refataração do SQLite (novos dados Makeup)
+- [ ] Correção no Login e Cadastro
+- [ ] Correção na Tela de Apresentação

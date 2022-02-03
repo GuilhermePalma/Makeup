@@ -78,6 +78,7 @@
     <string name="btn_search">Pesquisar</string>
     <string name="string_empty"> </string>
     <string name="text_showTags">Mostrar Tags</string>
+    <string name="text_hideTags">Esconder Tags</string>
     <string-array name="array_tags">
         <item>Canadian</item>
         <item>CertClean</item>

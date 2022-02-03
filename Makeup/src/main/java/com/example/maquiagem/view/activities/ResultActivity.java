@@ -3,8 +3,10 @@ package com.example.maquiagem.view.activities;
 import static com.example.maquiagem.model.SerializationData.ALL_ITEMS_JSON;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -14,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ManagerDatabase;
+import com.example.maquiagem.controller.ManagerResources;
 import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.view.CustomAlertDialog;
 import com.example.maquiagem.view.fragments.FragmentListMakeup;
@@ -29,9 +32,12 @@ import java.util.concurrent.Executors;
  */
 public class ResultActivity extends AppCompatActivity {
 
+    /**
+     * Key que será utilizada para manipular a URI Gerada para a Pesquisa
+     */
+    public static final String KEY_URI = "url_search";
     private TextView title_loading;
     private CircularProgressIndicator progressIndicator_loading;
-    private String uri_received;
     private CustomAlertDialog customDialog;
     private FrameLayout frameLayout_fragment;
     private Context context;
@@ -41,26 +47,26 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        // Instancia/Configura os Widgets e Classes que serão Usadas
-        instanceItems();
-        Button btn_main = findViewById(R.id.btn_home);
-        btn_main.setOnClickListener(v -> finish());
+        context = ResultActivity.this;
+        customDialog = new CustomAlertDialog(context);
 
-        // Obtem os dados passados pelo Fragment SearchMakeup
-        Bundle queryBundle = getIntent().getExtras();
+        // Obtem, Verifca os Dados passado pela Activity e Configura o Layout
+        final Intent intent = getIntent();
+        if (intent != null) {
+            // Instancia/Configura os Widgets que serão Usados
+            instanceItems();
+            Button btn_main = findViewById(R.id.btn_home);
+            btn_main.setOnClickListener(v -> finish());
 
-        // Se não for Nulo, Obtem os Dados passado pela Activity
-        if (queryBundle != null) {
-            uri_received = queryBundle.getString(FragmentSearchMakeup.KEY_URI, "");
-            if (uri_received == null || !uri_received.equals("")) {
-                // Realiza a Busca Assincrona na Internet
-                asyncTask();
-                return;
-            }
+            // Obtem a Uri e realiza a Busca Assincrona
+            final String uri_received = intent.hasExtra(KEY_URI) ? intent.getStringExtra(KEY_URI) : "";
+            if (!ManagerResources.isNullOrEmpty(uri_received)) asyncTask(Uri.parse(uri_received));
+
+        } else {
+            // Mensagem de Erro caso não tenha a URI disponivel
+            customDialog.messageWithCloseWindow(this, R.string.title_noData, R.string.error_recoveryData,
+                    null, null).show();
         }
-        // Mensagem de Erro caso não tenha a URI disponivel
-        customDialog.messageWithCloseWindow(this, R.string.title_noData, R.string.error_recoveryData,
-                null, null).show();
     }
 
     /**
@@ -68,8 +74,6 @@ public class ResultActivity extends AppCompatActivity {
      */
     private void instanceItems() {
         frameLayout_fragment = findViewById(R.id.frame_forFragmentSearch);
-        context = ResultActivity.this;
-        customDialog = new CustomAlertDialog(context);
         title_loading = findViewById(R.id.txt_titleLoadingSearch);
         progressIndicator_loading = findViewById(R.id.progress_loadingSearch);
     }
@@ -77,8 +81,8 @@ public class ResultActivity extends AppCompatActivity {
     /**
      * Realiza a Busca Assincrona a partir da URI formada no {@link FragmentSearchMakeup}
      */
-    private void asyncTask() {
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private void asyncTask(Uri uri_search) {
+        ExecutorService executorService = Executors.newCachedThreadPool();
 
         // Mostra o Layout "Carregando"
         frameLayout_fragment.setVisibility(View.GONE);
@@ -87,10 +91,8 @@ public class ResultActivity extends AppCompatActivity {
 
         // Execução da Tarefa de Forma Assincrona
         executorService.execute(() -> {
-
             // Obtem as Makeups
-            List<Makeup> async_list = Makeup.getMakeups(context, executorService,
-                    Uri.parse(uri_received), ALL_ITEMS_JSON);
+            List<Makeup> async_list = Makeup.getMakeups(context, executorService, uri_search, ALL_ITEMS_JSON);
 
             // Exibe os Resultados na Tela
             runOnUiThread(() -> {
@@ -101,16 +103,16 @@ public class ResultActivity extends AppCompatActivity {
                     // Verifica se realizou a Inserção no Banco de Dados
                     if (!insertInDataBase(async_list)) {
                         customDialog.messageWithCloseWindow(this, R.string.title_invalidData,
-                                R.string.error_noExists, null, null).show();
-                    } else {
-                        title_loading.setVisibility(View.GONE);
-                        progressIndicator_loading.setVisibility(View.GONE);
-                        frameLayout_fragment.setVisibility(View.VISIBLE);
-                        // Instancia e Coloca o Fragment List
-                        FragmentListMakeup fragmentListMakeup = FragmentListMakeup.newInstance(async_list, "");
-                        getSupportFragmentManager().beginTransaction().replace(
-                                frameLayout_fragment.getId(), fragmentListMakeup).commit();
+                                R.string.error_syncFavorites, null,
+                                new String[]{"Pesquisadas"}).show();
                     }
+                    title_loading.setVisibility(View.GONE);
+                    progressIndicator_loading.setVisibility(View.GONE);
+                    frameLayout_fragment.setVisibility(View.VISIBLE);
+                    // Instancia e Coloca o Fragment List
+                    FragmentListMakeup fragmentListMakeup = FragmentListMakeup.newInstance(async_list, "");
+                    getSupportFragmentManager().beginTransaction().replace(
+                            frameLayout_fragment.getId(), fragmentListMakeup).commit();
                 }
             });
         });

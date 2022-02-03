@@ -5,6 +5,7 @@ import static com.example.maquiagem.model.SearchInternet.PARAM_CATEGORY;
 import static com.example.maquiagem.model.SearchInternet.PARAM_TAGS;
 import static com.example.maquiagem.model.SearchInternet.PARAM_TYPE;
 import static com.example.maquiagem.model.SearchInternet.URL_MAKEUP;
+import static com.example.maquiagem.view.activities.ResultActivity.KEY_URI;
 
 import android.app.Activity;
 import android.content.Context;
@@ -36,11 +37,6 @@ import java.util.List;
  * da Classe {@link Fragment} para a Contrução e COnfiguração do Fragment
  */
 public class FragmentSearchMakeup extends Fragment {
-
-    /**
-     * KeY que será utilizada para manipular a URI Gerada para a Pesquisa
-     */
-    public static final String KEY_URI = "url_search";
 
     // Widgets Utilizados
     private final Activity activity;
@@ -121,10 +117,12 @@ public class FragmentSearchMakeup extends Fragment {
         btn_tags.setOnClickListener(v -> {
             // Altera a Visibilidade do ChipsGroup e o Icone do Botão
             if (chipGroup_tags.getVisibility() == View.GONE) {
+                btn_tags.setText(R.string.text_hideTags);
                 chipGroup_tags.setVisibility(View.VISIBLE);
                 btn_tags.setCompoundDrawablesWithIntrinsicBounds(0, 0,
                         R.drawable.ic_keyboard_arrow_up, 0);
             } else {
+                btn_tags.setText(R.string.text_showTags);
                 chipGroup_tags.setVisibility(View.GONE);
                 btn_tags.setCompoundDrawablesWithIntrinsicBounds(0, 0,
                         R.drawable.ic_keyboard_arrow_down, 0);
@@ -211,8 +209,16 @@ public class FragmentSearchMakeup extends Fragment {
         autoComplete_brand.setAdapter(adapterBrand);
 
         // Listener das Opções do AutoCompleteText --> Atribui valor a Brand(marca) da Pesquisa
-        autoComplete_brand.setOnItemClickListener((parent, view, position, id) ->
-                makeup.setBrand(array_brand[position])
+        autoComplete_brand.setOnItemClickListener((parent, view, position, id) -> {
+                    // Com a Seleção de uma Marca Diferente, reinicia os outros Inputs
+                    makeup.setBrand(array_brand[position]);
+                    autoComplete_type.clearListSelection();
+                    autoComplete_category.clearListSelection();
+                    autoComplete_type.setText("");
+                    autoComplete_category.setText("");
+                    makeup.setType("");
+                    makeup.setCategory("");
+                }
         );
     }
 
