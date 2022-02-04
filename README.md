@@ -63,9 +63,6 @@
 
 Para que o Projeto existisse, foi necessario um banco de maquiagens para obter suas caracteristicas e informações. Com isso, foi utilizado a API Makeup. Para ver sua documentação, acesse [API Makeup](http://makeup-api.herokuapp.com/)
 
-
----
-
 ## Funcionalidades
 
 - [x] Para realizar pesquisas de Maquiagens, os filtros disponiveis são:
@@ -86,15 +83,11 @@ Para que o Projeto existisse, foi necessario um banco de maquiagens para obter s
   - [X] Obtenção da Localização
   - [x] Tema Escuro
 
----
-
 ## 🎨 Layout do APP
 
 **Imagens** das Telas do APP - [Tema Normal](markdown/imagesNormalMode.md) e [Tema Escuro](markdown/imagesDarkMode.md)
 
 **Video** Mostrando o Funcionamento do APP - [API - Makeup (Youtube)](https://youtu.be/WB9kvWjh3_g)
-
----
 
 ## 🚀 Como executar o projeto
 
@@ -103,7 +96,6 @@ Para que o Projeto existisse, foi necessario um banco de maquiagens para obter s
 Antes de começar, você vai precisar ter instalado em sua máquina:
 - [Git](https://git-scm.com) → Atualizações e Versionamento no Codigo
 - [Android Studio](https://developer.android.com/studio/) → IDE voltada ao Desenvolvimento Android
-
 
 ### 📥 Baixando o Projeto
 
@@ -134,8 +126,6 @@ Com um Cabo USB, conecte seu dispositivo mobile e mova o arquivo **`app-release.
 Durante a Instalação, seu dispositivo pode exibir alguns avisos informando que o APP vem de um **Fonte Desconhecida e fora da PlayStore**. Entretanto, o APP não apresenta nenhum risco ao seu dispositivo, por isso clique em "Instalar" ou "Continuar mesmo assim" ou "Confiar nesse Aplicativo"
 
 > Após a Instalação do APP, é recomendado que desabilite a opção `"Confiar em Fontes Desconecidas"` (3° Paragrafo)
-
----
 
 ## 🛠 Tecnologias e Informações
 
@@ -191,8 +181,6 @@ Este projeto é divido nas seguintes partes:
 - [X] Divisão das Alterações em Branch
 - [X] Desenvolvimento de Widgets para a Tela Inicial do Dispositivo Mobile
 
----
-
 ## 👨‍💻 Contribuidores
 
 💜 Desenvolvedores que participaram desse Projeto :)
@@ -208,5 +196,3 @@ Este projeto é divido nas seguintes partes:
 ## 💪 Como contribuir no projeto
 
 [Clique Aqui](markdown/contribution.md) e veja como Contribuir nesse Projeto
-
----
