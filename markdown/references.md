@@ -4,6 +4,7 @@
   - **[API de Maquiagens: API Makeup](http://makeup-api.herokuapp.com/)**
   - **[Documentação Android: Android Developer](https://developer.android.com/studio/)**
   - **[Conversão de URLs para Imagens: Biblioteca Picasso](https://square.github.io/picasso/)**
+  - **[Artigo com o Ciclo CI/CD para android: Pro Android Dev](https://proandroiddev.com/how-to-securely-build-and-sign-your-android-app-with-github-actions-ad5323452ce)**
 
 - Recursos (Layout/Design)
   - **[Icone Batom: FlatIcon](href="https://www.flaticon.com/br/)**

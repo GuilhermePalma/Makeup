@@ -298,8 +298,7 @@ public class MainActivity extends AppCompatActivity {
                 case OPTION_EXIT:
                     // Limpa o Banco Local do Usuario
                     ManagerDatabase database = new ManagerDatabase(context);
-                    if (!database.clearTables()) Log.e("Error Clear", "Não foi possivel " +
-                            "limpar o Banco de Dados Local");
+                    database.clearTables();
                     // Inicia a SplashScreen
                     startActivity(new Intent(context, SplashScreen.class));
                     finish();

@@ -13,7 +13,6 @@ import com.example.maquiagem.model.entity.Location;
 import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.model.entity.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -448,7 +447,7 @@ public class ManagerDatabase extends SQLiteOpenHelper {
         try {
             database = this.getReadableDatabase();
             makeupsFavorites = SerializationData.serializationDatabaseMakeup(
-                    database.query(TABLE_MAKEUP,null,null,null,null,null,null));
+                    database.query(TABLE_MAKEUP, null, null, null, null, null, null));
         } catch (Exception ex) {
             Log.e("Error Database", "Erro ao Selecionar uma Maquiagem. Exceção: " + ex);
             ex.printStackTrace();
@@ -494,24 +493,21 @@ public class ManagerDatabase extends SQLiteOpenHelper {
     /**
      * Apaga todos os Dados das Tabelas do Banco de Dados
      *
-     * @return true|false
      */
-    public boolean clearTables() {
+    public void clearTables() {
         SQLiteDatabase database = null;
-        boolean isDeleted;
-
         try {
             database = this.getWritableDatabase();
-            isDeleted = database.delete(TABLE_MAKEUP, "1", null) > NOT_CHANGED &&
-                    database.delete(TABLE_LOCATION, "1", null) > NOT_CHANGED &&
-                    database.delete(TABLE_USER, "1", null) > NOT_CHANGED;
+            if (database != null) {
+                database.execSQL(String.format("DELETE FROM %s",TABLE_MAKEUP ));
+                database.execSQL(String.format("DELETE FROM %s",TABLE_LOCATION ));
+                database.execSQL(String.format("DELETE FROM %s",TABLE_USER ));
+            }
         } catch (Exception ex) {
             Log.e("Error Database", "Erro ao Excluir Todos as Tabelas. Exceção: " + ex);
             ex.printStackTrace();
-            isDeleted = false;
         } finally {
             if (database != null) database.close();
         }
-        return isDeleted;
     }
 }

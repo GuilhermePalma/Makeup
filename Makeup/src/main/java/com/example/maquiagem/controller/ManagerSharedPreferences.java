@@ -92,7 +92,7 @@ public class ManagerSharedPreferences {
      * @param isRemember Valor boolean se é ou não o Primeiro Login
      */
     public void setFirstLogin(boolean isRemember) {
-        sharedPreferences.edit().putBoolean(KEY_REMEMBER_LOGIN, isRemember).apply();
+        sharedPreferences.edit().putBoolean(KEY_FIRST_LOGIN, isRemember).apply();
     }
 
     /**

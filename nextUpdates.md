@@ -1,7 +1,7 @@
 - [X] Alteração no Layout dos Detalhes da Makeup
 - [X] Salvar URL da Makeup ao Favoritar e Obter Produto por Produto ao Listar as Favoritas
 - [X] Refataração do SQLite (novos dados Makeup)
-- [ ] Correção na Busca de Makeups
-- [ ] Novo KeyStore (Sem erro na Criação)
-- [ ] Correção no Login e Cadastro
-- [ ] Correção na Tela de Apresentação
+- [X] Correção na Busca de Makeups
+- [X] Novo KeyStore (Sem erro na Criação)
+- [X] Correção no Login e Cadastro
+- [X] Correção na Tela de Apresentação

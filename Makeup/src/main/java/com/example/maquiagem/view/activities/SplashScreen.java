@@ -19,12 +19,13 @@ import com.example.maquiagem.model.entity.User;
  */
 public class SplashScreen extends AppCompatActivity {
 
+    private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        final Context context = SplashScreen.this;
+        context = SplashScreen.this;
         final ManagerSharedPreferences managerPreferences = new ManagerSharedPreferences(context);
 
         // Define no APP Dark/Light Theme
@@ -35,16 +36,10 @@ public class SplashScreen extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             // Verifica se é o Primeiro Acesso (Mostra as Telas de Apresentação do APP)
             if (managerPreferences.isFirstLogin()) {
-                startActivity(new Intent(getApplicationContext(), SlideScreen.class));
+                startActivity(new Intent(context, SlideScreen.class));
             } else if (managerPreferences.isRememberLogin()) {
-
-                // Obtem o Usuario do Banco de Dados e Tenta Realizar o Login
-                ManagerDatabase database = new ManagerDatabase(context);
-                User user = database.selectUser();
-
-                if (executeLogin(user)) startActivity(new Intent(context, MainActivity.class));
+                if (executeLogin()) startActivity(new Intent(context, MainActivity.class));
                 else startActivity(new Intent(context, LoginActivity.class));
-
             } else {
                 startActivity(new Intent(context, LoginActivity.class));
             }
@@ -55,10 +50,13 @@ public class SplashScreen extends AppCompatActivity {
     /**
      * A partir de um {@link User} executa o Login na API
      *
-     * @param user Instancia do {@link User} que será enviado à API
      * @return true|false
      */
-    public boolean executeLogin(User user) {
+    public boolean executeLogin() {
+        // Obtem o Usuario do Banco de Dados e Tenta Realizar o Login
+        ManagerDatabase database = new ManagerDatabase(context);
+        User user = database.selectUser();
+
         // Todo: Adicionar Metodos da API Interna
         // Verifica se o Usuario é Nulo
         return user != null;
