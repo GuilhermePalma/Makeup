@@ -48,6 +48,7 @@ public class MakeupDetailsActivity extends AppCompatActivity {
     public static final String PRICE_MAKEUP = "price";
     public static final String CURRENCY_MAKEUP = "currency";
     public static final String DESCRIPTION_MAKEUP = "description";
+    public static final String URL_ITEM_API = "url_makeup";
     public static final String URL_IMAGE_ORIGINAL = "original_url_image";
     public static final String URL_IMAGE_API = "api_url_image";
     public static final String IS_FAVORITE_MAKEUP = "is_favorite";
@@ -95,6 +96,7 @@ public class MakeupDetailsActivity extends AppCompatActivity {
             makeup.setCharPrice(intentMakeup.getStringExtra(CHAR_PRICE_MAKEUP));
             makeup.setRatingProduct(intentMakeup.getFloatExtra(RATING_MAKEUP, 0));
             makeup.setTags(intentMakeup.getStringArrayExtra(TAGS_MAKEUP));
+            makeup.setUrlInAPI(intentMakeup.getStringExtra(URL_ITEM_API));
 
             // Obtem e Serializa a Lista de Cores
             ArrayList<String> nameColors = intentMakeup.getStringArrayListExtra(COLORS_KEY_MAKEUP);
@@ -294,8 +296,9 @@ public class MakeupDetailsActivity extends AppCompatActivity {
             makeup.setFavorite(!makeup.isFavorite());
             cbx_favorite.setChecked(makeup.isFavorite());
 
-            if (!database.setFavoriteMakeup(makeup)) {
-                new CustomAlertDialog(context).defaultMessage(R.string.error_api,
+            if (!database.insertMakeup(makeup)) {
+                cbx_favorite.setChecked(false);
+                new CustomAlertDialog(context).defaultMessage(R.string.title_invalidData,
                         R.string.error_database, null, null, true).show();
             }
         });

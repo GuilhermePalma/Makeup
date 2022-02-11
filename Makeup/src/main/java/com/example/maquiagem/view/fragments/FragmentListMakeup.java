@@ -212,6 +212,7 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
         details_makeup.putExtra(MakeupDetailsActivity.CHAR_PRICE_MAKEUP, makeup_click.getCharPrice());
         details_makeup.putExtra(MakeupDetailsActivity.RATING_MAKEUP, makeup_click.getRatingProduct());
         details_makeup.putExtra(MakeupDetailsActivity.TAGS_MAKEUP, makeup_click.getTags());
+        details_makeup.putExtra(MakeupDetailsActivity.URL_ITEM_API, makeup_click.getUrlInAPI());
 
         // Obtem as cores da Makeup
         Map<String,Integer > listColors = makeup_click.getColors();
