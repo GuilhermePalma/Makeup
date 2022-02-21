@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -159,6 +158,8 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
             showWaitLoading();
             drawer.closeDrawer(GravityCompat.START);
             return false;
+        } else if (frame_fragment.getVisibility() == View.GONE) {
+            frame_fragment.setVisibility(View.VISIBLE);
         }
 
         // Valores das Opções do Menu Superior (3 Pontinhos)
@@ -285,7 +286,6 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
                     break;
 
                 case OPTION_CATEGORIES:
-                    frame_fragment.setVisibility(View.GONE);
                     showCategories();
                     break;
 
@@ -329,18 +329,20 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
      * Metodo Responsavel por Carregar e Configurar o GridView que exibirá as Categorias
      */
     private void showCategories() {
-        // Obtem o Layout em que será exibido o RecyclerView
-        final LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout_main);
+        // Tira o FrameFragment da Exibição
+        frame_fragment.setVisibility(View.GONE);
 
-        // Obtem o Layout do RecyclerView
-        final View layout_recyclerView = LayoutInflater.from(context)
-                .inflate(R.layout.layout_recycler_view_categories, linearLayout, false);
+        // Obtem a Instancia do RecyclerView
         final RecyclerView recyclerView_categories = (RecyclerView)
-                layout_recyclerView.findViewById(R.id.recyclerView_categoriesMakeup);
+                findViewById(R.id.recyclerView_categoriesMakeup);
+
+        // Configura o Tipo de Layout
+        GridLayoutManager gridLayout_categories = new GridLayoutManager(context, 2);
+        recyclerView_categories.setLayoutManager(gridLayout_categories);
 
         // Configura o Titulo do RecyclerView
         final View header_view = LayoutInflater.from(context)
-                .inflate(R.layout.layout_header_list, linearLayout, false);
+                .inflate(R.layout.layout_header_list, recyclerView_categories, false);
         final TextView header_title = header_view.findViewById(R.id.txt_titleHeaderList);
         header_title.setText(R.string.title_categories);
         final TextView header_subtitle = header_view.findViewById(R.id.txt_subtitleHeaderList);
@@ -348,11 +350,6 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
 
         // Obtem as Categorias (Tipos de Maquiagens)
         final String[] categoriesArray = getResources().getStringArray(R.array.array_type);
-
-
-        // Configura o Tipo de Layout
-        GridLayoutManager gridLayout_categories = new GridLayoutManager(context, 2);
-        recyclerView_categories.setLayoutManager(gridLayout_categories);
 
         // Configura quem controlará os Itens do Layout
         CategoriesAdapter categoriesAdapter = new CategoriesAdapter(
@@ -368,8 +365,8 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
             }
         });
 
-        // Adiciona o RecyclerView Configurado na Tela
-        linearLayout.addView(recyclerView_categories);
+        // Exibe o RecyclerView Configurado na Tela
+        recyclerView_categories.setVisibility(View.VISIBLE);
     }
 
     /**

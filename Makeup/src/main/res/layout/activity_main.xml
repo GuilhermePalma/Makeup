@@ -21,6 +21,7 @@
             android:id="@+id/toolBar"
             layout="@layout/tool_bar" />
 
+        <!--Layout do "Loading" das Pesquisas-->
         <LinearLayout
             android:id="@+id/layout_loadingData"
             android:layout_width="match_parent"
@@ -33,13 +34,13 @@
                 android:id="@+id/txt_titleLoading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:fontFamily="@font/ubuntu_bold"
+                android:gravity="center"
                 android:text="@string/loading_text"
                 android:textSize="20sp" />
 
@@ -53,12 +54,23 @@
                 android:indeterminate="true" />
         </LinearLayout>
 
-
+        <!--Widget que exibe os Fragments configurados das Maquiagens-->
         <FrameLayout
             android:id="@+id/frame_forFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible" />
+
+        <!--Widget que exibe os Itens das Categorias-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_categoriesMakeup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:visibility="gone"
+            tools:listitem="@layout/layout_item_category" />
+
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
