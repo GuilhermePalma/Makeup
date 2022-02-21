@@ -333,11 +333,21 @@ public class SerializationData {
                             // Obtem os Maps da List de Cores
                             for (Map<String, Object> itemColor : colors) {
                                 if (itemColor.get("hex_value") instanceof String && itemColor.get("colour_name") instanceof String) {
-                                    // Obtem o Codigo da Cor
-                                    int codeColor = Color.parseColor((String) itemColor.get("hex_value"));
 
-                                    // Insere na Lista de Cores o nome e o Codigo Hexadecinal
-                                    listColors.put((String) itemColor.get("colour_name"), codeColor);
+                                    // Verifica se Possui o # antes da cor
+                                    String color = (String) itemColor.get("hex_value");
+                                    if (color != null) {
+                                        if (color.length() == 6 && color.charAt(0) != '#') {
+                                            color = "#" + color;
+                                        }
+
+                                        if (color.length() == 7) {
+                                            // Obtem o Codigo da Cor
+                                            int codeColor = Color.parseColor(color);
+                                            // Insere na Lista de Cores o nome e o Codigo Hexadecinal
+                                            listColors.put((String) itemColor.get("colour_name"), codeColor);
+                                        }
+                                    }
                                 } else if (itemColor.get("hex_value") instanceof String) {
                                     // Quando se tem apenas tem o Codigo da Cor
                                     listColors.put("", Color.parseColor((String) itemColor.get("hex_value")));
@@ -349,7 +359,7 @@ public class SerializationData {
                     }
 
                     // Define se a Makeup está entre as Favoritas
-                    if (listFavorites!= null && !listFavorites.isEmpty()){
+                    if (listFavorites != null && !listFavorites.isEmpty()) {
                         for (Makeup makeupFavorite : listFavorites) {
                             if (makeupFavorite.getId() == makeup.getId()) makeup.setFavorite(true);
                         }
