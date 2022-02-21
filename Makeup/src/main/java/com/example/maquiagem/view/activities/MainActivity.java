@@ -1,9 +1,5 @@
 package com.example.maquiagem.view.activities;
 
-import static com.example.maquiagem.model.SearchInternet.PARAM_BRAND;
-import static com.example.maquiagem.model.SearchInternet.PARAM_RATING_GREATER;
-import static com.example.maquiagem.model.SearchInternet.PARAM_TYPE;
-import static com.example.maquiagem.model.SearchInternet.URL_MAKEUP;
 import static com.example.maquiagem.model.SerializationData.ALL_ITEMS_JSON;
 import static com.example.maquiagem.model.SerializationData.DEFAULT_QUANTITY;
 
@@ -75,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private CustomAlertDialog customAlertDialog;
-    private String categorySelected;
+    private String typeSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -410,20 +406,17 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
                         break;
                     case OPTION_MORE_FAVORITES:
                         // todo: Implementar API_Interna
-                        Uri uriMoreLiked = Uri.parse(URL_MAKEUP).buildUpon()
-                                .appendQueryParameter(PARAM_BRAND, "l'oreal").build();
+                        Uri uriMoreLiked = Makeup.getUriMakeup("l'oreal", "", "", "", null);
                         // Envia uma solicitação à Makeup_API & Obtem o JSON
                         async_list = Makeup.getMakeups(context, executorService, uriMoreLiked, quantity_items);
                         break;
                     case OPTION_CATEGORIES:
-                        Uri uriCategories = Uri.parse(URL_MAKEUP).buildUpon()
-                                .appendQueryParameter(PARAM_TYPE, categorySelected).build();
+                        Uri uriCategories = Makeup.getUriMakeup("", typeSelected, "", "", null);
                         // Envia uma solicitação à Makeup_API & Obtem o JSON
                         async_list = Makeup.getMakeups(context, executorService, uriCategories, quantity_items);
                         break;
                     default:
-                        Uri uriHome = Uri.parse(URL_MAKEUP).buildUpon()
-                                .appendQueryParameter(PARAM_RATING_GREATER, "4.8").build();
+                        Uri uriHome = Makeup.getUriMakeup("", "", "", "4.8", null);
                         // Envia uma solicitação à Makeup_API & Obtem o JSON
                         async_list = Makeup.getMakeups(context, executorService, uriHome, quantity_items);
                         break;
@@ -593,7 +586,7 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
      */
     @Override
     public void onClickCategory(String categorySelected) {
-        this.categorySelected = categorySelected;
+        this.typeSelected = categorySelected;
         asyncGetMakeups(OPTION_CATEGORIES);
     }
 }

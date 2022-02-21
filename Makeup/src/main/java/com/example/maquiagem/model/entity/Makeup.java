@@ -2,7 +2,10 @@ package com.example.maquiagem.model.entity;
 
 import static com.example.maquiagem.model.SearchInternet.METHOD_GET;
 import static com.example.maquiagem.model.SearchInternet.PARAM_BRAND;
+import static com.example.maquiagem.model.SearchInternet.PARAM_CATEGORY;
 import static com.example.maquiagem.model.SearchInternet.PARAM_RATING_GREATER;
+import static com.example.maquiagem.model.SearchInternet.PARAM_TAGS;
+import static com.example.maquiagem.model.SearchInternet.PARAM_TYPE;
 import static com.example.maquiagem.model.SearchInternet.URL_MAKEUP;
 
 import android.content.Context;
@@ -12,7 +15,6 @@ import android.util.Log;
 import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.model.SearchInternet;
 import com.example.maquiagem.model.SerializationData;
-import com.example.maquiagem.view.activities.MainActivity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -80,62 +82,6 @@ public class Makeup {
         return new String[]{"id", "brand", "name", "price", "price_sign", "currency", "image_link",
                 "api_featured_image", "description", "rating", "category", "product_type", "tag_list",
                 "product_api_url", "product_colors"};
-    }
-
-    public Map<String, Integer> getColors() {
-        return colors;
-    }
-
-    public void setColors(Map<String, Integer> colors) {
-        this.colors = colors;
-    }
-
-    public String getUrlInAPI() {
-        return urlInAPI;
-    }
-
-    public void setUrlInAPI(String urlInAPI) {
-        this.urlInAPI = urlInAPI;
-    }
-
-    public String[] getTags() {
-        return tags;
-    }
-
-    public void setTags(String[] tags) {
-        this.tags = tags;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public String getCharPrice() {
-        return charPrice;
-    }
-
-    public void setCharPrice(String charPrice) {
-        this.charPrice = charPrice;
-    }
-
-    public float getRatingProduct() {
-        return ratingProduct;
-    }
-
-    public void setRatingProduct(float ratingProduct) {
-        this.ratingProduct = ratingProduct;
-    }
-
-    public String getApiUrlImage() {
-        return apiUrlImage;
-    }
-
-    public void setApiUrlImage(String apiUrlImage) {
-        this.apiUrlImage = apiUrlImage;
     }
 
     /**
@@ -219,6 +165,105 @@ public class Makeup {
             ex.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Metodo Responsavel por Criar a {@link Uri} de Pesquisas na API Makeup
+     *
+     * @param valueBrand    Valor da Marca Buscada
+     * @param valueCategory Valor da Categoria Buscada (Subtipo do Produto/Formato)
+     * @param valueRating   Um Valor de 0 a 5 que será obtido os Produtos com a Avaliação Superior ou
+     *                      igual ao Valor Passado
+     * @param valueTags     Lista das Tags que serão buscadas (Sem Fomração, apenas os Nomes)
+     * @param valueType     Tipo do Produto (Ex: Batom, Lapis de Olho, Etc)
+     * @return {@link Uri}|null
+     */
+    public static Uri getUriMakeup(String valueBrand, String valueType, String valueCategory,
+                                   String valueRating, List<String> valueTags) {
+        try {
+            // Variavel que Armazenara os Valores das Tags Formatadas
+            StringBuilder tagsWithCommas = new StringBuilder();
+            if (valueTags != null && !valueTags.isEmpty()) {
+                // Obtem o Numero do Ultimo Item da Lista
+                final int indexLastItem = valueTags.size() - 1;
+
+                for (String item_tag : valueTags) {
+                    // Obtem o Index do Item Selecionado
+                    int indexItem = valueTags.indexOf(item_tag);
+
+                    // Formatação das Virgulas
+                    if (indexItem == indexLastItem) tagsWithCommas.append(item_tag);
+                    else tagsWithCommas.append(item_tag).append(",");
+                }
+            }
+
+            return Uri.parse(URL_MAKEUP).buildUpon()
+                    .appendQueryParameter(PARAM_BRAND, valueBrand)
+                    .appendQueryParameter(PARAM_TYPE, valueType)
+                    .appendQueryParameter(PARAM_CATEGORY, valueCategory)
+                    .appendQueryParameter(PARAM_RATING_GREATER, valueRating)
+                    .appendQueryParameter(PARAM_TAGS, tagsWithCommas.toString()).build();
+        } catch (Exception ex) {
+            Log.e("Error", "Erro ao Formatar a URI de Busca. " + ex);
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public Map<String, Integer> getColors() {
+        return colors;
+    }
+
+    public void setColors(Map<String, Integer> colors) {
+        this.colors = colors;
+    }
+
+    public String getUrlInAPI() {
+        return urlInAPI;
+    }
+
+    public void setUrlInAPI(String urlInAPI) {
+        this.urlInAPI = urlInAPI;
+    }
+
+    public String[] getTags() {
+        return tags;
+    }
+
+    public void setTags(String[] tags) {
+        this.tags = tags;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getCharPrice() {
+        return charPrice;
+    }
+
+    public void setCharPrice(String charPrice) {
+        this.charPrice = charPrice;
+    }
+
+    public float getRatingProduct() {
+        return ratingProduct;
+    }
+
+    public void setRatingProduct(float ratingProduct) {
+        this.ratingProduct = ratingProduct;
+    }
+
+    public String getApiUrlImage() {
+        return apiUrlImage;
+    }
+
+    public void setApiUrlImage(String apiUrlImage) {
+        this.apiUrlImage = apiUrlImage;
     }
 
     // Getters and Setters of Classe Makeup

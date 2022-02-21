@@ -1,10 +1,5 @@
 package com.example.maquiagem.view.fragments;
 
-import static com.example.maquiagem.model.SearchInternet.PARAM_BRAND;
-import static com.example.maquiagem.model.SearchInternet.PARAM_CATEGORY;
-import static com.example.maquiagem.model.SearchInternet.PARAM_TAGS;
-import static com.example.maquiagem.model.SearchInternet.PARAM_TYPE;
-import static com.example.maquiagem.model.SearchInternet.URL_MAKEUP;
 import static com.example.maquiagem.view.activities.ResultActivity.KEY_URI;
 
 import android.app.Activity;
@@ -163,41 +158,15 @@ public class FragmentSearchMakeup extends Fragment {
                         R.string.error_notArgsSearch, null, null, true).show();
             } else {
                 // Inicia a Activity Result com a URL que será consultada
-                Intent intentResult = new Intent(context, ResultActivity.class);
-                intentResult.putExtra(KEY_URI, buildUri());
-                startActivity(intentResult);
+                Uri uriSearch = Makeup.getUriMakeup(makeup.getBrand(), makeup.getType(),
+                        makeup.getCategory(), "", listTags);
+                if (uriSearch != null) {
+                    Intent intentResult = new Intent(context, ResultActivity.class);
+                    intentResult.putExtra(KEY_URI, uriSearch.toString());
+                    startActivity(intentResult);
+                }
             }
         });
-    }
-
-    /**
-     * Formata a URL de Pesquisa de {@link Makeup}
-     *
-     * @return {@link String}
-     */
-    private String buildUri() {
-        String brand_formatted = makeup.getBrand();
-        String type_formatted = makeup.getType();
-        String category_formatted = makeup.getCategory();
-
-        // Obtem o Numero do Ultimo Item da Lista
-        int listLength = listTags.size() - 1;
-        // Formatação de Cada Tag p/ usar na Pesquisa da URL
-        StringBuilder tagsWithCommas = new StringBuilder();
-        for (String item_tag : listTags) {
-            // Formatação das Virgulas
-            int indexItem = listTags.indexOf(item_tag);
-            if (indexItem == listLength) tagsWithCommas.append(item_tag);
-            else tagsWithCommas.append(item_tag).append(",");
-        }
-
-        Uri build_uriAPI = Uri.parse(URL_MAKEUP).buildUpon()
-                .appendQueryParameter(PARAM_BRAND, brand_formatted)
-                .appendQueryParameter(PARAM_TYPE, type_formatted)
-                .appendQueryParameter(PARAM_CATEGORY, category_formatted)
-                .appendQueryParameter(PARAM_TAGS, tagsWithCommas.toString()).build();
-
-        return build_uriAPI.toString();
     }
 
     /**
