@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maquiagem.R;
-import com.example.maquiagem.controller.ClickRecyclerView;
+import com.example.maquiagem.controller.ClickMakeup;
 import com.example.maquiagem.controller.ManagerDatabase;
-import com.example.maquiagem.controller.RecyclerListMakeup;
+import com.example.maquiagem.controller.MakeupsAdapter;
 import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.view.CustomAlertDialog;
 import com.example.maquiagem.view.activities.MakeupDetailsActivity;
@@ -26,10 +26,10 @@ import java.util.Map;
 
 /**
  * Classe que Configura o Fragment que manipulará e Exibira as {@link Makeup}. Ele possui metodos
- * herdados da Classe {@link Fragment} e possui uma Interface Implementada ({@link ClickRecyclerView})
+ * herdados da Classe {@link Fragment} e possui uma Interface Implementada ({@link ClickMakeup})
  * para tratar os Cliques nos Itens da Lista
  */
-public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
+public class FragmentListMakeup extends Fragment implements ClickMakeup {
 
     /**
      * Constante que define o tipo de Fragment como Catalogo (Exibição de Produtos Varidados
@@ -59,7 +59,7 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
     /**
      * Classe Adapter para manipular e Gerenciar o RecyclerView
      */
-    private RecyclerListMakeup recyclerListMakeup;
+    private MakeupsAdapter makeupsAdapter;
     private String type_fragment;
     private Context context;
     private CustomAlertDialog customDialog;
@@ -141,8 +141,8 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
         recyclerView.setLayoutManager(gridLayout);
 
         // Passa as Propriedades para o RecyclerView
-        recyclerListMakeup = new RecyclerListMakeup(context, setUpHeader(), makeupList, this);
-        recyclerView.setAdapter(recyclerListMakeup);
+        makeupsAdapter = new MakeupsAdapter(context, setUpHeader(), makeupList, this);
+        recyclerView.setAdapter(makeupsAdapter);
 
         // Define a disposição do Layout (4 Blocos Pequenos (1 | 1) e o 5° Grande (2))
         gridLayout.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -193,7 +193,7 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
     }
 
     /**
-     * Metodo da Interface {@link ClickRecyclerView} que manipula o Clique em uma {@link Makeup}.
+     * Metodo da Interface {@link ClickMakeup} que manipula o Clique em uma {@link Makeup}.
      * Ao clicar na Makeup, inicializa a {@link MakeupDetailsActivity}
      */
     @Override
@@ -236,7 +236,7 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
     }
 
     /**
-     * Metodo da Interface {@link ClickRecyclerView} que manipula o ato de Favoritar/Desfavoritar
+     * Metodo da Interface {@link ClickMakeup} que manipula o ato de Favoritar/Desfavoritar
      * uma {@link Makeup}
      *
      * @see ManagerDatabase#setFavoriteMakeup(Makeup)
@@ -259,11 +259,11 @@ public class FragmentListMakeup extends Fragment implements ClickRecyclerView {
         if (type_fragment.equals(TYPE_MY_FAVORITE)) {
             if (makeupList.size() == 1) {
                 makeupList.clear();
-                recyclerListMakeup.notifyDataSetChanged();
+                makeupsAdapter.notifyDataSetChanged();
             } else {
                 makeupList.remove(index_list);
-                recyclerListMakeup.notifyItemRemoved(position_item);
-                recyclerListMakeup.notifyItemRangeChanged(position_item, makeupList.size());
+                makeupsAdapter.notifyItemRemoved(position_item);
+                makeupsAdapter.notifyItemRangeChanged(position_item, makeupList.size());
             }
         } else {
             makeupList.set(index_list, makeup_click);

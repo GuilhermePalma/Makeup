@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.maquiagem.R;
 import com.google.android.material.card.MaterialCardView;
 
-public class RecyclerViewCategoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CategoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     // Constantes do Tipo de View
     public static final int POSITION_HEADER = 0;
@@ -21,7 +21,7 @@ public class RecyclerViewCategoriesAdapter extends RecyclerView.Adapter<Recycler
     private final View viewHeader;
     private final String[] categoriesName;
 
-    public RecyclerViewCategoriesAdapter(View viewHeader, String[] categoriesName, ClickCategory clickCategory) {
+    public CategoriesAdapter(View viewHeader, String[] categoriesName, ClickCategory clickCategory) {
         this.categoriesName = categoriesName;
         this.viewHeader = viewHeader;
         this.clickCategory = clickCategory;

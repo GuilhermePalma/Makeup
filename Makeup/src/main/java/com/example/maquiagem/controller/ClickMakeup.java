@@ -3,9 +3,9 @@ package com.example.maquiagem.controller;
 import com.example.maquiagem.model.entity.Makeup;
 
 /**
- * Interface que controla as Ações dos Itens do RecyclerView {@link RecyclerListMakeup}
+ * Interface que controla as Ações dos Itens do RecyclerView {@link MakeupsAdapter}
  */
-public interface ClickRecyclerView {
+public interface ClickMakeup {
     /**
      * Metodo que será sobrescrito do Clique em um Produto
      */

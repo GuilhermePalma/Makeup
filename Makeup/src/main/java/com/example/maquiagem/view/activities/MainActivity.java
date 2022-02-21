@@ -34,7 +34,7 @@ import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ClickCategory;
 import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.controller.ManagerResources;
-import com.example.maquiagem.controller.RecyclerViewCategoriesAdapter;
+import com.example.maquiagem.controller.CategoriesAdapter;
 import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.model.entity.User;
 import com.example.maquiagem.view.CustomAlertDialog;
@@ -352,16 +352,16 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
         recyclerView_categories.setLayoutManager(gridLayout_categories);
 
         // Configura quem controlará os Itens do Layout
-        RecyclerViewCategoriesAdapter adapterCategories = new RecyclerViewCategoriesAdapter(
+        CategoriesAdapter categoriesAdapter = new CategoriesAdapter(
                 header_view, categoriesArray, this);
-        recyclerView_categories.setAdapter(adapterCategories);
+        recyclerView_categories.setAdapter(categoriesAdapter);
 
         // Configura a Disposição do RecyclerView
         gridLayout_categories.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return adapterCategories.getItemViewType(position) ==
-                        RecyclerViewCategoriesAdapter.POSITION_HEADER ? 2 : 1;
+                return categoriesAdapter.getItemViewType(position) ==
+                        CategoriesAdapter.POSITION_HEADER ? 2 : 1;
             }
         });
 

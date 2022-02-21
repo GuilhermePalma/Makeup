@@ -23,12 +23,12 @@ import java.util.Random;
  * Classe Responsavel por Gerenciar um {@link RecyclerView}. Ela Herda Metodos da Classe
  * {@link RecyclerView.Adapter<>}
  */
-public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MakeupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     /**
-     * Instancia da Classe {@link ClickRecyclerView} que trata os Cliques nos Itens do {@link RecyclerView}
+     * Instancia da Classe {@link ClickMakeup} que trata os Cliques nos Itens do {@link RecyclerView}
      */
-    private final ClickRecyclerView clickRecyclerView;
+    private final ClickMakeup clickMakeup;
     /**
      * {@link Context} utilizado na Manipualção de Recursos da Classe
      */
@@ -51,20 +51,20 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerView.ViewHo
     private final View header;
 
     /**
-     * Construtor da Classe {@link RecyclerListMakeup}
+     * Construtor da Classe {@link MakeupsAdapter}
      *
      * @param context           {@link Context} utilziado na Manipulação dos Recursos do APP
      * @param header            {@link View} configurada do Header
      * @param list_makeups      {@link List} das {@link Makeup} que serão exibidas
-     * @param clickRecyclerView Instancia da Classe {@link ClickRecyclerView} que controla o Clique
+     * @param clickMakeup Instancia da Classe {@link ClickMakeup} que controla o Clique
      *                          nos Itens
      */
-    public RecyclerListMakeup(Context context, View header,
-                              List<Makeup> list_makeups, ClickRecyclerView clickRecyclerView) {
+    public MakeupsAdapter(Context context, View header,
+                          List<Makeup> list_makeups, ClickMakeup clickMakeup) {
         this.context = context;
         this.header = header;
         this.makeupList = list_makeups;
-        this.clickRecyclerView = clickRecyclerView;
+        this.clickMakeup = clickMakeup;
     }
 
     /**
@@ -142,12 +142,12 @@ public class RecyclerListMakeup extends RecyclerView.Adapter<RecyclerView.ViewHo
                     .into(((ViewHolderListMakeup) holder).image);
 
             // Listeners dos Cliques nos Itens do RecyclerView
-            ((ViewHolderListMakeup) holder).image.setOnClickListener(v -> clickRecyclerView.onClickProduct(makeup));
-            ((ViewHolderListMakeup) holder).cardView.setOnClickListener(v -> clickRecyclerView.onClickProduct(makeup));
+            ((ViewHolderListMakeup) holder).image.setOnClickListener(v -> clickMakeup.onClickProduct(makeup));
+            ((ViewHolderListMakeup) holder).cardView.setOnClickListener(v -> clickMakeup.onClickProduct(makeup));
             ((ViewHolderListMakeup) holder).checkBox_favorite.setOnClickListener(v -> {
                 // Muda p/ o estado oposto do CheckBox e Instancia o Clique
                 ((ViewHolderListMakeup) holder).checkBox_favorite.setChecked(!makeup.isFavorite());
-                clickRecyclerView.onClickFavorite(makeup, position);
+                clickMakeup.onClickFavorite(makeup, position);
             });
         }
     }
