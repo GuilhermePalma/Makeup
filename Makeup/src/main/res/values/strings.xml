@@ -51,11 +51,16 @@
     </string-array>
     <string name="incorrect_password">As Senhas não são Iguais</string>
 
+    <!--GridView Categories-->
+    <string name="title_categories">Algumas Categorias</string>
+    <string name="subTitle_categories">Confira as ategorias de Maquiagens que estõa disponiveis</string>
+
     <!--Strings do Menu Lateral-->
     <string name="option_profile">Seu Perfil</string>
     <string name="option_exit">Sair</string>
     <string name="option_titleMakeup">Maquiagens</string>
     <string name="option_searchMakeup">Pesquisar Maquiagem</string>
+    <string name="option_categoriesMakeup">Maquiagens por Categoria</string>
     <string name="option_allMakeup">Historico de Buscas</string>
     <string name="option_favoriteMakeup">Minhas Favoritas</string>
     <string name="option_catalog">Inicio</string>
@@ -170,10 +175,10 @@
         <item>Eyeliner</item>
         <item>Eyeshadow</item>
         <item>Foundation</item>
-        <item>Lip liner</item>
+        <item>Lip Liner</item>
         <item>Lipstick</item>
         <item>Mascara</item>
-        <item>Nail polish</item>
+        <item>Nail Polish</item>
     </string-array>
     <string-array name="array_categoryBlush">
         <item>Powder</item>

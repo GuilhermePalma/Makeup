@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,10 +27,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maquiagem.R;
+import com.example.maquiagem.controller.ClickCategory;
 import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.controller.ManagerResources;
+import com.example.maquiagem.controller.RecyclerViewCategoriesAdapter;
 import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.model.entity.User;
 import com.example.maquiagem.view.CustomAlertDialog;
@@ -45,11 +49,12 @@ import java.util.concurrent.Executors;
 /**
  * Activity Principal. A partir dela será possivel acessar as demais funções do Sistema
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ClickCategory {
 
     public static final int OPTION_MY_FAVORITE_MAKEUPS = R.id.option_favoriteMakeup;
     public static final int OPTION_MORE_FAVORITES = R.id.option_moreFavorites;
     public static final int OPTION_HOME_MAKEUP = R.id.option_homeMakeup;
+    public static final int OPTION_CATEGORIES = R.id.option_categoriesMakeup;
     private final int OPTION_SEARCH_MAKEUP = R.id.option_searchMakeup;
     private final int OPTION_LOCATION = R.id.option_location;
     private final int OPTION_HISTORIC_MAKEUP = R.id.option_historicMakeup;
@@ -239,6 +244,10 @@ public class MainActivity extends AppCompatActivity {
                 unselectedItemsMenu();
                 item.setChecked(true);
                 item.setCheckable(true);
+
+                if (frame_fragment.getVisibility() == View.GONE) {
+                    frame_fragment.setVisibility(View.VISIBLE);
+                }
             }
 
             drawer.closeDrawer(GravityCompat.START);
@@ -270,6 +279,11 @@ public class MainActivity extends AppCompatActivity {
                     //Altera o Icone Superior (Icone Home)
                     menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(false);
                     menu.getItem(POSITION_TOP_MENU_HOME).setVisible(true);
+                    break;
+
+                case OPTION_CATEGORIES:
+                    frame_fragment.setVisibility(View.GONE);
+                    showCategories();
                     break;
 
                 case OPTION_MORE_FAVORITES:
@@ -306,6 +320,53 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
+    }
+
+    /**
+     * Metodo Responsavel por Carregar e Configurar o GridView que exibirá as Categorias
+     */
+    private void showCategories() {
+        // Obtem o Layout em que será exibido o RecyclerView
+        final LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout_main);
+
+        // Obtem o Layout do RecyclerView
+        final View layout_recyclerView = LayoutInflater.from(context)
+                .inflate(R.layout.layout_recycler_view_categories, linearLayout, false);
+        final RecyclerView recyclerView_categories = (RecyclerView)
+                layout_recyclerView.findViewById(R.id.recyclerView_categoriesMakeup);
+
+        // Configura o Titulo do RecyclerView
+        final View header_view = LayoutInflater.from(context)
+                .inflate(R.layout.layout_header_list, linearLayout, false);
+        final TextView header_title = header_view.findViewById(R.id.txt_titleHeaderList);
+        header_title.setText(R.string.title_categories);
+        final TextView header_subtitle = header_view.findViewById(R.id.txt_subtitleHeaderList);
+        header_subtitle.setText(R.string.subTitle_categories);
+
+        // Obtem as Categorias (Tipos de Maquiagens)
+        final String[] categoriesArray = getResources().getStringArray(R.array.array_type);
+
+
+        // Configura o Tipo de Layout
+        GridLayoutManager gridLayout_categories = new GridLayoutManager(context, 2);
+        recyclerView_categories.setLayoutManager(gridLayout_categories);
+
+        // Configura quem controlará os Itens do Layout
+        RecyclerViewCategoriesAdapter adapterCategories = new RecyclerViewCategoriesAdapter(
+                header_view, categoriesArray, this);
+        recyclerView_categories.setAdapter(adapterCategories);
+
+        // Configura a Disposição do RecyclerView
+        gridLayout_categories.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return adapterCategories.getItemViewType(position) ==
+                        RecyclerViewCategoriesAdapter.POSITION_HEADER ? 2 : 1;
+            }
+        });
+
+        // Adiciona o RecyclerView Configurado na Tela
+        linearLayout.addView(recyclerView_categories);
     }
 
     /**
@@ -484,5 +545,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onClickCategory(String categorySelected) {
+        //todo implementar clique no botão
+
     }
 }

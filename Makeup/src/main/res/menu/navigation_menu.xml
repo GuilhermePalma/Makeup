@@ -19,7 +19,9 @@
             <item
                 android:id="@+id/option_searchMakeup"
                 android:title="@string/option_searchMakeup" />
-
+            <item
+                android:id="@+id/option_categoriesMakeup"
+                android:title="@string/option_categoriesMakeup" />
             <item
                 android:id="@+id/option_moreFavorites"
                 android:title="@string/option_popularMakeup" />
