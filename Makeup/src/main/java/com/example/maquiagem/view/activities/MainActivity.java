@@ -56,12 +56,16 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
     public static final int OPTION_MORE_FAVORITES = R.id.option_moreFavorites;
     public static final int OPTION_HOME_MAKEUP = R.id.option_homeMakeup;
     public static final int OPTION_CATEGORIES = R.id.option_categoriesMakeup;
+    private static final int LAYOUT_LOADING = 0;
+    private static final int LAYOUT_FRAGMENTS = 1;
+    private static final int LAYOUT_CATEGORY = 2;
+    private static final int LAYOUT_ERROR = 3;
     private final int OPTION_SEARCH_MAKEUP = R.id.option_searchMakeup;
     private final int OPTION_LOCATION = R.id.option_location;
     private final int OPTION_HISTORIC_MAKEUP = R.id.option_historicMakeup;
     private final int POSITION_TOP_MENU_SEARCH = 0;
     private final int POSITION_TOP_MENU_HOME = 1;
-
+    private RecyclerView recyclerView_categories;
     private boolean isLoading = false;
     private Context context;
     private LinearLayout layout_loading;
@@ -115,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
      * Instancia os Itens e Obtem os IDs que serão Usados
      */
     private void instanceItems() {
+        recyclerView_categories = (RecyclerView) findViewById(R.id.recyclerView_categoriesMakeup);
         toolbar = findViewById(R.id.toolBar);
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
@@ -158,8 +163,6 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
             showWaitLoading();
             drawer.closeDrawer(GravityCompat.START);
             return false;
-        } else if (frame_fragment.getVisibility() == View.GONE) {
-            frame_fragment.setVisibility(View.VISIBLE);
         }
 
         // Valores das Opções do Menu Superior (3 Pontinhos)
@@ -173,6 +176,8 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
 
                 menu.getItem(POSITION_TOP_MENU_SEARCH).setVisible(false);
                 menu.getItem(POSITION_TOP_MENU_HOME).setVisible(true);
+
+                changeLayout(LAYOUT_FRAGMENTS);
 
                 // Instancia o Fragment e Seleciona sua opção no Menu Lateral
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_forFragment,
@@ -232,7 +237,8 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
                 return false;
             } else if (id_item == OPTION_HOME_MAKEUP || id_item == OPTION_MY_FAVORITE_MAKEUPS ||
                     id_item == OPTION_SEARCH_MAKEUP || id_item == OPTION_MORE_FAVORITES ||
-                    id_item == OPTION_HISTORIC_MAKEUP || id_item == OPTION_EXIT) {
+                    id_item == OPTION_HISTORIC_MAKEUP || id_item == OPTION_EXIT ||
+                    id_item == OPTION_CATEGORIES) {
                 if (!ManagerResources.hasConnectionInternet(context)) {
                     customAlertDialog.defaultMessage(R.string.title_noConnection,
                             R.string.error_connection, null, new String[]{"Internet"},
@@ -249,9 +255,9 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
                 item.setChecked(true);
                 item.setCheckable(true);
 
-                if (frame_fragment.getVisibility() == View.GONE) {
-                    frame_fragment.setVisibility(View.VISIBLE);
-                }
+                // Configura o Layout que será exibido
+                if (id_item == OPTION_CATEGORIES) changeLayout(LAYOUT_CATEGORY);
+                else changeLayout(LAYOUT_FRAGMENTS);
             }
 
             drawer.closeDrawer(GravityCompat.START);
@@ -329,13 +335,6 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
      * Metodo Responsavel por Carregar e Configurar o GridView que exibirá as Categorias
      */
     private void showCategories() {
-        // Tira o FrameFragment da Exibição
-        frame_fragment.setVisibility(View.GONE);
-
-        // Obtem a Instancia do RecyclerView
-        final RecyclerView recyclerView_categories = (RecyclerView)
-                findViewById(R.id.recyclerView_categoriesMakeup);
-
         // Configura o Tipo de Layout
         GridLayoutManager gridLayout_categories = new GridLayoutManager(context, 2);
         recyclerView_categories.setLayoutManager(gridLayout_categories);
@@ -364,9 +363,6 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
                         CategoriesAdapter.POSITION_HEADER ? 2 : 1;
             }
         });
-
-        // Exibe o RecyclerView Configurado na Tela
-        recyclerView_categories.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -388,8 +384,7 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
         int quantity_items = option_search == OPTION_HOME_MAKEUP ? DEFAULT_QUANTITY : ALL_ITEMS_JSON;
 
         // Carrega o Circular Progress Indicator
-        layout_loading.setVisibility(View.VISIBLE);
-        frame_fragment.setVisibility(View.GONE);
+        changeLayout(LAYOUT_LOADING);
 
         // Somente Busca novos dados se a Ultima Pesquisa já foi Concluida
         if (!isLoading) {
@@ -491,9 +486,8 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
         if (makeupList == null) {
             showError();
         } else {
-            // Remove o Layout do "Loading" e exibe o Fragment
-            layout_loading.setVisibility(View.GONE);
-            frame_fragment.setVisibility(View.VISIBLE);
+            // Exibe o Fragment
+            changeLayout(LAYOUT_FRAGMENTS);
 
             FragmentListMakeup fragmentListMakeup = FragmentListMakeup.newInstance(makeupList,
                     type_fragment);
@@ -529,9 +523,7 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
      * Mensagem de Erro dos dados não encontrados
      */
     public void showError() {
-        layout_loading.setVisibility(View.GONE);
-        frame_fragment.setVisibility(View.GONE);
-
+        changeLayout(LAYOUT_ERROR);
         customAlertDialog.defaultMessage(R.string.title_noData, R.string.error_tableEmpty, null,
                 null, true).show();
     }
@@ -542,6 +534,41 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
     private void showWaitLoading() {
         customAlertDialog.defaultMessage(R.string.title_noData, R.string.error_waitLoading, null,
                 null, false).show();
+    }
+
+    private void changeLayout(int layoutShow) {
+
+        int visibilityLoading = View.GONE;
+        int visibilityMakeups = View.GONE;
+        int visibilityCategory = View.GONE;
+        int visibilityError = View.GONE;
+
+        switch (layoutShow) {
+            case LAYOUT_LOADING:
+                visibilityLoading = View.VISIBLE;
+                break;
+            case LAYOUT_FRAGMENTS:
+                visibilityMakeups = View.VISIBLE;
+                break;
+            case LAYOUT_CATEGORY:
+                visibilityCategory = View.VISIBLE;
+                break;
+            case LAYOUT_ERROR:
+                visibilityError = View.VISIBLE;
+                break;
+            default:
+                break;
+        }
+        if (layout_loading.getVisibility() != visibilityLoading) {
+            layout_loading.setVisibility(visibilityLoading);
+        }
+        if (frame_fragment.getVisibility() != visibilityMakeups) {
+            frame_fragment.setVisibility(visibilityMakeups);
+        }
+        if (recyclerView_categories.getVisibility() != visibilityCategory) {
+            recyclerView_categories.setVisibility(visibilityCategory);
+        }
+        // todo: adicioanr visibility e widgets informando o erro
     }
 
     /**
@@ -561,6 +588,9 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * Metodo Implementado da Interface {@link ClickCategory}. Controla o Clique em uma Categoria
+     */
     @Override
     public void onClickCategory(String categorySelected) {
         this.categorySelected = categorySelected;
