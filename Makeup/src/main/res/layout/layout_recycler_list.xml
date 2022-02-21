@@ -8,6 +8,7 @@
     android:layout_gravity="center"
     android:layout_margin="7dp"
     app:cardCornerRadius="5dp"
+    app:strokeWidth="1.5dp"
     app:cardElevation="3dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout

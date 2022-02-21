@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".view.activities.MakeupDetailsActivity">
 
     <LinearLayout
@@ -54,9 +55,9 @@
             android:layout_gravity="center"
             android:layout_marginLeft="35dp"
             android:layout_marginRight="35dp"
-            android:visibility="gone"
             android:contentDescription="@string/description_imageProduct"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:visibility="gone" />
 
 
         <androidx.appcompat.widget.AppCompatRatingBar
