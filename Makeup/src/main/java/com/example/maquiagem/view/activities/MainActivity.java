@@ -2,6 +2,7 @@ package com.example.maquiagem.view.activities;
 
 import static com.example.maquiagem.model.SearchInternet.PARAM_BRAND;
 import static com.example.maquiagem.model.SearchInternet.PARAM_RATING_GREATER;
+import static com.example.maquiagem.model.SearchInternet.PARAM_TYPE;
 import static com.example.maquiagem.model.SearchInternet.URL_MAKEUP;
 import static com.example.maquiagem.model.SerializationData.ALL_ITEMS_JSON;
 import static com.example.maquiagem.model.SerializationData.DEFAULT_QUANTITY;
@@ -12,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,10 +33,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maquiagem.R;
+import com.example.maquiagem.controller.CategoriesAdapter;
 import com.example.maquiagem.controller.ClickCategory;
 import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.controller.ManagerResources;
-import com.example.maquiagem.controller.CategoriesAdapter;
 import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.model.entity.User;
 import com.example.maquiagem.view.CustomAlertDialog;
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private CustomAlertDialog customAlertDialog;
+    private String categorySelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -406,21 +409,32 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
                 // Obtem as Makeups
                 List<Makeup> async_list;
 
-                if (option_search == OPTION_MY_FAVORITE_MAKEUPS) {
-                    async_list = Makeup.getFavoritesMakeup(context, executorService);
-                } else if (option_search == OPTION_HISTORIC_MAKEUP) {
-                    async_list = Makeup.getHistoricSearch(context, executorService);
-                } else if (option_search == OPTION_MORE_FAVORITES) {
-                    // todo: Implementar API_Interna
-                    Uri uriMoreLiked = Uri.parse(URL_MAKEUP).buildUpon()
-                            .appendQueryParameter(PARAM_BRAND, "l'oreal").build();
-                    // Envia uma solicitação à Makeup_API & Obtem o JSON
-                    async_list = Makeup.getMakeups(context, executorService, uriMoreLiked, quantity_items);
-                } else {
-                    Uri uriHome = Uri.parse(URL_MAKEUP).buildUpon()
-                            .appendQueryParameter(PARAM_RATING_GREATER, "4.8").build();
-                    // Envia uma solicitação à Makeup_API & Obtem o JSON
-                    async_list = Makeup.getMakeups(context, executorService, uriHome, quantity_items);
+                switch (option_search) {
+                    case OPTION_MY_FAVORITE_MAKEUPS:
+                        async_list = Makeup.getFavoritesMakeup(context, executorService);
+                        break;
+                    case OPTION_HISTORIC_MAKEUP:
+                        async_list = Makeup.getHistoricSearch(context, executorService);
+                        break;
+                    case OPTION_MORE_FAVORITES:
+                        // todo: Implementar API_Interna
+                        Uri uriMoreLiked = Uri.parse(URL_MAKEUP).buildUpon()
+                                .appendQueryParameter(PARAM_BRAND, "l'oreal").build();
+                        // Envia uma solicitação à Makeup_API & Obtem o JSON
+                        async_list = Makeup.getMakeups(context, executorService, uriMoreLiked, quantity_items);
+                        break;
+                    case OPTION_CATEGORIES:
+                        Uri uriCategories = Uri.parse(URL_MAKEUP).buildUpon()
+                                .appendQueryParameter(PARAM_TYPE, categorySelected).build();
+                        // Envia uma solicitação à Makeup_API & Obtem o JSON
+                        async_list = Makeup.getMakeups(context, executorService, uriCategories, quantity_items);
+                        break;
+                    default:
+                        Uri uriHome = Uri.parse(URL_MAKEUP).buildUpon()
+                                .appendQueryParameter(PARAM_RATING_GREATER, "4.8").build();
+                        // Envia uma solicitação à Makeup_API & Obtem o JSON
+                        async_list = Makeup.getMakeups(context, executorService, uriHome, quantity_items);
+                        break;
                 }
 
                 // Atribui a Lista usada o Valor Oficial das Maquiagens
@@ -437,6 +451,9 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
                                 break;
                             case OPTION_MORE_FAVORITES:
                                 type_fragment = FragmentListMakeup.TYPE_MORE_LIKED;
+                                break;
+                            case OPTION_CATEGORIES:
+                                type_fragment = FragmentListMakeup.TYPE_CATEGORY;
                                 break;
                             default:
                                 break;
@@ -549,7 +566,7 @@ public class MainActivity extends AppCompatActivity implements ClickCategory {
 
     @Override
     public void onClickCategory(String categorySelected) {
-        //todo implementar clique no botão
-
+        this.categorySelected = categorySelected;
+        asyncGetMakeups(OPTION_CATEGORIES);
     }
 }

@@ -14,8 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maquiagem.R;
 import com.example.maquiagem.controller.ClickMakeup;
-import com.example.maquiagem.controller.ManagerDatabase;
 import com.example.maquiagem.controller.MakeupsAdapter;
+import com.example.maquiagem.controller.ManagerDatabase;
+import com.example.maquiagem.controller.ManagerResources;
 import com.example.maquiagem.model.entity.Makeup;
 import com.example.maquiagem.view.CustomAlertDialog;
 import com.example.maquiagem.view.activities.MakeupDetailsActivity;
@@ -47,6 +48,10 @@ public class FragmentListMakeup extends Fragment implements ClickMakeup {
      * Constante que define o tipo de Fragment como o Historico Local de Busca do Usuario
      */
     public static final String TYPE_HISTORIC = "historic";
+    /**
+     * Constante que define o tipo de Fragment como o Tipo de uma Maquiagem
+     */
+    public static final String TYPE_CATEGORY = "category";
     /**
      * Constante que define a Key para obter o tipo de Fragment
      */
@@ -185,6 +190,16 @@ public class FragmentListMakeup extends Fragment implements ClickMakeup {
                 header_title.setText(R.string.txt_titleCatalog);
                 header_subtitle.setText(R.string.txt_subtitleCatalog);
                 break;
+
+            case TYPE_CATEGORY:
+                // Obtem o Nome da Categoria e Coloca a primeira Letra em Maiuscula
+                String category = makeupList.get(0).getCategory();
+                category = category.substring(0,1).toUpperCase() + category.substring(1);
+                header_title.setText(ManagerResources.getStringIdNormalized(
+                        context, R.string.title_categoriesSelected, new String[]{category}));
+                header_subtitle.setText(R.string.subTitle_categoriesSelected);
+                break;
+
             default:
                 header_view = null;
                 break;
@@ -215,8 +230,8 @@ public class FragmentListMakeup extends Fragment implements ClickMakeup {
         details_makeup.putExtra(MakeupDetailsActivity.URL_ITEM_API, makeup_click.getUrlInAPI());
 
         // Obtem as cores da Makeup
-        Map<String,Integer > listColors = makeup_click.getColors();
-        if(listColors!= null && !listColors.isEmpty()){
+        Map<String, Integer> listColors = makeup_click.getColors();
+        if (listColors != null && !listColors.isEmpty()) {
 
             // Armazenarão os dados do Array
             ArrayList<String> nameColors = new ArrayList<>();

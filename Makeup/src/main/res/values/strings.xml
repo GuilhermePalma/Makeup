@@ -52,8 +52,8 @@
     <string name="incorrect_password">As Senhas não são Iguais</string>
 
     <!--GridView Categories-->
-    <string name="title_categories">Algumas Categorias</string>
-    <string name="subTitle_categories">Confira as ategorias de Maquiagens que estõa disponiveis</string>
+    <string name="title_categories">Encontre o que Busca</string>
+    <string name="subTitle_categories">Confira as Categorias de Maquiagens que estão disponiveis</string>
 
     <!--Strings do Menu Lateral-->
     <string name="option_profile">Seu Perfil</string>
@@ -352,6 +352,8 @@
     <string name="txt_quantityFavorite">%d Favoritos</string>
 
     <!--Fragment ListMakeup-->
+    <string name="title_categoriesSelected">Veja um Pouco de %s</string>
+    <string name="subTitle_categoriesSelected">Confira alguns dos Produtos Cadastrados</string>
     <string name="title_favoriteList">Minhas Makes</string>
     <string name="title_historicList">Maquiagens Buscadas</string>
     <string name="title_moreLikedList">As mais Queridinhas</string>
