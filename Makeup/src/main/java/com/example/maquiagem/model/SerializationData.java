@@ -146,9 +146,7 @@ public class SerializationData {
                         if (valueJsonObject != null)
                             valuesJSON.put(keyOfSubJsonObject, valueJsonObject);
                     }
-                } else if (objectValue instanceof String || objectValue instanceof Boolean
-                        || objectValue instanceof Integer || objectValue instanceof Double ||
-                        objectValue instanceof Float) {
+                } else {
                     valuesJSON.put(key, objectValue);
                 }
             }
@@ -211,8 +209,7 @@ public class SerializationData {
                     }
                 } else if (objectArray instanceof JSONObject) {
                     valuesItem.putAll(serializationJsonObject((JSONObject) objectArray, definedKeys));
-                } else if (objectArray instanceof String || objectArray instanceof Boolean
-                        || objectArray instanceof Integer) {
+                } else {
                     // Adiciona o Item com uma Key Generica
                     valuesItem.put("item", objectArray);
                 }
